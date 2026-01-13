@@ -38,6 +38,8 @@ pub mod node;
 pub mod policy;
 #[cfg(feature = "rbac")]
 pub mod rbac;
+#[cfg(feature = "resource")]
+pub mod resource;
 #[cfg(feature = "scheduling")]
 pub mod scheduling;
 #[cfg(feature = "storage")]
