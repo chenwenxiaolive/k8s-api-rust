@@ -6,6 +6,8 @@
 pub mod admissionregistration;
 #[cfg(feature = "apiextensions")]
 pub mod apiextensions;
+#[cfg(feature = "apiregistration")]
+pub mod apiregistration;
 #[cfg(feature = "apps")]
 pub mod apps;
 #[cfg(feature = "authentication")]
