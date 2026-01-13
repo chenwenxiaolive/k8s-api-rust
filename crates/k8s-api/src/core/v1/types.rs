@@ -5,7 +5,7 @@
 use k8s_api_core::resource::{IntOrString, Quantity};
 use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 
 // =============================================================================
 // Constants
@@ -2785,6 +2785,219 @@ pub struct ImageVolumeSource {
     pub reference: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub pull_policy: String,
+}
+
+// =============================================================================
+// Additional Core Resources
+// =============================================================================
+
+/// Endpoints is a collection of endpoints that implement the actual service.
+///
+/// Deprecated: This API is deprecated in v1.33+. Use discoveryv1.EndpointSlice instead.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Endpoints {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub subsets: Vec<EndpointSubset>,
+}
+
+/// EndpointSubset is a group of addresses with a common set of ports.
+///
+/// Deprecated: This API is deprecated in v1.33+.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EndpointSubset {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub addresses: Vec<EndpointAddress>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub not_ready_addresses: Vec<EndpointAddress>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub ports: Vec<EndpointPort>,
+}
+
+/// EndpointAddress is a tuple that describes single IP address.
+///
+/// Deprecated: This API is deprecated in v1.33+.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EndpointAddress {
+    pub ip: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub hostname: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_ref: Option<ObjectReference>,
+}
+
+/// EndpointPort is a tuple that describes a single port.
+///
+/// Deprecated: This API is deprecated in v1.33+.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EndpointPort {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub name: String,
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub protocol: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub app_protocol: Option<String>,
+}
+
+/// ReplicationController represents the configuration of a replication controller.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReplicationController {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ReplicationControllerSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<ReplicationControllerStatus>,
+}
+
+/// ReplicationControllerSpec is the specification of a replication controller.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReplicationControllerSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    #[serde(default)]
+    pub selector: HashMap<String, String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<PodTemplateSpec>,
+    #[serde(default)]
+    pub min_ready_seconds: i32,
+}
+
+/// ReplicationControllerStatus represents the current status of a replication controller.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReplicationControllerStatus {
+    pub replicas: i32,
+    #[serde(default)]
+    pub fully_labeled_replicas: i32,
+    #[serde(default)]
+    pub ready_replicas: i32,
+    #[serde(default)]
+    pub available_replicas: i32,
+    #[serde(default)]
+    pub observed_generation: i64,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub conditions: Vec<ReplicationControllerCondition>,
+}
+
+/// ReplicationControllerCondition describes the state of a replication controller.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReplicationControllerCondition {
+    #[serde(rename = "type")]
+    pub condition_type: String,
+    pub status: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_transition_time: Option<Time>,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reason: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub message: String,
+}
+
+/// LimitRange sets resource usage limits for each kind of resource in a Namespace.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LimitRange {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LimitRangeSpec>,
+}
+
+/// LimitRangeSpec defines a min/max usage limit for resources.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LimitRangeSpec {
+    pub limits: Vec<LimitRangeItem>,
+}
+
+/// LimitRangeItem defines a min/max usage limit for any resource.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LimitRangeItem {
+    #[serde(rename = "type")]
+    pub limit_type: String,
+    #[serde(default)]
+    pub max: HashMap<String, Quantity>,
+    #[serde(default)]
+    pub min: HashMap<String, Quantity>,
+    #[serde(default)]
+    pub default: HashMap<String, Quantity>,
+    #[serde(default)]
+    pub default_request: HashMap<String, Quantity>,
+    #[serde(default)]
+    pub max_limit_request_ratio: HashMap<String, Quantity>,
+}
+
+/// ResourceQuota sets aggregate quota restrictions enforced per namespace.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceQuota {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ResourceQuotaSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<ResourceQuotaStatus>,
+}
+
+/// ResourceQuotaSpec defines the desired hard limits to enforce for Quota.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceQuotaSpec {
+    #[serde(default)]
+    pub hard: HashMap<String, Quantity>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub scopes: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope_selector: Option<ScopeSelector>,
+}
+
+/// ResourceQuotaStatus defines the enforced hard limits and observed use.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceQuotaStatus {
+    #[serde(default)]
+    pub hard: HashMap<String, Quantity>,
+    #[serde(default)]
+    pub used: HashMap<String, Quantity>,
+}
+
+/// ScopeSelector represents the AND of the selectors.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ScopeSelector {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub match_expressions: Vec<ScopedResourceSelectorRequirement>,
+}
+
+/// ScopedResourceSelectorRequirement is a selector that contains values and an operator.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ScopedResourceSelectorRequirement {
+    pub scope_name: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub values: Vec<String>,
 }
 
 // =============================================================================
