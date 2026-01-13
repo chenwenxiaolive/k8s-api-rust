@@ -241,7 +241,9 @@ mod tests {
     #[test]
     fn test_label_selector_roundtrip() {
         let mut selector = LabelSelector::default();
-        selector.match_labels.insert("app".to_string(), "web".to_string());
+        selector
+            .match_labels
+            .insert("app".to_string(), "web".to_string());
         selector.match_expressions.push(LabelSelectorRequirement {
             key: "environment".to_string(),
             operator: "In".to_string(),

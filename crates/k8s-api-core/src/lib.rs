@@ -12,12 +12,15 @@
 //! # Primitive Types
 //!
 //! - [`IntOrString`] - A value that can be either an integer or a string
+//! - [`Quantity`] - A fixed-point representation for resource quantities
 
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
 
 pub mod primitives;
+pub mod quantity;
 pub mod traits;
 
 pub use primitives::IntOrString;
+pub use quantity::{Format, Quantity, QuantityError, Scale};
 pub use traits::{ClusterResource, DeepCopy, NamespacedResource, Resource};
