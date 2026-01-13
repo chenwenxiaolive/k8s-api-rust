@@ -18,8 +18,14 @@ pub mod coordination;
 pub mod core;
 #[cfg(feature = "discovery")]
 pub mod discovery;
+#[cfg(feature = "events")]
+pub mod events;
+#[cfg(feature = "flowcontrol")]
+pub mod flowcontrol;
 #[cfg(feature = "networking")]
 pub mod networking;
+#[cfg(feature = "node")]
+pub mod node;
 #[cfg(feature = "policy")]
 pub mod policy;
 #[cfg(feature = "rbac")]
