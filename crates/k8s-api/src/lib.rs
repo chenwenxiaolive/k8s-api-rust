@@ -4,12 +4,16 @@
 
 #[cfg(feature = "apps")]
 pub mod apps;
+#[cfg(feature = "autoscaling")]
+pub mod autoscaling;
 #[cfg(feature = "batch")]
 pub mod batch;
 #[cfg(feature = "core")]
 pub mod core;
 #[cfg(feature = "networking")]
 pub mod networking;
+#[cfg(feature = "policy")]
+pub mod policy;
 #[cfg(feature = "rbac")]
 pub mod rbac;
 #[cfg(feature = "storage")]
