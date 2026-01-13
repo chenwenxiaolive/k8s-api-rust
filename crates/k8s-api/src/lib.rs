@@ -10,6 +10,8 @@ pub mod batch;
 pub mod core;
 #[cfg(feature = "networking")]
 pub mod networking;
+#[cfg(feature = "rbac")]
+pub mod rbac;
 
 // Re-export commonly used types
 #[cfg(feature = "core")]
