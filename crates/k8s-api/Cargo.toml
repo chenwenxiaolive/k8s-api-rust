@@ -13,10 +13,13 @@ serde_json = { workspace = true }
 chrono = { workspace = true }
 
 [features]
-default = ["core", "apps", "batch", "networking", "rbac", "storage", "autoscaling", "policy", "coordination", "discovery", "certificates", "scheduling", "admissionregistration", "events", "flowcontrol", "node"]
+default = ["core", "apps", "batch", "networking", "rbac", "storage", "autoscaling", "policy", "coordination", "discovery", "certificates", "scheduling", "admissionregistration", "events", "flowcontrol", "node", "apiextensions", "authentication", "authorization"]
 core = []
 admissionregistration = []
+apiextensions = []
 apps = []
+authentication = []
+authorization = []
 autoscaling = []
 batch = []
 certificates = []
@@ -31,4 +34,4 @@ rbac = []
 scheduling = []
 storage = []
 # Add more API groups as features
-all = ["core", "apps", "batch", "networking", "rbac", "storage", "autoscaling", "policy", "coordination", "discovery", "certificates", "scheduling", "admissionregistration", "events", "flowcontrol", "node"]
+all = ["core", "apps", "batch", "networking", "rbac", "storage", "autoscaling", "policy", "coordination", "discovery", "certificates", "scheduling", "admissionregistration", "events", "flowcontrol", "node", "apiextensions", "authentication", "authorization"]

@@ -4,8 +4,14 @@
 
 #[cfg(feature = "admissionregistration")]
 pub mod admissionregistration;
+#[cfg(feature = "apiextensions")]
+pub mod apiextensions;
 #[cfg(feature = "apps")]
 pub mod apps;
+#[cfg(feature = "authentication")]
+pub mod authentication;
+#[cfg(feature = "authorization")]
+pub mod authorization;
 #[cfg(feature = "autoscaling")]
 pub mod autoscaling;
 #[cfg(feature = "batch")]
