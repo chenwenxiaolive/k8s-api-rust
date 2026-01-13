@@ -12,6 +12,8 @@ pub mod core;
 pub mod networking;
 #[cfg(feature = "rbac")]
 pub mod rbac;
+#[cfg(feature = "storage")]
+pub mod storage;
 
 // Re-export commonly used types
 #[cfg(feature = "core")]
