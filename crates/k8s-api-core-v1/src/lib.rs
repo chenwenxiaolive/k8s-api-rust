@@ -22,6 +22,7 @@
 
 pub mod common;
 pub mod container;
+pub mod pod;
 pub mod resource;
 
 // Re-export common types from dependencies
@@ -34,4 +35,5 @@ pub use k8s_api_meta::{
 // Re-export types from this crate
 pub use common::*;
 pub use container::*;
+pub use pod::*;
 pub use resource::*;
