@@ -13,9 +13,10 @@ serde_json = { workspace = true }
 chrono = { workspace = true }
 
 [features]
-default = ["core", "apps", "batch"]
+default = ["core", "apps", "batch", "networking"]
 core = []
 apps = []
 batch = []
+networking = []
 # Add more API groups as features
-all = ["core", "apps", "batch"]
+all = ["core", "apps", "batch", "networking"]

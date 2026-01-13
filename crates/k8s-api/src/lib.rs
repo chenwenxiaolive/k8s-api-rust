@@ -8,6 +8,8 @@ pub mod apps;
 pub mod batch;
 #[cfg(feature = "core")]
 pub mod core;
+#[cfg(feature = "networking")]
+pub mod networking;
 
 // Re-export commonly used types
 #[cfg(feature = "core")]
