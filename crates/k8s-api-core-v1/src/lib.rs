@@ -9,8 +9,7 @@
 //!
 //! - [`common`] - Common reference types (ObjectReference, LocalObjectReference)
 //! - [`resource`] - Resource-related types (ResourceRequirements, ResourceList)
-//! - [`volume`] - Volume types (Volume, VolumeSource, PersistentVolume)
-//! - [`container`] - Container types (Container, ContainerPort, ContainerStatus)
+//! - [`container`] - Container types (Container, ContainerPort, EnvVar, Probe)
 //! - [`pod`] - Pod types (Pod, PodSpec, PodStatus)
 //!
 //! # Re-exports
@@ -22,6 +21,7 @@
 #![deny(unsafe_code)]
 
 pub mod common;
+pub mod container;
 pub mod resource;
 
 // Re-export common types from dependencies
@@ -33,4 +33,5 @@ pub use k8s_api_meta::{
 
 // Re-export types from this crate
 pub use common::*;
+pub use container::*;
 pub use resource::*;
