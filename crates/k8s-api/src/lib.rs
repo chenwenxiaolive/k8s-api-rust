@@ -2,20 +2,30 @@
 //!
 //! This crate provides Rust type definitions for Kubernetes API resources.
 
+#[cfg(feature = "admissionregistration")]
+pub mod admissionregistration;
 #[cfg(feature = "apps")]
 pub mod apps;
 #[cfg(feature = "autoscaling")]
 pub mod autoscaling;
 #[cfg(feature = "batch")]
 pub mod batch;
+#[cfg(feature = "certificates")]
+pub mod certificates;
+#[cfg(feature = "coordination")]
+pub mod coordination;
 #[cfg(feature = "core")]
 pub mod core;
+#[cfg(feature = "discovery")]
+pub mod discovery;
 #[cfg(feature = "networking")]
 pub mod networking;
 #[cfg(feature = "policy")]
 pub mod policy;
 #[cfg(feature = "rbac")]
 pub mod rbac;
+#[cfg(feature = "scheduling")]
+pub mod scheduling;
 #[cfg(feature = "storage")]
 pub mod storage;
 
