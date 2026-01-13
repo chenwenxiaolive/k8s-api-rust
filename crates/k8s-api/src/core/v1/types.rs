@@ -814,6 +814,10 @@ pub struct VolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistent_volume_claim: Option<PersistentVolumeClaimVolumeSource>,
 
+    /// NFS represents an NFS mount on the host that shares a pod's lifetime.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<NFSVolumeSource>,
+
     /// Projected items for all in one resources secrets, configmaps, and downward API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<ProjectedVolumeSource>,
@@ -825,6 +829,90 @@ pub struct VolumeSource {
     /// CSI represents ephemeral storage handled by CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<CSIVolumeSource>,
+
+    /// GCEPersistentDisk represents a GCE Disk resource (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gce_persistent_disk: Option<GCEPersistentDiskVolumeSource>,
+
+    /// AWSElasticBlockStore represents an AWS Disk resource (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aws_elastic_block_store: Option<AWSElasticBlockStoreVolumeSource>,
+
+    /// GitRepo represents a git repository at a particular revision (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub git_repo: Option<GitRepoVolumeSource>,
+
+    /// ISCSI represents an ISCSI Disk resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iscsi: Option<ISCSIVolumeSource>,
+
+    /// Glusterfs represents a Glusterfs mount (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glusterfs: Option<GlusterfsVolumeSource>,
+
+    /// RBD represents a Rados Block Device mount (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbd: Option<RBDVolumeSource>,
+
+    /// FlexVolume represents a generic volume resource (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flex_volume: Option<FlexVolumeSource>,
+
+    /// Cinder represents a cinder volume (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cinder: Option<CinderVolumeSource>,
+
+    /// CephFS represents a Ceph FS mount (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephfs: Option<CephFSVolumeSource>,
+
+    /// Flocker represents a Flocker volume (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flocker: Option<FlockerVolumeSource>,
+
+    /// FC represents a Fibre Channel resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fc: Option<FCVolumeSource>,
+
+    /// AzureFile represents an Azure File Service mount (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure_file: Option<AzureFileVolumeSource>,
+
+    /// VsphereVolume represents a vSphere volume (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vsphere_volume: Option<VsphereVirtualDiskVolumeSource>,
+
+    /// Quobyte represents a Quobyte mount (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quobyte: Option<QuobyteVolumeSource>,
+
+    /// AzureDisk represents an Azure Data Disk mount (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure_disk: Option<AzureDiskVolumeSource>,
+
+    /// PhotonPersistentDisk represents a PhotonController persistent disk (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub photon_persistent_disk: Option<PhotonPersistentDiskVolumeSource>,
+
+    /// PortworxVolume represents a Portworx volume (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub portworx_volume: Option<PortworxVolumeSource>,
+
+    /// ScaleIO represents a ScaleIO persistent volume (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scale_io: Option<ScaleIOVolumeSource>,
+
+    /// StorageOS represents a StorageOS volume (deprecated).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storageos: Option<StorageOSVolumeSource>,
+
+    /// Ephemeral represents a volume that is handled by a cluster storage driver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ephemeral: Option<EphemeralVolumeSource>,
+
+    /// Image represents an OCI object pulled and mounted on the kubelet's host machine.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<ImageVolumeSource>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -2350,6 +2438,353 @@ pub struct PodReadinessGate {
 #[serde(rename_all = "camelCase")]
 pub struct PodOS {
     pub name: String,
+}
+
+// =============================================================================
+// Additional Volume Source Types
+// =============================================================================
+
+/// GCEPersistentDiskVolumeSource represents a GCE Disk resource.
+///
+/// Deprecated: GCEPersistentDisk is deprecated.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GCEPersistentDiskVolumeSource {
+    pub pd_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// AWSElasticBlockStoreVolumeSource represents an AWS Disk resource.
+///
+/// Deprecated: AWSElasticBlockStore is deprecated.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AWSElasticBlockStoreVolumeSource {
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// GitRepoVolumeSource represents a git repository.
+///
+/// DEPRECATED: GitRepo is deprecated.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GitRepoVolumeSource {
+    pub repository: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub revision: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub directory: String,
+}
+
+/// ISCSIVolumeSource represents an ISCSI disk.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ISCSIVolumeSource {
+    pub target_portal: String,
+    pub iqn: String,
+    pub lun: i32,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub iscsi_interface: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub portals: Vec<String>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub chap_auth_discovery: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub chap_auth_session: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_ref: Option<LocalObjectReference>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub initiator_name: Option<String>,
+}
+
+/// GlusterfsVolumeSource represents a Glusterfs mount.
+///
+/// Deprecated: Glusterfs is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GlusterfsVolumeSource {
+    pub endpoints: String,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// RBDVolumeSource represents a Rados Block Device mount.
+///
+/// Deprecated: RBD is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RBDVolumeSource {
+    pub monitors: Vec<String>,
+    pub image: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub pool: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub user: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub keyring: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_ref: Option<LocalObjectReference>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// FlexVolumeSource represents a generic volume resource.
+///
+/// Deprecated: FlexVolume is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FlexVolumeSource {
+    pub driver: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_ref: Option<LocalObjectReference>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub options: BTreeMap<String, String>,
+}
+
+/// CinderVolumeSource represents a cinder volume.
+///
+/// Deprecated: Cinder is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CinderVolumeSource {
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_ref: Option<LocalObjectReference>,
+}
+
+/// CephFSVolumeSource represents a Ceph FS mount.
+///
+/// Deprecated: CephFS is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CephFSVolumeSource {
+    pub monitors: Vec<String>,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub path: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub user: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub secret_file: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_ref: Option<LocalObjectReference>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// FlockerVolumeSource represents a Flocker volume.
+///
+/// Deprecated: Flocker is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FlockerVolumeSource {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub dataset_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "datasetUUID")]
+    pub dataset_uuid: String,
+}
+
+/// FCVolumeSource represents a Fibre Channel volume.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FCVolumeSource {
+    #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "targetWWNs")]
+    pub target_wwns: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lun: Option<i32>,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub wwids: Vec<String>,
+}
+
+/// AzureFileVolumeSource represents an Azure File Service mount.
+///
+/// Deprecated: AzureFile is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AzureFileVolumeSource {
+    pub secret_name: String,
+    pub share_name: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// VsphereVirtualDiskVolumeSource represents a vSphere volume.
+///
+/// Deprecated: VsphereVolume is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VsphereVirtualDiskVolumeSource {
+    pub volume_path: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub storage_policy_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "storagePolicyID")]
+    pub storage_policy_id: String,
+}
+
+/// QuobyteVolumeSource represents a Quobyte mount.
+///
+/// Deprecated: Quobyte is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct QuobyteVolumeSource {
+    pub registry: String,
+    pub volume: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub user: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub group: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub tenant: String,
+}
+
+/// AzureDiskVolumeSource represents an Azure Data Disk mount.
+///
+/// Deprecated: AzureDisk is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AzureDiskVolumeSource {
+    pub disk_name: String,
+    #[serde(rename = "diskURI")]
+    pub disk_uri: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub caching_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+}
+
+/// PhotonPersistentDiskVolumeSource represents a PhotonController persistent disk.
+///
+/// Deprecated: PhotonPersistentDisk is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PhotonPersistentDiskVolumeSource {
+    #[serde(rename = "pdID")]
+    pub pd_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+}
+
+/// PortworxVolumeSource represents a Portworx volume.
+///
+/// Deprecated: PortworxVolume is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PortworxVolumeSource {
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// ScaleIOVolumeSource represents a ScaleIO persistent volume.
+///
+/// Deprecated: ScaleIO is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ScaleIOVolumeSource {
+    pub gateway: String,
+    pub system: String,
+    pub secret_ref: LocalObjectReference,
+    #[serde(default, skip_serializing_if = "is_false", rename = "sslEnabled")]
+    pub ssl_enabled: bool,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub protection_domain: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub storage_pool: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub storage_mode: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub volume_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+}
+
+/// StorageOSVolumeSource represents a StorageOS volume.
+///
+/// Deprecated: StorageOS is deprecated.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StorageOSVolumeSource {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub volume_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub volume_namespace: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub fs_type: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read_only: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret_ref: Option<LocalObjectReference>,
+}
+
+/// EphemeralVolumeSource represents an ephemeral volume.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EphemeralVolumeSource {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volume_claim_template: Option<PersistentVolumeClaimTemplate>,
+}
+
+/// PersistentVolumeClaimTemplate is used to produce PersistentVolumeClaim objects.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PersistentVolumeClaimTemplate {
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    pub spec: PersistentVolumeClaimSpec,
+}
+
+/// ImageVolumeSource represents an OCI object.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ImageVolumeSource {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reference: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub pull_policy: String,
 }
 
 // =============================================================================
