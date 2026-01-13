@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/k8s-api-core",
     "crates/k8s-api-meta",
+    "crates/k8s-api-core-v1",
 ]
 
 [workspace.package]
