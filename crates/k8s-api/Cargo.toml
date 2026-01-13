@@ -1,0 +1,21 @@
+[package]
+name = "k8s-api"
+description = "Kubernetes API types for all API groups"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+k8s-api-core = { workspace = true }
+k8s-apimachinery = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+
+[features]
+default = ["core", "apps", "batch"]
+core = []
+apps = []
+batch = []
+# Add more API groups as features
+all = ["core", "apps", "batch"]

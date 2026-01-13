@@ -1,0 +1,13 @@
+[package]
+name = "k8s-apimachinery"
+description = "Kubernetes API machinery types (ObjectMeta, TypeMeta, etc.)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+k8s-api-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
