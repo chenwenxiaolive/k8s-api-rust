@@ -28,6 +28,7 @@ pub mod autoscaling;
 pub mod batch;
 pub mod core;
 pub mod discovery;
+pub mod events;
 pub mod networking;
 pub mod policy;
 pub mod rbac;
