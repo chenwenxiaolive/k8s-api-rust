@@ -93,6 +93,48 @@ pub struct DeviceRequest {
     /// AdminAccess indicates that this is a claim for administrative access to the device(s).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub admin_access: Option<bool>,
+    /// FirstAvailable contains subrequests, of which exactly one will be selected.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub first_available: Vec<DeviceSubRequest>,
+    /// Tolerations for device taints.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tolerations: Vec<DeviceToleration>,
+    /// Capacity defines resource requirements against device capacities.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<CapacityRequirements>,
+}
+
+/// DeviceSubRequest is a sub-request in FirstAvailable allocation.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeviceSubRequest {
+    /// Name is the name of the sub-request.
+    pub name: String,
+    /// DeviceClassName references a specific DeviceClass.
+    pub device_class_name: String,
+    /// Selectors define criteria which must be satisfied by a specific device.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub selectors: Vec<DeviceSelector>,
+    /// AllocationMode and its related fields define how devices are allocated.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub allocation_mode: String,
+    /// Count is used only when the count allocation mode is set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub count: Option<i64>,
+    /// Tolerations for device taints.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tolerations: Vec<DeviceToleration>,
+    /// Capacity defines resource requirements against device capacities.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<CapacityRequirements>,
+}
+
+/// CapacityRequirements defines capacity requirements for a device request.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CapacityRequirements {
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub requests: BTreeMap<String, String>,
 }
 
 /// DeviceSelector must have exactly one field set.
@@ -122,6 +164,9 @@ pub struct DeviceConstraint {
     /// MatchAttribute requires that all devices in question have this attribute and that its type and value are the same across those devices.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub match_attribute: Option<String>,
+    /// DistinctAttribute requires that all devices in question have this attribute and that its type and value are unique across those devices.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub distinct_attribute: Option<String>,
 }
 
 /// DeviceClaimConfiguration is used for configuration parameters in DeviceClaim.
@@ -131,6 +176,14 @@ pub struct DeviceClaimConfiguration {
     /// Requests lists the names of requests where the configuration applies.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub requests: Vec<String>,
+    #[serde(flatten)]
+    pub device_configuration: DeviceConfiguration,
+}
+
+/// DeviceConfiguration must have exactly one field set.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeviceConfiguration {
     /// Opaque provides driver-specific configuration parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opaque: Option<OpaqueDeviceConfiguration>,
@@ -157,6 +210,9 @@ pub struct AllocationResult {
     /// NodeSelector defines where the allocated resources are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_selector: Option<serde_json::Value>,
+    /// AllocationTimestamp stores the time when the resources were allocated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allocation_timestamp: Option<k8s_apimachinery::apis::meta::v1::Time>,
 }
 
 /// DeviceAllocationResult is the result of allocating devices.
@@ -183,6 +239,24 @@ pub struct DeviceRequestAllocationResult {
     pub pool: String,
     /// Device is the name of the allocated device.
     pub device: String,
+    /// AdminAccess indicates that this device was allocated for administrative access.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub admin_access: Option<bool>,
+    /// Tolerations specified in the request at allocation time.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tolerations: Vec<DeviceToleration>,
+    /// BindingConditions copied from the ResourceSlice at allocation time.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub binding_conditions: Vec<String>,
+    /// BindingFailureConditions copied from the ResourceSlice at allocation time.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub binding_failure_conditions: Vec<String>,
+    /// ShareID uniquely identifies an individual allocation share of the device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub share_id: Option<String>,
+    /// ConsumedCapacity tracks the amount of capacity consumed per device.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub consumed_capacity: BTreeMap<String, String>,
 }
 
 /// DeviceAllocationConfiguration gets embedded in an AllocationResult.
@@ -194,9 +268,8 @@ pub struct DeviceAllocationConfiguration {
     /// Requests lists the names of requests where the configuration applies.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub requests: Vec<String>,
-    /// Opaque provides driver-specific configuration parameters.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub opaque: Option<OpaqueDeviceConfiguration>,
+    #[serde(flatten)]
+    pub device_configuration: DeviceConfiguration,
 }
 
 /// ResourceClaimConsumerReference contains enough information to identify the consumer.
@@ -224,6 +297,9 @@ pub struct AllocatedDeviceStatus {
     pub pool: String,
     /// Device is the name of the allocated device.
     pub device: String,
+    /// ShareID uniquely identifies an individual allocation share of the device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub share_id: Option<String>,
     /// Conditions contains the latest observation of the device's state.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<Condition>,
@@ -286,15 +362,17 @@ pub struct DeviceClassSpec {
     /// Config defines configuration parameters that apply to each device that is claimed via this class.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub config: Vec<DeviceClassConfiguration>,
+    /// ExtendedResourceName is the extended resource name for the devices of this class.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extended_resource_name: Option<String>,
 }
 
 /// DeviceClassConfiguration is used in DeviceClass.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DeviceClassConfiguration {
-    /// Opaque provides driver-specific configuration parameters.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub opaque: Option<OpaqueDeviceConfiguration>,
+    #[serde(flatten)]
+    pub device_configuration: DeviceConfiguration,
 }
 
 // =============================================================================
@@ -375,11 +453,33 @@ pub struct ResourceSliceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_selector: Option<serde_json::Value>,
     /// AllNodes indicates that all nodes have access to the resources in the pool.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub all_nodes: Option<bool>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub all_nodes: bool,
     /// Devices lists all available devices in this pool slice.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub devices: Vec<Device>,
+    /// PerDeviceNodeSelection indicates whether node access is set per device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub per_device_node_selection: Option<bool>,
+    /// SharedCounters defines a list of counter sets that are shared in this slice.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub shared_counters: Vec<CounterSet>,
+}
+
+/// CounterSet defines a named set of counters available to devices.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CounterSet {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub counters: BTreeMap<String, Counter>,
+}
+
+/// Counter describes a quantity associated with a device.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Counter {
+    pub value: String,
 }
 
 /// ResourcePool describes the pool that ResourceSlices belong to.
@@ -415,6 +515,33 @@ pub struct BasicDevice {
     /// Capacity defines the set of capacities for this device.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub capacity: BTreeMap<String, DeviceCapacity>,
+    /// ConsumesCounters defines which shared counters this device consumes.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub consumes_counters: Vec<DeviceCounterConsumption>,
+    /// NodeName limits this device to be usable from this specific node.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node_name: Option<String>,
+    /// NodeSelector limits this device to be usable from nodes matching this selector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node_selector: Option<serde_json::Value>,
+    /// AllNodes indicates this device is usable from all nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all_nodes: Option<bool>,
+    /// Taints are driver-defined taints for this device.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub taints: Vec<DeviceTaint>,
+    /// BindsToNode indicates if usage is limited to the node chosen at allocation time.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub binds_to_node: Option<bool>,
+    /// BindingConditions defines conditions required for binding.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub binding_conditions: Vec<String>,
+    /// BindingFailureConditions defines conditions that indicate binding failure.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub binding_failure_conditions: Vec<String>,
+    /// AllowMultipleAllocations marks whether the device can be allocated multiple times.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow_multiple_allocations: Option<bool>,
 }
 
 /// DeviceAttribute must have exactly one field set.
@@ -441,6 +568,70 @@ pub struct DeviceAttribute {
 pub struct DeviceCapacity {
     /// Value defines how much of a certain device capacity is available.
     pub value: String,
+    /// RequestPolicy defines how device capacity must be consumed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request_policy: Option<CapacityRequestPolicy>,
+}
+
+/// DeviceCounterConsumption defines counters consumed by a device.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeviceCounterConsumption {
+    pub counter_set: String,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub counters: BTreeMap<String, Counter>,
+}
+
+/// CapacityRequestPolicy defines how requests consume device capacity.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CapacityRequestPolicy {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub valid_values: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub valid_range: Option<CapacityRequestPolicyRange>,
+}
+
+/// CapacityRequestPolicyRange defines a valid range for consumable capacity values.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CapacityRequestPolicyRange {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub step: Option<String>,
+}
+
+/// DeviceTaint applies to claims that do not tolerate the taint.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeviceTaint {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub value: String,
+    pub effect: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time_added: Option<k8s_apimachinery::apis::meta::v1::Time>,
+}
+
+/// DeviceToleration tolerates a device taint.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeviceToleration {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub key: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub value: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub effect: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub toleration_seconds: Option<i64>,
 }
 
 // Allocation mode constants
@@ -450,3 +641,7 @@ pub const ALLOCATION_MODE_ALL: &str = "All";
 // Device allocation configuration source constants
 pub const ALLOCATION_CONFIG_SOURCE_CLAIM: &str = "FromClaim";
 pub const ALLOCATION_CONFIG_SOURCE_CLASS: &str = "FromClass";
+
+fn is_false(value: &bool) -> bool {
+    !*value
+}
