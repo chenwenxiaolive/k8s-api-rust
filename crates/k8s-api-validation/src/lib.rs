@@ -7,6 +7,7 @@ pub mod autoscaling;
 pub mod batch;
 pub mod certificates;
 pub mod common;
+pub mod coordination;
 pub mod core;
 pub mod discovery;
 pub mod networking;
