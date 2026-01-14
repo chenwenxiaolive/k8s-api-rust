@@ -154,7 +154,7 @@ pub struct PolicyRule {
 pub struct Subject {
     pub kind: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub api_group: String,
+    pub api_version: String,
     pub name: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub namespace: String,

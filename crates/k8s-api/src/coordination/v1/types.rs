@@ -1,7 +1,10 @@
 //! Coordination v1 API type definitions
 
-use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{MicroTime, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
+
+// Coordinated lease strategy constants
+pub const STRATEGY_OLDEST_EMULATION_VERSION: &str = "OldestEmulationVersion";
 
 // =============================================================================
 // Lease
@@ -42,11 +45,17 @@ pub struct LeaseSpec {
     pub lease_duration_seconds: Option<i32>,
     /// AcquireTime is a time when the current lease was acquired.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub acquire_time: Option<String>,
+    pub acquire_time: Option<MicroTime>,
     /// RenewTime is a time when the current holder of a lease has last updated the lease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub renew_time: Option<String>,
+    pub renew_time: Option<MicroTime>,
     /// LeaseTransitions is the number of transitions of a lease between holders.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lease_transitions: Option<i32>,
+    /// Strategy indicates the strategy for picking the leader for coordinated leader election.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<String>,
+    /// PreferredHolder signals to a lease holder that the lease has a more optimal holder.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preferred_holder: Option<String>,
 }

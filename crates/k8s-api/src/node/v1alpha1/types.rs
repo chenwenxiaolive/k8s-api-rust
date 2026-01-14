@@ -15,8 +15,16 @@ pub struct RuntimeClass {
     pub type_meta: TypeMeta,
     #[serde(default)]
     pub metadata: ObjectMeta,
-    /// Handler specifies the underlying runtime and configuration that the CRI implementation will use.
-    pub handler: String,
+    /// Spec represents specification of the RuntimeClass.
+    pub spec: RuntimeClassSpec,
+}
+
+/// RuntimeClassSpec is a specification of a RuntimeClass.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RuntimeClassSpec {
+    /// RuntimeHandler specifies the underlying runtime and configuration that the CRI implementation will use.
+    pub runtime_handler: String,
     /// Overhead represents the resource overhead associated with running a pod for a given RuntimeClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overhead: Option<Overhead>,

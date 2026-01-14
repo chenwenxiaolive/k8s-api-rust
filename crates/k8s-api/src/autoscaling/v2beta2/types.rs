@@ -1,6 +1,6 @@
 //! Autoscaling v2beta2 API type definitions (deprecated)
 
-use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
 
 // =============================================================================
@@ -28,7 +28,7 @@ pub struct HorizontalPodAutoscalerList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     #[serde(default)]
-    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub metadata: ListMeta,
     pub items: Vec<HorizontalPodAutoscaler>,
 }
 
@@ -60,7 +60,7 @@ pub struct HorizontalPodAutoscalerStatus {
     pub observed_generation: Option<i64>,
     /// LastScaleTime is the last time the HorizontalPodAutoscaler scaled the number of pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_scale_time: Option<String>,
+    pub last_scale_time: Option<Time>,
     /// CurrentReplicas is current number of replicas of pods managed by this autoscaler.
     #[serde(default)]
     pub current_replicas: i32,
@@ -71,7 +71,27 @@ pub struct HorizontalPodAutoscalerStatus {
     pub current_metrics: Vec<MetricStatus>,
     /// Conditions is the set of conditions required for this autoscaler to scale its target.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub conditions: Vec<Condition>,
+    pub conditions: Vec<HorizontalPodAutoscalerCondition>,
+}
+
+/// HorizontalPodAutoscalerCondition describes the state of a HorizontalPodAutoscaler.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HorizontalPodAutoscalerCondition {
+    /// Type describes the current condition.
+    #[serde(rename = "type")]
+    pub condition_type: String,
+    /// Status is the status of the condition (True, False, Unknown).
+    pub status: String,
+    /// LastTransitionTime is the last time the condition transitioned from one status to another.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_transition_time: Option<Time>,
+    /// Reason is the reason for the condition's last transition.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reason: String,
+    /// Message is a human-readable explanation containing details about the transition.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub message: String,
 }
 
 /// CrossVersionObjectReference contains enough information to identify the referred resource.
@@ -152,25 +172,25 @@ pub struct ObjectMetricSource {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ObjectMetricStatus {
-    pub described_object: CrossVersionObjectReference,
-    pub current: MetricValueStatus,
     pub metric: MetricIdentifier,
+    pub current: MetricValueStatus,
+    pub described_object: CrossVersionObjectReference,
 }
 
 /// PodsMetricSource indicates how to scale on a metric describing each pod in the current scale target.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodsMetricSource {
-    pub target: MetricTarget,
     pub metric: MetricIdentifier,
+    pub target: MetricTarget,
 }
 
 /// PodsMetricStatus indicates the current value of a metric describing each pod in the current scale target.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodsMetricStatus {
-    pub current: MetricValueStatus,
     pub metric: MetricIdentifier,
+    pub current: MetricValueStatus,
 }
 
 /// ResourceMetricSource indicates how to scale on a resource metric known to Kubernetes.
@@ -217,16 +237,16 @@ pub struct ContainerResourceMetricStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExternalMetricSource {
-    pub target: MetricTarget,
     pub metric: MetricIdentifier,
+    pub target: MetricTarget,
 }
 
 /// ExternalMetricStatus indicates the current value of a global metric not associated with any Kubernetes object.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExternalMetricStatus {
-    pub current: MetricValueStatus,
     pub metric: MetricIdentifier,
+    pub current: MetricValueStatus,
 }
 
 /// MetricIdentifier defines the name and optionally selector for a metric.

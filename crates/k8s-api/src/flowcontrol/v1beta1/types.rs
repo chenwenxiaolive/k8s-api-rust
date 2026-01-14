@@ -30,7 +30,6 @@ pub const RESPONSE_HEADER_MATCHED_FLOW_SCHEMA_UID: &str = "X-Kubernetes-PF-FlowS
 
 // Annotation keys
 pub const AUTO_UPDATE_ANNOTATION_KEY: &str = "apf.kubernetes.io/autoupdate-spec";
-pub const PRIORITY_LEVEL_PRESERVE_ZERO_CONCURRENCY_SHARES_KEY: &str = "flowcontrol.k8s.io/v1beta3-preserve-zero-concurrency-shares";
 
 // =============================================================================
 // FlowSchema
@@ -278,9 +277,9 @@ pub const PRIORITY_LEVEL_ENABLEMENT_LIMITED: &str = "Limited";
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LimitedPriorityLevelConfiguration {
-    /// nominalConcurrencyShares (NCS) contributes to the computation of the NominalConcurrencyLimit.
+    /// assuredConcurrencyShares (ACS) configures the execution limit for this priority level.
     #[serde(default)]
-    pub nominal_concurrency_shares: i32,
+    pub assured_concurrency_shares: i32,
     /// limitResponse indicates what to do with requests that can not be executed right now.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit_response: Option<LimitResponse>,
