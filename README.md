@@ -125,7 +125,7 @@ k8s-api-rust/
 
 ## Current Status
 
-**Total Tests: 187 (all passing)**
+**Total Tests: 228 (all passing)**
 
 ### API Types Coverage (k8s-api)
 
@@ -165,15 +165,20 @@ k8s-api-rust/
 | networking | 2 | NetworkPolicy, Ingress |
 | policy | 2 | PodDisruptionBudget, Eviction |
 | autoscaling | 1 | HorizontalPodAutoscaler |
+| discovery | 1 | EndpointSlice |
+| events | 1 | Event |
 
-**Total: 18 version conversions implemented**
+**Total: 20 version conversions implemented**
 
 ### Validation (k8s-api-validation)
 
 | Module | Validators | Coverage |
 |--------|------------|----------|
 | common | 19 | DNS names, labels, selectors, quantities, resources |
+| certificates | 11 | CertificateSigningRequest |
 | storage | 9 | StorageClass, VolumeAttachment, CSI types |
+| coordination | 10 | Lease |
+| node | 12 | RuntimeClass, Toleration |
 | apps | 8 | Deployment, StatefulSet, DaemonSet, ReplicaSet |
 | core | 8 | Pod, Service, ConfigMap, Namespace |
 | networking | 8 | NetworkPolicy, Ingress, IngressClass |
@@ -183,7 +188,7 @@ k8s-api-rust/
 | policy | 3 | PodDisruptionBudget |
 | discovery | 1 | EndpointSlice |
 
-**Total: 70 validation functions across 10 modules**
+**Total: 103 validation functions across 13 modules**
 
 ### Serialization Tests
 
@@ -197,15 +202,18 @@ k8s-api-rust/
 **High Priority:**
 - [ ] `resource` module validation (102 types)
 - [ ] `admissionregistration` module validation (53 types)
-- [ ] `discovery` version conversion
+- [x] `discovery` version conversion ✅
+- [x] `events` version conversion ✅
 
 **Medium Priority:**
 - [ ] `flowcontrol` module validation (44 types)
-- [ ] `certificates` module validation
+- [x] `certificates` module validation ✅
 - [ ] `authentication/authorization` validation
 
 **Low Priority:**
-- [ ] `coordination`, `scheduling`, `events` modules
+- [x] `coordination` module validation ✅
+- [x] `node` module validation ✅
+- [ ] `scheduling` module validation
 - [ ] Additional serialization tests
 - [ ] Documentation examples
 
