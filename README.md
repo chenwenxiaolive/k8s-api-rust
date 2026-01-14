@@ -125,7 +125,7 @@ k8s-api-rust/
 
 ## Current Status
 
-**Total Tests: 228 (all passing)**
+**Total Tests: 240 (all passing)**
 
 ### API Types Coverage (k8s-api)
 
@@ -175,6 +175,9 @@ k8s-api-rust/
 | Module | Validators | Coverage |
 |--------|------------|----------|
 | common | 19 | DNS names, labels, selectors, quantities, resources |
+| admissionregistration | 8 | Webhook configurations, policies |
+| authentication | 5 | TokenReview, TokenRequest, SelfSubjectReview |
+| authorization | 8 | SAR/SSAR/LSAR, SelfSubjectRulesReview |
 | certificates | 11 | CertificateSigningRequest |
 | storage | 9 | StorageClass, VolumeAttachment, CSI types |
 | coordination | 10 | Lease |
@@ -187,8 +190,10 @@ k8s-api-rust/
 | autoscaling | 3 | HPA metrics, behaviors |
 | policy | 3 | PodDisruptionBudget |
 | discovery | 1 | EndpointSlice |
+| flowcontrol | 4 | FlowSchema, PriorityLevelConfiguration |
+| resource | 12 | ResourceClaim, ResourceClass, ResourceSlice |
 
-**Total: 103 validation functions across 13 modules**
+**Total: 140 validation functions across 18 modules**
 
 ### Serialization Tests
 
@@ -200,15 +205,16 @@ k8s-api-rust/
 ### Roadmap
 
 **High Priority:**
-- [ ] `resource` module validation (102 types)
-- [ ] `admissionregistration` module validation (53 types)
+- [x] `resource` module validation (102 types)
+- [x] `admissionregistration` module validation (53 types)
 - [x] `discovery` version conversion ✅
 - [x] `events` version conversion ✅
 
 **Medium Priority:**
-- [ ] `flowcontrol` module validation (44 types)
+- [x] `flowcontrol` module validation (44 types)
 - [x] `certificates` module validation ✅
-- [ ] `authentication/authorization` validation
+- [x] `authentication` module validation
+- [x] `authorization` module validation
 
 **Low Priority:**
 - [x] `coordination` module validation ✅
@@ -255,7 +261,7 @@ Contributions are welcome! Areas where help is needed:
 4. **Documentation**: Improve code documentation and examples
 5. **Conversion logic**: Implement version conversion between API versions
 
-Please see [REFACTORING_PLAN.md](REFACTORING_PLAN.md) for specific tasks.
+Please see the Roadmap section for specific tasks.
 
 ## License
 
