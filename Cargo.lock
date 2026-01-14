@@ -129,8 +129,11 @@ dependencies = [
 name = "k8s-api-conversion"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "k8s-api",
+ "k8s-api-core",
  "k8s-apimachinery",
+ "serde_json",
  "thiserror",
 ]
 
@@ -151,7 +154,18 @@ dependencies = [
  "k8s-apimachinery",
  "once_cell",
  "regex",
+ "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "k8s-apiextensions-apiserver"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "k8s-apimachinery",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -163,6 +177,16 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "k8s-kube-aggregator"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "k8s-apimachinery",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

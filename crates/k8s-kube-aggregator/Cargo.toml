@@ -1,0 +1,12 @@
+[package]
+name = "k8s-kube-aggregator"
+description = "Kubernetes Aggregator types (APIService)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+k8s-apimachinery = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }

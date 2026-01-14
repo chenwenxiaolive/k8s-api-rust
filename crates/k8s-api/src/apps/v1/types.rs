@@ -595,3 +595,126 @@ pub struct ControllerRevisionList {
 
     pub items: Vec<ControllerRevision>,
 }
+
+// =============================================================================
+// Tests
+// =============================================================================
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use k8s_apimachinery::apis::meta::v1::LabelSelector;
+    use crate::core::v1::{Container, PodSpec, PodTemplateSpec};
+
+    #[test]
+    fn test_deployment_serialization_roundtrip() {
+        let deployment = Deployment {
+            type_meta: TypeMeta::new("apps/v1", "Deployment"),
+            metadata: ObjectMeta::namespaced("default", "nginx-deployment"),
+            spec: Some(DeploymentSpec {
+                replicas: Some(3),
+                selector: Some(LabelSelector {
+                    match_labels: [("app".to_string(), "nginx".to_string())]
+                        .into_iter()
+                        .collect(),
+                    ..Default::default()
+                }),
+                template: PodTemplateSpec {
+                    metadata: ObjectMeta::default(),
+                    spec: Some(PodSpec {
+                        containers: vec![Container {
+                            name: "nginx".to_string(),
+                            image: "nginx:1.19".to_string(),
+                            ..Default::default()
+                        }],
+                        ..Default::default()
+                    }),
+                },
+                ..Default::default()
+            }),
+            status: None,
+        };
+
+        let json = serde_json::to_string(&deployment).unwrap();
+        let parsed: Deployment = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(deployment.metadata.name, parsed.metadata.name);
+        assert_eq!(deployment.spec.as_ref().unwrap().replicas, parsed.spec.as_ref().unwrap().replicas);
+    }
+
+    #[test]
+    fn test_statefulset_serialization_roundtrip() {
+        let sts = StatefulSet {
+            type_meta: TypeMeta::new("apps/v1", "StatefulSet"),
+            metadata: ObjectMeta::namespaced("default", "web"),
+            spec: Some(StatefulSetSpec {
+                replicas: Some(3),
+                service_name: "nginx".to_string(),
+                selector: Some(LabelSelector {
+                    match_labels: [("app".to_string(), "nginx".to_string())]
+                        .into_iter()
+                        .collect(),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }),
+            status: None,
+        };
+
+        let json = serde_json::to_string(&sts).unwrap();
+        let parsed: StatefulSet = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(sts.metadata.name, parsed.metadata.name);
+        assert_eq!(sts.spec.as_ref().unwrap().service_name, parsed.spec.as_ref().unwrap().service_name);
+    }
+
+    #[test]
+    fn test_daemonset_serialization_roundtrip() {
+        let ds = DaemonSet {
+            type_meta: TypeMeta::new("apps/v1", "DaemonSet"),
+            metadata: ObjectMeta::namespaced("kube-system", "fluentd"),
+            spec: Some(DaemonSetSpec {
+                selector: Some(LabelSelector {
+                    match_labels: [("app".to_string(), "fluentd".to_string())]
+                        .into_iter()
+                        .collect(),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }),
+            status: None,
+        };
+
+        let json = serde_json::to_string(&ds).unwrap();
+        let parsed: DaemonSet = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(ds.metadata.name, parsed.metadata.name);
+        assert_eq!(ds.metadata.namespace, parsed.metadata.namespace);
+    }
+
+    #[test]
+    fn test_replicaset_serialization_roundtrip() {
+        let rs = ReplicaSet {
+            type_meta: TypeMeta::new("apps/v1", "ReplicaSet"),
+            metadata: ObjectMeta::namespaced("default", "nginx-rs"),
+            spec: Some(ReplicaSetSpec {
+                replicas: Some(3),
+                selector: Some(LabelSelector {
+                    match_labels: [("app".to_string(), "nginx".to_string())]
+                        .into_iter()
+                        .collect(),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }),
+            status: None,
+        };
+
+        let json = serde_json::to_string(&rs).unwrap();
+        let parsed: ReplicaSet = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(rs.metadata.name, parsed.metadata.name);
+        assert_eq!(rs.spec.as_ref().unwrap().replicas, parsed.spec.as_ref().unwrap().replicas);
+    }
+}
+

@@ -2,12 +2,18 @@
 //!
 //! This crate provides Rust type definitions for Kubernetes API resources.
 
+#[cfg(feature = "admission")]
+pub mod admission;
 #[cfg(feature = "admissionregistration")]
 pub mod admissionregistration;
+#[cfg(feature = "apidiscovery")]
+pub mod apidiscovery;
 #[cfg(feature = "apiextensions")]
 pub mod apiextensions;
 #[cfg(feature = "apiregistration")]
 pub mod apiregistration;
+#[cfg(feature = "apiserverinternal")]
+pub mod apiserverinternal;
 #[cfg(feature = "apps")]
 pub mod apps;
 #[cfg(feature = "authentication")]
@@ -44,6 +50,8 @@ pub mod resource;
 pub mod scheduling;
 #[cfg(feature = "storage")]
 pub mod storage;
+#[cfg(feature = "storagemigration")]
+pub mod storagemigration;
 
 // Re-export commonly used types
 #[cfg(feature = "core")]

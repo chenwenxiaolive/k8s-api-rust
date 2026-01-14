@@ -50,6 +50,28 @@ impl Time {
     }
 }
 
+/// MicroTime is a time with microsecond precision, for Kubernetes resources that need higher precision.
+/// In JSON, it is represented as RFC 3339 date-time with microseconds.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct MicroTime(pub Option<DateTime<Utc>>);
+
+impl Default for MicroTime {
+    fn default() -> Self {
+        Self(None)
+    }
+}
+
+impl MicroTime {
+    pub fn now() -> Self {
+        Self(Some(Utc::now()))
+    }
+
+    pub fn is_zero(&self) -> bool {
+        self.0.is_none()
+    }
+}
+
 /// ListMeta describes metadata that synthetic resources must have.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

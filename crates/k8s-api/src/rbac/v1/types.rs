@@ -182,3 +182,115 @@ pub struct RoleRef {
     /// Name is the name of resource being referenced.
     pub name: String,
 }
+
+// =============================================================================
+// Tests
+// =============================================================================
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_role_serialization_roundtrip() {
+        let role = Role {
+            type_meta: TypeMeta::new("rbac.authorization.k8s.io/v1", "Role"),
+            metadata: ObjectMeta::namespaced("default", "pod-reader"),
+            rules: vec![PolicyRule {
+                verbs: vec!["get".to_string(), "watch".to_string(), "list".to_string()],
+                api_groups: vec!["".to_string()],
+                resources: vec!["pods".to_string()],
+                ..Default::default()
+            }],
+        };
+
+        let json = serde_json::to_string(&role).unwrap();
+        let parsed: Role = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(role.metadata.name, parsed.metadata.name);
+        assert_eq!(role.rules.len(), parsed.rules.len());
+        assert_eq!(role.rules[0].verbs, parsed.rules[0].verbs);
+    }
+
+    #[test]
+    fn test_cluster_role_serialization_roundtrip() {
+        let cluster_role = ClusterRole {
+            type_meta: TypeMeta::new("rbac.authorization.k8s.io/v1", "ClusterRole"),
+            metadata: ObjectMeta::named("secret-reader"),
+            rules: vec![PolicyRule {
+                verbs: vec!["get".to_string(), "watch".to_string(), "list".to_string()],
+                api_groups: vec!["".to_string()],
+                resources: vec!["secrets".to_string()],
+                ..Default::default()
+            }],
+            aggregation_rule: None,
+        };
+
+        let json = serde_json::to_string(&cluster_role).unwrap();
+        let parsed: ClusterRole = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(cluster_role.metadata.name, parsed.metadata.name);
+        assert_eq!(cluster_role.rules.len(), parsed.rules.len());
+    }
+
+    #[test]
+    fn test_role_binding_serialization_roundtrip() {
+        let role_binding = RoleBinding {
+            type_meta: TypeMeta::new("rbac.authorization.k8s.io/v1", "RoleBinding"),
+            metadata: ObjectMeta::namespaced("default", "read-pods"),
+            subjects: vec![Subject {
+                kind: "User".to_string(),
+                api_group: "rbac.authorization.k8s.io".to_string(),
+                name: "jane".to_string(),
+                namespace: String::new(),
+            }],
+            role_ref: RoleRef {
+                api_group: "rbac.authorization.k8s.io".to_string(),
+                kind: "Role".to_string(),
+                name: "pod-reader".to_string(),
+            },
+        };
+
+        let json = serde_json::to_string(&role_binding).unwrap();
+        let parsed: RoleBinding = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(role_binding.metadata.name, parsed.metadata.name);
+        assert_eq!(role_binding.subjects.len(), parsed.subjects.len());
+        assert_eq!(role_binding.role_ref.name, parsed.role_ref.name);
+    }
+
+    #[test]
+    fn test_cluster_role_binding_serialization_roundtrip() {
+        let crb = ClusterRoleBinding {
+            type_meta: TypeMeta::new("rbac.authorization.k8s.io/v1", "ClusterRoleBinding"),
+            metadata: ObjectMeta::named("read-secrets-global"),
+            subjects: vec![
+                Subject {
+                    kind: "Group".to_string(),
+                    api_group: "rbac.authorization.k8s.io".to_string(),
+                    name: "manager".to_string(),
+                    namespace: String::new(),
+                },
+                Subject {
+                    kind: "ServiceAccount".to_string(),
+                    name: "default".to_string(),
+                    namespace: "kube-system".to_string(),
+                    api_group: String::new(),
+                },
+            ],
+            role_ref: RoleRef {
+                api_group: "rbac.authorization.k8s.io".to_string(),
+                kind: "ClusterRole".to_string(),
+                name: "secret-reader".to_string(),
+            },
+        };
+
+        let json = serde_json::to_string(&crb).unwrap();
+        let parsed: ClusterRoleBinding = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(crb.metadata.name, parsed.metadata.name);
+        assert_eq!(crb.subjects.len(), parsed.subjects.len());
+        assert_eq!(crb.subjects[0].kind, parsed.subjects[0].kind);
+        assert_eq!(crb.subjects[1].namespace, parsed.subjects[1].namespace);
+    }
+}

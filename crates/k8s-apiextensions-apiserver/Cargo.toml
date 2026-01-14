@@ -1,0 +1,12 @@
+[package]
+name = "k8s-apiextensions-apiserver"
+description = "Kubernetes API Extensions Server types (CustomResourceDefinition)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+k8s-apimachinery = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }

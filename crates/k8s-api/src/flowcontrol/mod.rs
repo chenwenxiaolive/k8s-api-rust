@@ -1,3 +1,4 @@
 //! Kubernetes Flow Control API
 
 pub mod v1;
+pub mod v1beta3;

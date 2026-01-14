@@ -318,3 +318,97 @@ pub struct CronJobList {
 
     pub items: Vec<CronJob>,
 }
+
+// =============================================================================
+// Tests
+// =============================================================================
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::v1::{Container, PodSpec, PodTemplateSpec};
+
+    #[test]
+    fn test_job_serialization_roundtrip() {
+        let job = Job {
+            type_meta: TypeMeta::new("batch/v1", "Job"),
+            metadata: ObjectMeta::namespaced("default", "pi"),
+            spec: Some(JobSpec {
+                completions: Some(1),
+                parallelism: Some(1),
+                backoff_limit: Some(4),
+                template: PodTemplateSpec {
+                    spec: Some(PodSpec {
+                        containers: vec![Container {
+                            name: "pi".to_string(),
+                            image: "perl:5.34".to_string(),
+                            command: vec![
+                                "perl".to_string(),
+                                "-Mbignum=bpi".to_string(),
+                                "-wle".to_string(),
+                                "print bpi(2000)".to_string(),
+                            ],
+                            ..Default::default()
+                        }],
+                        restart_policy: "Never".to_string(),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                },
+                ..Default::default()
+            }),
+            status: None,
+        };
+
+        let json = serde_json::to_string(&job).unwrap();
+        let parsed: Job = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(job.metadata.name, parsed.metadata.name);
+        assert_eq!(job.spec.as_ref().unwrap().completions, parsed.spec.as_ref().unwrap().completions);
+    }
+
+    #[test]
+    fn test_cronjob_serialization_roundtrip() {
+        let cronjob = CronJob {
+            type_meta: TypeMeta::new("batch/v1", "CronJob"),
+            metadata: ObjectMeta::namespaced("default", "hello"),
+            spec: Some(CronJobSpec {
+                schedule: "*/1 * * * *".to_string(),
+                concurrency_policy: "Forbid".to_string(),
+                successful_jobs_history_limit: Some(3),
+                failed_jobs_history_limit: Some(1),
+                job_template: JobTemplateSpec {
+                    spec: Some(JobSpec {
+                        template: PodTemplateSpec {
+                            spec: Some(PodSpec {
+                                containers: vec![Container {
+                                    name: "hello".to_string(),
+                                    image: "busybox:1.28".to_string(),
+                                    command: vec![
+                                        "/bin/sh".to_string(),
+                                        "-c".to_string(),
+                                        "date; echo Hello from the Kubernetes cluster".to_string(),
+                                    ],
+                                    ..Default::default()
+                                }],
+                                restart_policy: "OnFailure".to_string(),
+                                ..Default::default()
+                            }),
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                },
+                ..Default::default()
+            }),
+            status: None,
+        };
+
+        let json = serde_json::to_string(&cronjob).unwrap();
+        let parsed: CronJob = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(cronjob.metadata.name, parsed.metadata.name);
+        assert_eq!(cronjob.spec.as_ref().unwrap().schedule, parsed.spec.as_ref().unwrap().schedule);
+    }
+}

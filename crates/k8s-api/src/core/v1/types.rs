@@ -3001,6 +3001,243 @@ pub struct ScopedResourceSelectorRequirement {
 }
 
 // =============================================================================
+// Missing List Types
+// =============================================================================
+
+/// ResourceQuotaList is a list of ResourceQuota items.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceQuotaList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<ResourceQuota>,
+}
+
+/// LimitRangeList is a list of LimitRange items.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LimitRangeList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<LimitRange>,
+}
+
+/// EndpointsList is a list of Endpoints items.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EndpointsList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<Endpoints>,
+}
+
+// =============================================================================
+// Event
+// =============================================================================
+
+/// Event is a report of an event somewhere in the cluster.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Event {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+
+    /// Standard object's metadata.
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+
+    /// The object that this event is about.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub involved_object: Option<ObjectReference>,
+
+    /// This should be a short, machine understandable string.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reason: String,
+
+    /// A human-readable description of the status of this operation.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub message: String,
+
+    /// The component reporting this event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<EventSource>,
+
+    /// The time at which the event was first recorded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub first_timestamp: Option<Time>,
+
+    /// The time at which the most recent occurrence of this event was recorded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_timestamp: Option<Time>,
+
+    /// The number of times this event has occurred.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub count: Option<i32>,
+
+    /// Type of this event (Normal, Warning).
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    pub event_type: String,
+
+    /// Time when this Event was first observed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub event_time: Option<Time>,
+
+    /// Data about the Event series this event represents.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub series: Option<EventSeries>,
+
+    /// What action was taken/failed regarding the Regarding object.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub action: String,
+
+    /// Optional secondary object for more complex actions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub related: Option<ObjectReference>,
+
+    /// Name of the controller that emitted this Event.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reporting_controller: String,
+
+    /// ID of the controller instance.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reporting_instance: String,
+}
+
+impl Event {
+    pub const KIND: &'static str = "Event";
+    pub const API_VERSION: &'static str = "v1";
+}
+
+/// EventList is a list of events.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EventList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<Event>,
+}
+
+/// EventSource contains information for an event.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EventSource {
+    /// Component from which the event is generated.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub component: String,
+    /// Node name on which the event is generated.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub host: String,
+}
+
+/// EventSeries contains information on series of events.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EventSeries {
+    /// Number of occurrences in this series up to the last heartbeat time.
+    #[serde(default)]
+    pub count: i32,
+    /// Time of the last occurrence observed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_observed_time: Option<Time>,
+}
+
+// =============================================================================
+// Binding
+// =============================================================================
+
+/// Binding ties one object to another; for example, a pod is bound to a node by a scheduler.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Binding {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+
+    /// Standard object's metadata.
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+
+    /// The target object that you want to bind to the standard object.
+    pub target: ObjectReference,
+}
+
+impl Binding {
+    pub const KIND: &'static str = "Binding";
+    pub const API_VERSION: &'static str = "v1";
+
+    pub fn new(name: impl Into<String>, target_node: impl Into<String>) -> Self {
+        Self {
+            type_meta: TypeMeta::new(Self::API_VERSION, Self::KIND),
+            metadata: ObjectMeta::named(name),
+            target: ObjectReference {
+                kind: "Node".to_string(),
+                name: target_node.into(),
+                ..Default::default()
+            },
+        }
+    }
+}
+
+// =============================================================================
+// ComponentStatus (deprecated but still used)
+// =============================================================================
+
+/// ComponentStatus is the status of an individual component.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ComponentStatus {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+
+    /// List of component conditions observed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub conditions: Vec<ComponentCondition>,
+}
+
+impl ComponentStatus {
+    pub const KIND: &'static str = "ComponentStatus";
+    pub const API_VERSION: &'static str = "v1";
+}
+
+/// ComponentStatusList is a list of ComponentStatus objects.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ComponentStatusList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<ComponentStatus>,
+}
+
+/// ComponentCondition describes the condition of a component.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ComponentCondition {
+    /// Type of condition.
+    #[serde(rename = "type")]
+    pub condition_type: String,
+    /// Status of the condition.
+    pub status: String,
+    /// Message about the condition.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub message: String,
+    /// Condition error code.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub error: String,
+}
+
+// =============================================================================
 // Tests
 // =============================================================================
 

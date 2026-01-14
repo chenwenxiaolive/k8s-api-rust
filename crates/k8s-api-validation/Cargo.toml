@@ -11,3 +11,4 @@ k8s-apimachinery = { workspace = true }
 thiserror = { workspace = true }
 regex = { workspace = true }
 once_cell = { workspace = true }
+serde_json = { workspace = true }

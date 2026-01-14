@@ -125,37 +125,89 @@ k8s-api-rust/
 
 ## Current Status
 
-### Completed
+**Total Tests: 187 (all passing)**
 
-- ✅ Core infrastructure (k8s-api-core, k8s-apimachinery)
-- ✅ Core API v1 - Partial (136 types, ~60% complete)
-  - Pod, Container, Service, ConfigMap, Secret
-  - Volume, PersistentVolume, PersistentVolumeClaim
-  - Namespace, Node, ServiceAccount
-- ✅ Apps API v1 - Partial (~70% complete)
-  - Deployment, StatefulSet, DaemonSet, ReplicaSet
-- ✅ Batch API v1 - Partial (~70% complete)
-  - Job, CronJob
-- ✅ Validation framework
-- ✅ Conversion framework (skeleton)
+### API Types Coverage (k8s-api)
 
-### In Progress
+| Module | Types | Status |
+|--------|-------|--------|
+| core | 185 | ✅ Complete |
+| resource | 102 | ✅ Types defined |
+| storage | 54 | ✅ Complete |
+| admissionregistration | 53 | ✅ Types defined |
+| networking | 50 | ✅ Complete |
+| apps | 50 | ✅ Complete |
+| flowcontrol | 44 | ✅ Types defined |
+| autoscaling | 31 | ✅ Complete |
+| policy | 26 | ✅ Complete |
+| authorization | 26 | ✅ Types defined |
+| batch | 25 | ✅ Complete |
+| rbac | 24 | ✅ Complete |
+| authentication | 17 | ✅ Types defined |
+| apiextensions | 17 | ✅ Types defined |
+| discovery | 13 | ✅ Complete |
+| certificates | 12 | ✅ Types defined |
+| node | 9 | ✅ Types defined |
+| events | 9 | ✅ Types defined |
+| coordination | 6 | ✅ Types defined |
+| scheduling | 2 | ✅ Types defined |
 
-- 🚧 Completing core/v1 types
-- 🚧 Completing apps/v1 types
-- 🚧 Completing batch/v1 types
+**Total: 783 API types across 26 modules**
 
-### Planned
+### Version Conversion (k8s-api-conversion)
 
-See [REFACTORING_PLAN.md](REFACTORING_PLAN.md) for detailed roadmap.
+| Module | Conversions | Types |
+|--------|-------------|-------|
+| storage | 5 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity |
+| rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding |
+| apps | 2 | Deployment, StatefulSet |
+| batch | 2 | Job, CronJob |
+| networking | 2 | NetworkPolicy, Ingress |
+| policy | 2 | PodDisruptionBudget, Eviction |
+| autoscaling | 1 | HorizontalPodAutoscaler |
 
-Priority order:
-1. Complete core/v1, apps/v1, batch/v1
-2. Add networking/v1, rbac/v1, storage/v1
-3. Add autoscaling, policy, scheduling
-4. Add remaining API groups
-5. Complete validation and conversion logic
-6. Add comprehensive tests
+**Total: 18 version conversions implemented**
+
+### Validation (k8s-api-validation)
+
+| Module | Validators | Coverage |
+|--------|------------|----------|
+| common | 19 | DNS names, labels, selectors, quantities, resources |
+| storage | 9 | StorageClass, VolumeAttachment, CSI types |
+| apps | 8 | Deployment, StatefulSet, DaemonSet, ReplicaSet |
+| core | 8 | Pod, Service, ConfigMap, Namespace |
+| networking | 8 | NetworkPolicy, Ingress, IngressClass |
+| rbac | 7 | Role, ClusterRole, RoleBinding, Subject |
+| batch | 4 | Job, CronJob |
+| autoscaling | 3 | HPA metrics, behaviors |
+| policy | 3 | PodDisruptionBudget |
+| discovery | 1 | EndpointSlice |
+
+**Total: 70 validation functions across 10 modules**
+
+### Serialization Tests
+
+- ✅ core/v1: Pod, Service, ConfigMap
+- ✅ apps/v1: Deployment, StatefulSet, DaemonSet, ReplicaSet
+- ✅ batch/v1: Job, CronJob
+- ✅ rbac/v1: Role, ClusterRole, RoleBinding, ClusterRoleBinding
+
+### Roadmap
+
+**High Priority:**
+- [ ] `resource` module validation (102 types)
+- [ ] `admissionregistration` module validation (53 types)
+- [ ] `discovery` version conversion
+
+**Medium Priority:**
+- [ ] `flowcontrol` module validation (44 types)
+- [ ] `certificates` module validation
+- [ ] `authentication/authorization` validation
+
+**Low Priority:**
+- [ ] `coordination`, `scheduling`, `events` modules
+- [ ] Additional serialization tests
+- [ ] Documentation examples
 
 ## Source Reference
 

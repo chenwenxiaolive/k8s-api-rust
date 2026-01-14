@@ -6,6 +6,8 @@ members = [
     "crates/k8s-api",
     "crates/k8s-api-validation",
     "crates/k8s-api-conversion",
+    "crates/k8s-apiextensions-apiserver",
+    "crates/k8s-kube-aggregator",
 ]
 
 [workspace.package]
@@ -43,3 +45,5 @@ k8s-apimachinery = { path = "crates/k8s-apimachinery" }
 k8s-api = { path = "crates/k8s-api" }
 k8s-api-validation = { path = "crates/k8s-api-validation" }
 k8s-api-conversion = { path = "crates/k8s-api-conversion" }
+k8s-apiextensions-apiserver = { path = "crates/k8s-apiextensions-apiserver" }
+k8s-kube-aggregator = { path = "crates/k8s-kube-aggregator" }
