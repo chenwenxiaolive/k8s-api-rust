@@ -5,6 +5,7 @@
 pub mod apps;
 pub mod autoscaling;
 pub mod batch;
+pub mod certificates;
 pub mod common;
 pub mod core;
 pub mod discovery;
