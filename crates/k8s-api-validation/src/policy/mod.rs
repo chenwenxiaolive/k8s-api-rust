@@ -174,7 +174,6 @@ pub fn validate_eviction(eviction: &Eviction) -> ValidationResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_api::policy::v1::*;
     use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta};
     use std::collections::BTreeMap;
 

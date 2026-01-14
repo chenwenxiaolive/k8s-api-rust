@@ -11,6 +11,7 @@ pub mod common;
 pub mod coordination;
 pub mod core;
 pub mod discovery;
+pub mod flowcontrol;
 pub mod networking;
 pub mod node;
 pub mod policy;
