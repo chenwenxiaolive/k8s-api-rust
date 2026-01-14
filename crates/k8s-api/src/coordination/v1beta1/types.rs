@@ -1,0 +1,52 @@
+//! Coordination v1beta1 API type definitions (deprecated)
+
+use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use serde::{Deserialize, Serialize};
+
+// =============================================================================
+// Lease
+// =============================================================================
+
+/// Lease defines a lease concept.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Lease {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LeaseSpec>,
+}
+
+/// LeaseList is a list of Lease objects.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LeaseList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<Lease>,
+}
+
+/// LeaseSpec is a specification of a Lease.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LeaseSpec {
+    /// HolderIdentity contains the identity of the holder of a current lease.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub holder_identity: Option<String>,
+    /// LeaseDurationSeconds is a duration that candidates for a lease need to wait to force acquire it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lease_duration_seconds: Option<i32>,
+    /// AcquireTime is a time when the current lease was acquired.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub acquire_time: Option<String>,
+    /// RenewTime is a time when the current holder of a lease has last updated the lease.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub renew_time: Option<String>,
+    /// LeaseTransitions is the number of transitions of a lease between holders.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lease_transitions: Option<i32>,
+}
