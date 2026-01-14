@@ -6,6 +6,7 @@ pub mod apps;
 pub mod autoscaling;
 pub mod admissionregistration;
 pub mod authentication;
+pub mod authorization;
 pub mod batch;
 pub mod certificates;
 pub mod common;
