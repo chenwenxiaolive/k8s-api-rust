@@ -11,6 +11,7 @@ pub mod coordination;
 pub mod core;
 pub mod discovery;
 pub mod networking;
+pub mod node;
 pub mod policy;
 pub mod rbac;
 pub mod storage;
