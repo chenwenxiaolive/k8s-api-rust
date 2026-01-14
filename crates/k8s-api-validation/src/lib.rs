@@ -4,6 +4,7 @@
 
 pub mod apps;
 pub mod autoscaling;
+pub mod admissionregistration;
 pub mod batch;
 pub mod certificates;
 pub mod common;
@@ -14,6 +15,7 @@ pub mod networking;
 pub mod node;
 pub mod policy;
 pub mod rbac;
+pub mod resource;
 pub mod storage;
 
 use thiserror::Error;
