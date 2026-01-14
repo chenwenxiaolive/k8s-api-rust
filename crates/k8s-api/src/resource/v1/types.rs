@@ -2,18 +2,58 @@
 //!
 //! This module provides types for dynamic resource allocation (K8s 1.34+).
 
-// Reserved constants for built-in controllers.
+use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta};
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
+
+// API constants
 pub const FINALIZER: &str = "resource.kubernetes.io/delete-protection";
-pub const EXTENDED_RESOURCE_CLAIM_ANNOTATION: &str =
-    "resource.kubernetes.io/extended-resource-claim";
+pub const EXTENDED_RESOURCE_CLAIM_ANNOTATION: &str = "resource.kubernetes.io/extended-resource-claim";
 pub const RESOURCE_DEVICE_CLASS_PREFIX: &str = "deviceclass.resource.kubernetes.io/";
 
 pub const RESOURCE_SLICE_SELECTOR_NODE_NAME: &str = "spec.nodeName";
 pub const RESOURCE_SLICE_SELECTOR_DRIVER: &str = "spec.driver";
 
-use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta};
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+pub const DRIVER_NAME_MAX_LENGTH: i32 = 63;
+pub const RESOURCE_SLICE_MAX_SHARED_CAPACITY: i32 = 128;
+pub const RESOURCE_SLICE_MAX_DEVICES: i32 = 128;
+pub const POOL_NAME_MAX_LENGTH: i32 = 253;
+pub const BINDING_CONDITIONS_MAX_SIZE: i32 = 4;
+pub const BINDING_FAILURE_CONDITIONS_MAX_SIZE: i32 = 4;
+pub const RESOURCE_SLICE_MAX_SHARED_COUNTERS: i32 = 32;
+pub const RESOURCE_SLICE_MAX_ATTRIBUTES_AND_CAPACITIES_PER_DEVICE: i32 = 32;
+pub const RESOURCE_SLICE_MAX_COUNTERS_PER_DEVICE: i32 = 32;
+pub const RESOURCE_SLICE_MAX_DEVICE_COUNTERS_PER_SLICE: i32 = 1024;
+pub const DEVICE_MAX_DOMAIN_LENGTH: i32 = 63;
+pub const DEVICE_MAX_ID_LENGTH: i32 = 32;
+pub const DEVICE_ATTRIBUTE_MAX_VALUE_LENGTH: i32 = 64;
+pub const DEVICE_TAINTS_MAX_LENGTH: i32 = 4;
+pub const DEVICE_SELECTORS_MAX_SIZE: i32 = 32;
+pub const FIRST_AVAILABLE_DEVICE_REQUEST_MAX_SIZE: i32 = 8;
+pub const DEVICE_TOLERATIONS_MAX_LENGTH: i32 = 16;
+pub const CEL_SELECTOR_EXPRESSION_MAX_COST: i32 = 1_000_000;
+pub const CEL_SELECTOR_EXPRESSION_MAX_LENGTH: i32 = 10 * 1024;
+pub const OPAQUE_PARAMETERS_MAX_LENGTH: i32 = 10 * 1024;
+pub const ALLOCATION_RESULTS_MAX_SIZE: i32 = 32;
+pub const DEVICE_REQUESTS_MAX_SIZE: i32 = ALLOCATION_RESULTS_MAX_SIZE;
+pub const DEVICE_CONSTRAINTS_MAX_SIZE: i32 = 32;
+pub const DEVICE_CONFIG_MAX_SIZE: i32 = 32;
+pub const RESOURCE_CLAIM_RESERVED_FOR_MAX_SIZE: i32 = 256;
+pub const DRA_ADMIN_NAMESPACE_LABEL_KEY: &str = "resource.kubernetes.io/admin-access";
+
+// Device taint and toleration constants
+pub const DEVICE_TAINT_EFFECT_NO_SCHEDULE: &str = "NoSchedule";
+pub const DEVICE_TAINT_EFFECT_NO_EXECUTE: &str = "NoExecute";
+pub const DEVICE_TOLERATION_OP_EXISTS: &str = "Exists";
+pub const DEVICE_TOLERATION_OP_EQUAL: &str = "Equal";
+
+// Type aliases to match API conventions
+pub type QualifiedName = String;
+pub type FullyQualifiedName = String;
+pub type DeviceAllocationMode = String;
+pub type AllocationConfigSource = String;
+pub type DeviceTaintEffect = String;
+pub type DeviceTolerationOperator = String;
 
 // =============================================================================
 // ResourceClaim
@@ -107,7 +147,7 @@ pub struct ExactDeviceRequest {
     pub selectors: Vec<DeviceSelector>,
     /// AllocationMode and its related fields define how devices are allocated.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub allocation_mode: String,
+    pub allocation_mode: DeviceAllocationMode,
     /// Count is used only when the count allocation mode is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
@@ -135,7 +175,7 @@ pub struct DeviceSubRequest {
     pub selectors: Vec<DeviceSelector>,
     /// AllocationMode and its related fields define how devices are allocated.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub allocation_mode: String,
+    pub allocation_mode: DeviceAllocationMode,
     /// Count is used only when the count allocation mode is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
@@ -152,7 +192,7 @@ pub struct DeviceSubRequest {
 #[serde(rename_all = "camelCase")]
 pub struct CapacityRequirements {
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub requests: BTreeMap<String, String>,
+    pub requests: BTreeMap<QualifiedName, String>,
 }
 /// DeviceSelector must have exactly one field set.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -180,10 +220,10 @@ pub struct DeviceConstraint {
     pub requests: Vec<String>,
     /// MatchAttribute requires that all devices in question have this attribute and that its type and value are the same across those devices.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub match_attribute: Option<String>,
+    pub match_attribute: Option<FullyQualifiedName>,
     /// DistinctAttribute requires that all devices in question have this attribute and that its type and value are unique across those devices.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub distinct_attribute: Option<String>,
+    pub distinct_attribute: Option<FullyQualifiedName>,
 }
 
 /// DeviceClaimConfiguration is used for configuration parameters in DeviceClaim.
@@ -273,7 +313,7 @@ pub struct DeviceRequestAllocationResult {
     pub share_id: Option<String>,
     /// ConsumedCapacity tracks the amount of capacity consumed per device.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub consumed_capacity: BTreeMap<String, String>,
+    pub consumed_capacity: BTreeMap<QualifiedName, String>,
 }
 
 /// DeviceAllocationConfiguration gets embedded in an AllocationResult.
@@ -281,7 +321,7 @@ pub struct DeviceRequestAllocationResult {
 #[serde(rename_all = "camelCase")]
 pub struct DeviceAllocationConfiguration {
     /// Source records where the configuration originates from.
-    pub source: String,
+    pub source: AllocationConfigSource,
     /// Requests lists the names of requests where the configuration applies.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub requests: Vec<String>,
@@ -519,10 +559,10 @@ pub struct Device {
     pub name: String,
     /// Attributes defines the set of attributes for this device.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub attributes: BTreeMap<String, DeviceAttribute>,
+    pub attributes: BTreeMap<QualifiedName, DeviceAttribute>,
     /// Capacity defines the set of capacities for this device.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub capacity: BTreeMap<String, DeviceCapacity>,
+    pub capacity: BTreeMap<QualifiedName, DeviceCapacity>,
     /// ConsumesCounters defines which shared capacities this device consumes.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub consumes_counters: Vec<DeviceCounterConsumption>,
@@ -623,7 +663,7 @@ pub struct DeviceTaint {
     pub key: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub value: String,
-    pub effect: String,
+    pub effect: DeviceTaintEffect,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_added: Option<k8s_apimachinery::apis::meta::v1::Time>,
 }
@@ -635,11 +675,11 @@ pub struct DeviceToleration {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub key: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub operator: String,
+    pub operator: DeviceTolerationOperator,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub value: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub effect: String,
+    pub effect: DeviceTaintEffect,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub toleration_seconds: Option<i64>,
 }

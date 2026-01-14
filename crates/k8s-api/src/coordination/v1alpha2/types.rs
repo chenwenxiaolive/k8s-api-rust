@@ -2,6 +2,7 @@
 //!
 //! This module provides alpha-level coordination types including LeaseCandidate (K8s 1.32+).
 
+use crate::coordination::v1::CoordinatedLeaseStrategy;
 use k8s_apimachinery::apis::meta::v1::{MicroTime, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
@@ -56,7 +57,7 @@ pub struct LeaseCandidateSpec {
     pub emulation_version: String,
     /// Strategy is the strategy that coordinated leader election will use for picking the leader.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub strategy: String,
+    pub strategy: CoordinatedLeaseStrategy,
 }
 
 // Coordinated lease strategy types

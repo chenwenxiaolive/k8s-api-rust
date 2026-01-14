@@ -3,7 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{MicroTime, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
-// Coordinated lease strategy constants
+// Coordinated lease strategy types and constants
+pub type CoordinatedLeaseStrategy = String;
 pub const STRATEGY_OLDEST_EMULATION_VERSION: &str = "OldestEmulationVersion";
 
 // =============================================================================
@@ -54,7 +55,7 @@ pub struct LeaseSpec {
     pub lease_transitions: Option<i32>,
     /// Strategy indicates the strategy for picking the leader for coordinated leader election.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<String>,
+    pub strategy: Option<CoordinatedLeaseStrategy>,
     /// PreferredHolder signals to a lease holder that the lease has a more optimal holder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preferred_holder: Option<String>,
