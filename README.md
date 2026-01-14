@@ -137,6 +137,7 @@ k8s-api-rust/
 | admissionregistration | 53 | ✅ Types defined |
 | networking | 50 | ✅ Complete |
 | apps | 50 | ✅ Complete |
+| extensions | 45 | ✅ Types defined |
 | flowcontrol | 44 | ✅ Types defined |
 | autoscaling | 31 | ✅ Complete |
 | policy | 26 | ✅ Complete |
@@ -150,9 +151,11 @@ k8s-api-rust/
 | node | 9 | ✅ Types defined |
 | events | 9 | ✅ Types defined |
 | coordination | 6 | ✅ Types defined |
+| imagepolicy | 4 | ✅ Types defined |
+| abac | 3 | ✅ Types defined |
 | scheduling | 2 | ✅ Types defined |
 
-**Total: 783 API types across 26 modules**
+**Total: 835 API types across 29 modules**
 
 ### Version Conversion (k8s-api-conversion)
 

@@ -4,6 +4,8 @@
 
 #[cfg(feature = "admission")]
 pub mod admission;
+#[cfg(feature = "abac")]
+pub mod abac;
 #[cfg(feature = "admissionregistration")]
 pub mod admissionregistration;
 #[cfg(feature = "apidiscovery")]
@@ -34,8 +36,12 @@ pub mod core;
 pub mod discovery;
 #[cfg(feature = "events")]
 pub mod events;
+#[cfg(feature = "extensions")]
+pub mod extensions;
 #[cfg(feature = "flowcontrol")]
 pub mod flowcontrol;
+#[cfg(feature = "imagepolicy")]
+pub mod imagepolicy;
 #[cfg(feature = "networking")]
 pub mod networking;
 #[cfg(feature = "node")]
