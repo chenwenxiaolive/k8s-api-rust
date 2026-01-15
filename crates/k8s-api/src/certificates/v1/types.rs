@@ -1,7 +1,12 @@
 //! Certificates v1 API type definitions
 
-use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
+
+pub type ExtraValue = Vec<String>;
+pub type RequestConditionType = String;
+pub type KeyUsage = String;
 
 // =============================================================================
 // CertificateSigningRequest
@@ -44,7 +49,7 @@ pub struct CertificateSigningRequestSpec {
     pub expiration_seconds: Option<i32>,
     /// Usages specifies a set of key usages requested in the issued certificate.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub usages: Vec<String>,
+    pub usages: Vec<KeyUsage>,
     /// Username contains the name of the user that created the CertificateSigningRequest.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub username: String,
@@ -55,8 +60,8 @@ pub struct CertificateSigningRequestSpec {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub groups: Vec<String>,
     /// Extra contains extra attributes of the user that created the CertificateSigningRequest.
-    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
-    pub extra: std::collections::BTreeMap<String, Vec<String>>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub extra: BTreeMap<String, ExtraValue>,
 }
 
 /// CertificateSigningRequestStatus contains conditions used to indicate approved/denied/failed status of the request.
@@ -77,9 +82,9 @@ pub struct CertificateSigningRequestStatus {
 pub struct CertificateSigningRequestCondition {
     /// Type of the condition.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: RequestConditionType,
     /// Status of the condition.
-    pub status: String,
+    pub status: crate::core::v1::ConditionStatus,
     /// Reason indicates a brief reason for the request state.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub reason: String,
@@ -88,8 +93,38 @@ pub struct CertificateSigningRequestCondition {
     pub message: String,
     /// LastUpdateTime is the time last update was made to this condition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_update_time: Option<String>,
+    pub last_update_time: Option<Time>,
     /// LastTransitionTime is the time the condition last transitioned from one status to another.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_transition_time: Option<String>,
+    pub last_transition_time: Option<Time>,
 }
+
+// RequestConditionType constants
+pub const CERTIFICATE_APPROVED: &str = "Approved";
+pub const CERTIFICATE_DENIED: &str = "Denied";
+pub const CERTIFICATE_FAILED: &str = "Failed";
+
+// KeyUsage constants
+pub const KEY_USAGE_SIGNING: &str = "signing";
+pub const KEY_USAGE_DIGITAL_SIGNATURE: &str = "digital signature";
+pub const KEY_USAGE_CONTENT_COMMITMENT: &str = "content commitment";
+pub const KEY_USAGE_KEY_ENCIPHERMENT: &str = "key encipherment";
+pub const KEY_USAGE_KEY_AGREEMENT: &str = "key agreement";
+pub const KEY_USAGE_DATA_ENCIPHERMENT: &str = "data encipherment";
+pub const KEY_USAGE_CERT_SIGN: &str = "cert sign";
+pub const KEY_USAGE_CRL_SIGN: &str = "crl sign";
+pub const KEY_USAGE_ENCIPHER_ONLY: &str = "encipher only";
+pub const KEY_USAGE_DECIPHER_ONLY: &str = "decipher only";
+pub const KEY_USAGE_ANY: &str = "any";
+pub const KEY_USAGE_SERVER_AUTH: &str = "server auth";
+pub const KEY_USAGE_CLIENT_AUTH: &str = "client auth";
+pub const KEY_USAGE_CODE_SIGNING: &str = "code signing";
+pub const KEY_USAGE_EMAIL_PROTECTION: &str = "email protection";
+pub const KEY_USAGE_SMIME: &str = "s/mime";
+pub const KEY_USAGE_IPSEC_END_SYSTEM: &str = "ipsec end system";
+pub const KEY_USAGE_IPSEC_TUNNEL: &str = "ipsec tunnel";
+pub const KEY_USAGE_IPSEC_USER: &str = "ipsec user";
+pub const KEY_USAGE_TIMESTAMPING: &str = "timestamping";
+pub const KEY_USAGE_OCSP_SIGNING: &str = "ocsp signing";
+pub const KEY_USAGE_MICROSOFT_SGC: &str = "microsoft sgc";
+pub const KEY_USAGE_NETSCAPE_SGC: &str = "netscape sgc";

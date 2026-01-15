@@ -6,6 +6,16 @@ use k8s_apimachinery::apis::meta::v1::{Status, TypeMeta};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+pub type Operation = String;
+pub type PatchType = String;
+
+pub const OPERATION_CREATE: &str = "CREATE";
+pub const OPERATION_UPDATE: &str = "UPDATE";
+pub const OPERATION_DELETE: &str = "DELETE";
+pub const OPERATION_CONNECT: &str = "CONNECT";
+
+pub const PATCH_TYPE_JSON_PATCH: &str = "JSONPatch";
+
 // =============================================================================
 // AdmissionReview
 // =============================================================================
@@ -53,7 +63,7 @@ pub struct AdmissionRequest {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub namespace: String,
     /// Operation is the operation being performed.
-    pub operation: String,
+    pub operation: Operation,
     /// UserInfo is information about the requesting user.
     pub user_info: UserInfo,
     /// Object is the object from the incoming request.
@@ -86,7 +96,7 @@ pub struct AdmissionResponse {
     pub patch: Option<String>,
     /// The type of Patch. Currently we only allow "JSONPatch".
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub patch_type: Option<String>,
+    pub patch_type: Option<PatchType>,
     /// AuditAnnotations is an unstructured key value map set by remote admission controller.
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub audit_annotations: HashMap<String, String>,
@@ -131,12 +141,3 @@ pub struct UserInfo {
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub extra: HashMap<String, Vec<String>>,
 }
-
-// Patch type constants
-pub const PATCH_TYPE_JSON_PATCH: &str = "JSONPatch";
-
-// Operation constants
-pub const OPERATION_CREATE: &str = "CREATE";
-pub const OPERATION_UPDATE: &str = "UPDATE";
-pub const OPERATION_DELETE: &str = "DELETE";
-pub const OPERATION_CONNECT: &str = "CONNECT";

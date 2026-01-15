@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::core::v1::PodTemplateSpec;
 
+pub type ConcurrencyPolicy = String;
+
 // =============================================================================
 // CronJob
 // =============================================================================
@@ -35,7 +37,7 @@ pub struct CronJobSpec {
     pub starting_deadline_seconds: Option<i64>,
     /// Specifies how to treat concurrent executions of a Job.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub concurrency_policy: String,
+    pub concurrency_policy: ConcurrencyPolicy,
     /// This flag tells the controller to suspend subsequent executions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
@@ -171,3 +173,8 @@ pub struct JobList {
     pub metadata: ListMeta,
     pub items: Vec<Job>,
 }
+
+// ConcurrencyPolicy constants
+pub const CONCURRENCY_POLICY_ALLOW: &str = "Allow";
+pub const CONCURRENCY_POLICY_FORBID: &str = "Forbid";
+pub const CONCURRENCY_POLICY_REPLACE: &str = "Replace";

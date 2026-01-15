@@ -1,8 +1,12 @@
 //! Authorization v1 API type definitions
 
-use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{
+    FieldSelectorRequirement, LabelSelectorRequirement, ObjectMeta, TypeMeta,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+
+pub type ExtraValue = Vec<String>;
 
 // =============================================================================
 // SubjectAccessReview
@@ -39,7 +43,7 @@ pub struct SubjectAccessReviewSpec {
     pub groups: Vec<String>,
     /// Extra corresponds to the user.Info.GetExtra() method from the authenticator.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub extra: BTreeMap<String, Vec<String>>,
+    pub extra: BTreeMap<String, ExtraValue>,
     /// UID information about the requesting user.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub uid: String,
@@ -87,6 +91,36 @@ pub struct ResourceAttributes {
     /// Name is the name of the resource being requested for a "get" or deleted for a "delete".
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub name: String,
+    /// FieldSelector describes the limitation on access based on field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub field_selector: Option<FieldSelectorAttributes>,
+    /// LabelSelector describes the limitation on access based on labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label_selector: Option<LabelSelectorAttributes>,
+}
+
+/// LabelSelectorAttributes indicates a label limited access.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LabelSelectorAttributes {
+    /// RawSelector is the serialization of a label selector from a query parameter.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub raw_selector: String,
+    /// Requirements is the parsed interpretation of a label selector.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub requirements: Vec<LabelSelectorRequirement>,
+}
+
+/// FieldSelectorAttributes indicates a field limited access.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FieldSelectorAttributes {
+    /// RawSelector is the serialization of a field selector from a query parameter.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub raw_selector: String,
+    /// Requirements is the parsed interpretation of a field selector.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub requirements: Vec<FieldSelectorRequirement>,
 }
 
 /// NonResourceAttributes includes the authorization attributes available for non-resource requests.

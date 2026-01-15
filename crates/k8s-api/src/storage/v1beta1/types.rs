@@ -9,6 +9,10 @@ use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+pub type VolumeBindingMode = String;
+pub type FSGroupPolicy = String;
+pub type VolumeLifecycleMode = String;
+
 // =============================================================================
 // VolumeAttributesClass (K8s 1.31+)
 // =============================================================================
@@ -108,7 +112,7 @@ pub struct StorageClass {
     pub allow_volume_expansion: Option<bool>,
     /// volumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volume_binding_mode: Option<String>,
+    pub volume_binding_mode: Option<VolumeBindingMode>,
     /// allowedTopologies restrict the node topologies where volumes can be dynamically provisioned.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub allowed_topologies: Vec<TopologySelectorTerm>,
@@ -279,14 +283,14 @@ pub struct CSIDriverSpec {
     pub pod_info_on_mount: Option<bool>,
     /// volumeLifecycleModes defines what kind of volumes this CSI volume driver supports.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub volume_lifecycle_modes: Vec<String>,
+    pub volume_lifecycle_modes: Vec<VolumeLifecycleMode>,
     /// storageCapacity indicates that the CSI volume driver wants pod scheduling to consider
     /// the storage capacity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage_capacity: Option<bool>,
     /// fsGroupPolicy defines if the underlying volume supports changing ownership and permission.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fs_group_policy: Option<String>,
+    pub fs_group_policy: Option<FSGroupPolicy>,
     /// tokenRequests indicates the CSI driver needs pods' service account tokens.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub token_requests: Vec<TokenRequest>,

@@ -5,6 +5,8 @@
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type MigrationConditionType = String;
+
 // =============================================================================
 // StorageVersionMigration
 // =============================================================================
@@ -82,9 +84,9 @@ pub struct StorageVersionMigrationStatus {
 pub struct MigrationCondition {
     /// Type of the condition.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: MigrationConditionType,
     /// Status of the condition, one of True, False, Unknown.
-    pub status: String,
+    pub status: crate::core::v1::ConditionStatus,
     /// The last time this condition was updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_update_time: Option<k8s_apimachinery::apis::meta::v1::Time>,

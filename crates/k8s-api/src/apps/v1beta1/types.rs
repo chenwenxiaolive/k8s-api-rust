@@ -7,6 +7,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::core::v1::PodTemplateSpec;
 
+pub type DeploymentStrategyType = String;
+pub type DeploymentConditionType = String;
+pub type PodManagementPolicyType = String;
+pub type StatefulSetUpdateStrategyType = String;
+pub type StatefulSetConditionType = String;
+pub type PersistentVolumeClaimRetentionPolicyType = String;
+
 // =============================================================================
 // Deployment
 // =============================================================================
@@ -58,7 +65,7 @@ pub struct RollbackConfig {
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentStrategy {
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: DeploymentStrategyType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateDeployment>,
 }
@@ -97,8 +104,8 @@ pub struct DeploymentStatus {
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: DeploymentConditionType,
+    pub status: crate::core::v1::ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_update_time: Option<Time>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -117,6 +124,18 @@ pub struct DeploymentList {
     #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<Deployment>,
+}
+
+/// DeploymentRollback stores the information required to rollback a deployment.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeploymentRollback {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    pub updated_annotations: std::collections::BTreeMap<String, String>,
+    pub rollback_to: RollbackConfig,
 }
 
 // =============================================================================
@@ -148,18 +167,23 @@ pub struct StatefulSetSpec {
     pub volume_claim_templates: Vec<crate::core::v1::PersistentVolumeClaim>,
     pub service_name: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub pod_management_policy: String,
+    pub pod_management_policy: PodManagementPolicyType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub update_strategy: Option<StatefulSetUpdateStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision_history_limit: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub persistent_volume_claim_retention_policy:
+        Option<StatefulSetPersistentVolumeClaimRetentionPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<StatefulSetOrdinals>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StatefulSetUpdateStrategy {
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: StatefulSetUpdateStrategyType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateStatefulSetStrategy>,
 }
@@ -169,6 +193,25 @@ pub struct StatefulSetUpdateStrategy {
 pub struct RollingUpdateStatefulSetStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_unavailable: Option<k8s_api_core::IntOrString>,
+}
+
+/// StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StatefulSetPersistentVolumeClaimRetentionPolicy {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub when_deleted: PersistentVolumeClaimRetentionPolicyType,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub when_scaled: PersistentVolumeClaimRetentionPolicyType,
+}
+
+/// StatefulSetOrdinals describes the policy used for replica ordinal assignment.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StatefulSetOrdinals {
+    pub start: i32,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -198,8 +241,8 @@ pub struct StatefulSetStatus {
 #[serde(rename_all = "camelCase")]
 pub struct StatefulSetCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: StatefulSetConditionType,
+    pub status: crate::core::v1::ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -217,6 +260,27 @@ pub struct StatefulSetList {
     pub metadata: ListMeta,
     pub items: Vec<StatefulSet>,
 }
+
+// DeploymentStrategyType constants
+pub const DEPLOYMENT_STRATEGY_RECREATE: &str = "Recreate";
+pub const DEPLOYMENT_STRATEGY_ROLLING_UPDATE: &str = "RollingUpdate";
+
+// DeploymentConditionType constants
+pub const DEPLOYMENT_CONDITION_AVAILABLE: &str = "Available";
+pub const DEPLOYMENT_CONDITION_PROGRESSING: &str = "Progressing";
+pub const DEPLOYMENT_CONDITION_REPLICA_FAILURE: &str = "ReplicaFailure";
+
+// PodManagementPolicyType constants
+pub const POD_MANAGEMENT_POLICY_ORDERED_READY: &str = "OrderedReady";
+pub const POD_MANAGEMENT_POLICY_PARALLEL: &str = "Parallel";
+
+// StatefulSetUpdateStrategyType constants
+pub const STATEFUL_SET_UPDATE_STRATEGY_ROLLING_UPDATE: &str = "RollingUpdate";
+pub const STATEFUL_SET_UPDATE_STRATEGY_ON_DELETE: &str = "OnDelete";
+
+// PersistentVolumeClaimRetentionPolicyType constants
+pub const PERSISTENT_VOLUME_CLAIM_RETENTION_POLICY_RETAIN: &str = "Retain";
+pub const PERSISTENT_VOLUME_CLAIM_RETENTION_POLICY_DELETE: &str = "Delete";
 
 // =============================================================================
 // ControllerRevision

@@ -10,7 +10,8 @@ pub mod apis;
 pub mod types;
 
 pub use apis::meta::v1::{
-    Condition, LabelSelector, LabelSelectorRequirement, ListMeta, ManagedFieldsEntry, ObjectMeta,
-    OwnerReference, Status, StatusCause, StatusDetails, Time, TypeMeta,
+    Condition, FieldSelectorOperator, FieldSelectorRequirement, LabelSelector, LabelSelectorRequirement,
+    ListMeta, ManagedFieldsEntry, ObjectMeta, OwnerReference, Status, StatusCause, StatusDetails,
+    Time, TypeMeta,
 };
 pub use types::{NamespacedName, UID};

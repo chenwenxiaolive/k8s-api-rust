@@ -3,8 +3,40 @@
 //! This module provides alpha-level admission registration types including
 //! MutatingAdmissionPolicy (K8s 1.32+).
 
-use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
+
+pub type Rule = crate::admissionregistration::v1::Rule;
+pub type ScopeType = crate::admissionregistration::v1::ScopeType;
+pub type FailurePolicyType = String;
+pub type ParameterNotFoundActionType = String;
+pub type MatchPolicyType = String;
+pub type ValidationAction = String;
+pub type RuleWithOperations = crate::admissionregistration::v1::RuleWithOperations;
+pub type OperationType = crate::admissionregistration::v1::OperationType;
+pub type PatchType = String;
+pub type ReinvocationPolicyType = crate::admissionregistration::v1::ReinvocationPolicyType;
+
+// FailurePolicyType constants
+pub const FAILURE_POLICY_IGNORE: &str = "Ignore";
+pub const FAILURE_POLICY_FAIL: &str = "Fail";
+
+// ParameterNotFoundActionType constants
+pub const PARAMETER_NOT_FOUND_ACTION_ALLOW: &str = "Allow";
+pub const PARAMETER_NOT_FOUND_ACTION_DENY: &str = "Deny";
+
+// MatchPolicyType constants
+pub const MATCH_POLICY_EXACT: &str = "Exact";
+pub const MATCH_POLICY_EQUIVALENT: &str = "Equivalent";
+
+// ValidationAction constants
+pub const VALIDATION_ACTION_DENY: &str = "Deny";
+pub const VALIDATION_ACTION_WARN: &str = "Warn";
+pub const VALIDATION_ACTION_AUDIT: &str = "Audit";
+
+// PatchType constants
+pub const PATCH_TYPE_APPLY_CONFIGURATION: &str = "ApplyConfiguration";
+pub const PATCH_TYPE_JSON_PATCH: &str = "JSONPatch";
 
 // =============================================================================
 // MutatingAdmissionPolicy (K8s 1.32+)
@@ -31,7 +63,7 @@ pub struct MutatingAdmissionPolicyList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     #[serde(default)]
-    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub metadata: ListMeta,
     /// List of MutatingAdmissionPolicy.
     pub items: Vec<MutatingAdmissionPolicy>,
 }
@@ -54,13 +86,13 @@ pub struct MutatingAdmissionPolicySpec {
     pub mutations: Vec<Mutation>,
     /// FailurePolicy defines how to handle failures for the admission policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failure_policy: Option<String>,
+    pub failure_policy: Option<FailurePolicyType>,
     /// MatchConditions is a list of conditions that must be met for a request to be validated.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub match_conditions: Vec<MatchCondition>,
     /// ReinvocationPolicy indicates whether mutations may be called multiple times.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub reinvocation_policy: String,
+    pub reinvocation_policy: ReinvocationPolicyType,
 }
 
 /// MutatingAdmissionPolicyBinding binds the MutatingAdmissionPolicy with parametrized resources.
@@ -83,7 +115,7 @@ pub struct MutatingAdmissionPolicyBindingList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     #[serde(default)]
-    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub metadata: ListMeta,
     /// List of PolicyBinding.
     pub items: Vec<MutatingAdmissionPolicyBinding>,
 }
@@ -130,7 +162,7 @@ pub struct ValidatingAdmissionPolicyList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     #[serde(default)]
-    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub metadata: ListMeta,
     /// List of ValidatingAdmissionPolicy.
     pub items: Vec<ValidatingAdmissionPolicy>,
 }
@@ -150,7 +182,7 @@ pub struct ValidatingAdmissionPolicySpec {
     pub validations: Vec<Validation>,
     /// FailurePolicy defines how to handle failures for the admission policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failure_policy: Option<String>,
+    pub failure_policy: Option<FailurePolicyType>,
     /// AuditAnnotations contains CEL expressions which are used to produce audit annotations.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub audit_annotations: Vec<AuditAnnotation>,
@@ -197,7 +229,7 @@ pub struct ValidatingAdmissionPolicyBindingList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     #[serde(default)]
-    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub metadata: ListMeta,
     /// List of PolicyBinding.
     pub items: Vec<ValidatingAdmissionPolicyBinding>,
 }
@@ -217,7 +249,7 @@ pub struct ValidatingAdmissionPolicyBindingSpec {
     pub match_resources: Option<MatchResources>,
     /// ValidationActions declares how Validations of the referenced ValidatingAdmissionPolicy are enforced.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub validation_actions: Vec<String>,
+    pub validation_actions: Vec<ValidationAction>,
 }
 
 // =============================================================================
@@ -254,7 +286,7 @@ pub struct MatchResources {
     pub exclude_resource_rules: Vec<NamedRuleWithOperations>,
     /// MatchPolicy defines how the "MatchResources" list is used to match incoming requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub match_policy: Option<String>,
+    pub match_policy: Option<MatchPolicyType>,
 }
 
 /// NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.
@@ -266,7 +298,7 @@ pub struct NamedRuleWithOperations {
     pub resource_names: Vec<String>,
     /// Operations is the operations the admission hook cares about.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub operations: Vec<String>,
+    pub operations: Vec<OperationType>,
     /// APIGroups is the API groups the resources belong to.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub api_groups: Vec<String>,
@@ -278,7 +310,7 @@ pub struct NamedRuleWithOperations {
     pub resources: Vec<String>,
     /// Scope specifies the scope of this rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scope: Option<String>,
+    pub scope: Option<ScopeType>,
 }
 
 /// Validation specifies the CEL expression which is used to apply the validation.
@@ -362,7 +394,7 @@ pub struct ParamRef {
     pub selector: Option<LabelSelector>,
     /// ParameterNotFoundAction controls the behavior of the binding when the resource exists but cannot be found.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub parameter_not_found_action: Option<String>,
+    pub parameter_not_found_action: Option<ParameterNotFoundActionType>,
 }
 
 /// Mutation specifies the CEL expression which is used to apply the Mutation.
@@ -370,7 +402,7 @@ pub struct ParamRef {
 #[serde(rename_all = "camelCase")]
 pub struct Mutation {
     /// PatchType indicates the patch strategy used.
-    pub patch_type: String,
+    pub patch_type: PatchType,
     /// ApplyConfiguration defines the desired configuration values of an object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apply_configuration: Option<ApplyConfiguration>,
@@ -397,15 +429,6 @@ pub struct JSONPatch {
     pub expression: String,
 }
 
-// Constants
-pub const FAILURE_POLICY_IGNORE: &str = "Ignore";
-pub const FAILURE_POLICY_FAIL: &str = "Fail";
-pub const MATCH_POLICY_EXACT: &str = "Exact";
-pub const MATCH_POLICY_EQUIVALENT: &str = "Equivalent";
-pub const VALIDATION_ACTION_DENY: &str = "Deny";
-pub const VALIDATION_ACTION_WARN: &str = "Warn";
-pub const VALIDATION_ACTION_AUDIT: &str = "Audit";
-pub const PATCH_TYPE_APPLY_CONFIGURATION: &str = "ApplyConfiguration";
-pub const PATCH_TYPE_JSON_PATCH: &str = "JSONPatch";
+// ReinvocationPolicyType constants
 pub const REINVOCATION_POLICY_NEVER: &str = "Never";
 pub const REINVOCATION_POLICY_IF_NEEDED: &str = "IfNeeded";

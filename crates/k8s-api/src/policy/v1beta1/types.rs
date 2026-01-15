@@ -5,6 +5,8 @@
 use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type UnhealthyPodEvictionPolicyType = String;
+
 // =============================================================================
 // PodDisruptionBudget
 // =============================================================================
@@ -37,6 +39,9 @@ pub struct PodDisruptionBudgetSpec {
     /// are unavailable after the eviction.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_unavailable: Option<k8s_api_core::IntOrString>,
+    /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods should be considered for eviction.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub unhealthy_pod_eviction_policy: Option<UnhealthyPodEvictionPolicyType>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -86,6 +91,10 @@ pub struct PodSecurityPolicy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<PodSecurityPolicySpec>,
 }
+
+// UnhealthyPodEvictionPolicyType constants
+pub const UNHEALTHY_POD_EVICTION_POLICY_IF_HEALTHY_BUDGET: &str = "IfHealthyBudget";
+pub const UNHEALTHY_POD_EVICTION_POLICY_ALWAYS_ALLOW: &str = "AlwaysAllow";
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

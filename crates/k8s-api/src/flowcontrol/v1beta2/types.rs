@@ -3,6 +3,14 @@
 use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type FlowDistinguisherMethodType = String;
+pub type SubjectKind = String;
+pub type FlowSchemaConditionType = String;
+pub type PriorityLevelConfigurationConditionType = String;
+pub type PriorityLevelEnablement = String;
+pub type LimitResponseType = String;
+pub type ConditionStatus = String;
+
 // Wildcard constants
 pub const API_GROUP_ALL: &str = "*";
 pub const RESOURCE_ALL: &str = "*";
@@ -70,8 +78,8 @@ pub struct FlowSchemaSpec {
     /// priorityLevelConfiguration should reference a PriorityLevelConfiguration in the cluster.
     pub priority_level_configuration: PriorityLevelConfigurationReference,
     /// matchingPrecedence is used to choose among the FlowSchemas that match a given request.
-    #[serde(default)]
-    pub matching_precedence: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub matching_precedence: Option<i32>,
     /// distinguisherMethod defines how to compute the flow distinguisher for requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distinguisher_method: Option<FlowDistinguisherMethod>,
@@ -86,7 +94,7 @@ pub struct FlowSchemaSpec {
 pub struct FlowDistinguisherMethod {
     /// type is the type of flow distinguisher method ("ByUser" or "ByNamespace").
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: FlowDistinguisherMethodType,
 }
 
 // Flow distinguisher method type constants
@@ -120,7 +128,7 @@ pub struct PolicyRulesWithSubjects {
 #[serde(rename_all = "camelCase")]
 pub struct Subject {
     /// kind indicates which one of the other fields is non-empty.
-    pub kind: String,
+    pub kind: SubjectKind,
     /// user matches based on username.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<UserSubject>,
@@ -174,8 +182,8 @@ pub struct ResourcePolicyRule {
     /// resources is a list of matching resources.
     pub resources: Vec<String>,
     /// clusterScope indicates whether to match requests that do not specify a namespace.
-    #[serde(default)]
-    pub cluster_scope: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster_scope: Option<bool>,
     /// namespaces is a list of target namespaces that restricts matches.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub namespaces: Vec<String>,
@@ -207,10 +215,10 @@ pub struct FlowSchemaStatus {
 pub struct FlowSchemaCondition {
     /// type is the type of the condition.
     #[serde(rename = "type", default, skip_serializing_if = "String::is_empty")]
-    pub type_: String,
+    pub type_: FlowSchemaConditionType,
     /// status is the status of the condition (True, False, Unknown).
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub status: String,
+    pub status: ConditionStatus,
     /// lastTransitionTime is the last time the condition transitioned from one status to another.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
@@ -260,7 +268,7 @@ pub struct PriorityLevelConfigurationList {
 pub struct PriorityLevelConfigurationSpec {
     /// type indicates whether this priority level is subject to limitation on request execution.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: PriorityLevelEnablement,
     /// limited specifies how requests are handled for a Limited priority level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limited: Option<LimitedPriorityLevelConfiguration>,
@@ -278,8 +286,8 @@ pub const PRIORITY_LEVEL_ENABLEMENT_LIMITED: &str = "Limited";
 #[serde(rename_all = "camelCase")]
 pub struct LimitedPriorityLevelConfiguration {
     /// assuredConcurrencyShares (ACS) configures the execution limit for this priority level.
-    #[serde(default)]
-    pub assured_concurrency_shares: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assured_concurrency_shares: Option<i32>,
     /// limitResponse indicates what to do with requests that can not be executed right now.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit_response: Option<LimitResponse>,
@@ -309,7 +317,7 @@ pub struct ExemptPriorityLevelConfiguration {
 pub struct LimitResponse {
     /// type is "Queue" or "Reject".
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: LimitResponseType,
     /// queuing holds the configuration parameters for queuing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queuing: Option<QueuingConfiguration>,
@@ -324,14 +332,14 @@ pub const LIMIT_RESPONSE_TYPE_REJECT: &str = "Reject";
 #[serde(rename_all = "camelCase")]
 pub struct QueuingConfiguration {
     /// queues is the number of queues for this priority level.
-    #[serde(default)]
-    pub queues: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queues: Option<i32>,
     /// handSize is a small positive number that configures the shuffle sharding of requests.
-    #[serde(default)]
-    pub hand_size: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hand_size: Option<i32>,
     /// queueLengthLimit is the maximum number of requests allowed to be waiting in a given queue.
-    #[serde(default)]
-    pub queue_length_limit: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queue_length_limit: Option<i32>,
 }
 
 /// PriorityLevelConfigurationStatus represents the current state of a "request-priority".
@@ -349,10 +357,10 @@ pub struct PriorityLevelConfigurationStatus {
 pub struct PriorityLevelConfigurationCondition {
     /// type is the type of the condition.
     #[serde(rename = "type", default, skip_serializing_if = "String::is_empty")]
-    pub type_: String,
+    pub type_: PriorityLevelConfigurationConditionType,
     /// status is the status of the condition (True, False, Unknown).
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub status: String,
+    pub status: ConditionStatus,
     /// lastTransitionTime is the last time the condition transitioned from one status to another.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,

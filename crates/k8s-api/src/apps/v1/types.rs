@@ -5,6 +5,16 @@ use serde::{Deserialize, Serialize};
 
 use crate::core::v1::PodTemplateSpec;
 
+pub type PodManagementPolicyType = String;
+pub type StatefulSetUpdateStrategyType = String;
+pub type PersistentVolumeClaimRetentionPolicyType = String;
+pub type StatefulSetConditionType = String;
+pub type DeploymentStrategyType = String;
+pub type DeploymentConditionType = String;
+pub type DaemonSetUpdateStrategyType = String;
+pub type DaemonSetConditionType = String;
+pub type ReplicaSetConditionType = String;
+
 // =============================================================================
 // Deployment
 // =============================================================================
@@ -80,7 +90,7 @@ pub struct DeploymentSpec {
 pub struct DeploymentStrategy {
     /// Type of deployment.
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: DeploymentStrategyType,
 
     /// Rolling update config params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -141,10 +151,10 @@ pub struct DeploymentStatus {
 pub struct DeploymentCondition {
     /// Type of deployment condition.
     #[serde(rename = "type")]
-    pub condition_type: String,
+    pub condition_type: DeploymentConditionType,
 
     /// Status of the condition.
-    pub status: String,
+    pub status: crate::core::v1::ConditionStatus,
 
     /// The last time this condition was updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -227,7 +237,7 @@ pub struct StatefulSetSpec {
     pub service_name: String,
 
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub pod_management_policy: String,
+    pub pod_management_policy: PodManagementPolicyType,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub update_strategy: Option<StatefulSetUpdateStrategy>,
@@ -249,7 +259,7 @@ pub struct StatefulSetSpec {
 #[serde(rename_all = "camelCase")]
 pub struct StatefulSetUpdateStrategy {
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: StatefulSetUpdateStrategyType,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateStatefulSetStrategy>,
@@ -269,10 +279,10 @@ pub struct RollingUpdateStatefulSetStrategy {
 #[serde(rename_all = "camelCase")]
 pub struct StatefulSetPersistentVolumeClaimRetentionPolicy {
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub when_deleted: String,
+    pub when_deleted: PersistentVolumeClaimRetentionPolicyType,
 
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub when_scaled: String,
+    pub when_scaled: PersistentVolumeClaimRetentionPolicyType,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -320,8 +330,8 @@ pub struct StatefulSetStatus {
 #[serde(rename_all = "camelCase")]
 pub struct StatefulSetCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: StatefulSetConditionType,
+    pub status: crate::core::v1::ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -399,7 +409,7 @@ pub struct DaemonSetSpec {
 #[serde(rename_all = "camelCase")]
 pub struct DaemonSetUpdateStrategy {
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: DaemonSetUpdateStrategyType,
 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateDaemonSet>,
@@ -440,8 +450,8 @@ pub struct DaemonSetStatus {
 #[serde(rename_all = "camelCase")]
 pub struct DaemonSetCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: DaemonSetConditionType,
+    pub status: crate::core::v1::ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -533,8 +543,8 @@ pub struct ReplicaSetStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ReplicaSetCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: ReplicaSetConditionType,
+    pub status: crate::core::v1::ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -555,6 +565,34 @@ pub struct ReplicaSetList {
 
     pub items: Vec<ReplicaSet>,
 }
+
+// PodManagementPolicyType constants
+pub const POD_MANAGEMENT_POLICY_ORDERED_READY: &str = "OrderedReady";
+pub const POD_MANAGEMENT_POLICY_PARALLEL: &str = "Parallel";
+
+// StatefulSetUpdateStrategyType constants
+pub const STATEFUL_SET_UPDATE_STRATEGY_ROLLING_UPDATE: &str = "RollingUpdate";
+pub const STATEFUL_SET_UPDATE_STRATEGY_ON_DELETE: &str = "OnDelete";
+
+// PersistentVolumeClaimRetentionPolicyType constants
+pub const PVC_RETENTION_POLICY_RETAIN: &str = "Retain";
+pub const PVC_RETENTION_POLICY_DELETE: &str = "Delete";
+
+// DeploymentStrategyType constants
+pub const DEPLOYMENT_STRATEGY_RECREATE: &str = "Recreate";
+pub const DEPLOYMENT_STRATEGY_ROLLING_UPDATE: &str = "RollingUpdate";
+
+// DeploymentConditionType constants
+pub const DEPLOYMENT_CONDITION_AVAILABLE: &str = "Available";
+pub const DEPLOYMENT_CONDITION_PROGRESSING: &str = "Progressing";
+pub const DEPLOYMENT_CONDITION_REPLICA_FAILURE: &str = "ReplicaFailure";
+
+// DaemonSetUpdateStrategyType constants
+pub const DAEMON_SET_UPDATE_STRATEGY_ROLLING_UPDATE: &str = "RollingUpdate";
+pub const DAEMON_SET_UPDATE_STRATEGY_ON_DELETE: &str = "OnDelete";
+
+// ReplicaSetConditionType constants
+pub const REPLICA_SET_CONDITION_REPLICA_FAILURE: &str = "ReplicaFailure";
 
 // =============================================================================
 // ControllerRevision
@@ -717,4 +755,3 @@ mod tests {
         assert_eq!(rs.spec.as_ref().unwrap().replicas, parsed.spec.as_ref().unwrap().replicas);
     }
 }
-

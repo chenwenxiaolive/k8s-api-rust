@@ -1,7 +1,10 @@
 //! Networking v1 API type definitions
 
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
+
+pub type PolicyType = String;
+pub type PathType = String;
 
 // =============================================================================
 // Ingress
@@ -19,6 +22,17 @@ pub struct Ingress {
     pub spec: Option<IngressSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<IngressStatus>,
+}
+
+/// IngressList is a collection of Ingress.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IngressList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ListMeta,
+    pub items: Vec<Ingress>,
 }
 
 /// IngressSpec describes the Ingress the user wishes to exist.
@@ -115,7 +129,7 @@ pub struct HTTPIngressPath {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path_type: Option<String>,
+    pub path_type: Option<PathType>,
     pub backend: IngressBackend,
 }
 
@@ -174,6 +188,17 @@ pub struct IngressClass {
     pub spec: Option<IngressClassSpec>,
 }
 
+/// IngressClassList is a collection of IngressClasses.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IngressClassList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ListMeta,
+    pub items: Vec<IngressClass>,
+}
+
 /// IngressClassSpec provides information about the class of an Ingress.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -214,6 +239,17 @@ pub struct NetworkPolicy {
     pub spec: Option<NetworkPolicySpec>,
 }
 
+/// NetworkPolicyList is a list of NetworkPolicy objects.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NetworkPolicyList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ListMeta,
+    pub items: Vec<NetworkPolicy>,
+}
+
 /// NetworkPolicySpec provides the specification of a NetworkPolicy.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -224,7 +260,7 @@ pub struct NetworkPolicySpec {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub egress: Vec<NetworkPolicyEgressRule>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub policy_types: Vec<String>,
+    pub policy_types: Vec<PolicyType>,
 }
 
 /// NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods.
@@ -252,7 +288,7 @@ pub struct NetworkPolicyEgressRule {
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyPort {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub protocol: Option<String>,
+    pub protocol: Option<crate::core::v1::Protocol>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -279,3 +315,110 @@ pub struct IPBlock {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub except: Vec<String>,
 }
+
+// =============================================================================
+// IPAddress
+// =============================================================================
+
+/// IPAddress represents a single IP of a single IP Family.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IPAddress {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<IPAddressSpec>,
+}
+
+/// IPAddressSpec describes the attributes in an IP Address.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IPAddressSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parent_ref: Option<ParentReference>,
+}
+
+/// ParentReference describes a reference to a parent object.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ParentReference {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub group: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub resource: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub namespace: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub name: String,
+}
+
+/// IPAddressList contains a list of IPAddress.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IPAddressList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ListMeta,
+    pub items: Vec<IPAddress>,
+}
+
+// =============================================================================
+// ServiceCIDR
+// =============================================================================
+
+/// ServiceCIDR defines a range of IP addresses using CIDR format.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ServiceCIDR {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ServiceCIDRSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<ServiceCIDRStatus>,
+}
+
+/// ServiceCIDRSpec defines the CIDRs for allocating ClusterIPs for Services.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ServiceCIDRSpec {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub cidrs: Vec<String>,
+}
+
+/// ServiceCIDRStatus describes the current state of the ServiceCIDR.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ServiceCIDRStatus {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub conditions: Vec<Condition>,
+}
+
+/// ServiceCIDRList contains a list of ServiceCIDR objects.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ServiceCIDRList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ListMeta,
+    pub items: Vec<ServiceCIDR>,
+}
+
+// PolicyType constants
+pub const POLICY_TYPE_INGRESS: &str = "Ingress";
+pub const POLICY_TYPE_EGRESS: &str = "Egress";
+
+// PathType constants
+pub const PATH_TYPE_EXACT: &str = "Exact";
+pub const PATH_TYPE_PREFIX: &str = "Prefix";
+pub const PATH_TYPE_IMPLEMENTATION_SPECIFIC: &str = "ImplementationSpecific";
+
+// ServiceCIDR condition constants
+pub const SERVICE_CIDR_CONDITION_READY: &str = "Ready";
+pub const SERVICE_CIDR_REASON_TERMINATING: &str = "Terminating";

@@ -5,7 +5,15 @@ use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-use crate::core::v1::{PodTemplateSpec, TypedLocalObjectReference};
+use crate::core::v1::{ConditionStatus, PodTemplateSpec, Protocol, TypedLocalObjectReference};
+
+pub type DeploymentStrategyType = String;
+pub type DeploymentConditionType = String;
+pub type DaemonSetUpdateStrategyType = String;
+pub type DaemonSetConditionType = String;
+pub type ReplicaSetConditionType = String;
+pub type PathType = String;
+pub type PolicyType = String;
 
 // =============================================================================
 // Scale
@@ -110,13 +118,18 @@ pub struct RollbackConfig {
 }
 
 pub const DEFAULT_DEPLOYMENT_UNIQUE_LABEL_KEY: &str = "pod-template-hash";
+pub const DEPLOYMENT_STRATEGY_TYPE_RECREATE: &str = "Recreate";
+pub const DEPLOYMENT_STRATEGY_TYPE_ROLLING_UPDATE: &str = "RollingUpdate";
+pub const DEPLOYMENT_CONDITION_AVAILABLE: &str = "Available";
+pub const DEPLOYMENT_CONDITION_PROGRESSING: &str = "Progressing";
+pub const DEPLOYMENT_CONDITION_REPLICA_FAILURE: &str = "ReplicaFailure";
 
 /// DeploymentStrategy describes how to replace existing pods with new ones.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentStrategy {
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: DeploymentStrategyType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateDeployment>,
 }
@@ -160,8 +173,8 @@ pub struct DeploymentStatus {
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: DeploymentConditionType,
+    pub status: ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_update_time: Option<Time>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -192,7 +205,7 @@ pub struct DeploymentList {
 #[serde(rename_all = "camelCase")]
 pub struct DaemonSetUpdateStrategy {
     #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
-    pub strategy_type: String,
+    pub strategy_type: DaemonSetUpdateStrategyType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateDaemonSet>,
 }
@@ -251,8 +264,8 @@ pub struct DaemonSetStatus {
 #[serde(rename_all = "camelCase")]
 pub struct DaemonSetCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: DaemonSetConditionType,
+    pub status: ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -277,6 +290,8 @@ pub struct DaemonSet {
 
 pub const DAEMON_SET_TEMPLATE_GENERATION_KEY: &str = "pod-template-generation";
 pub const DEFAULT_DAEMON_SET_UNIQUE_LABEL_KEY: &str = "controller-revision-hash";
+pub const DAEMON_SET_UPDATE_STRATEGY_TYPE_ROLLING_UPDATE: &str = "RollingUpdate";
+pub const DAEMON_SET_UPDATE_STRATEGY_TYPE_ON_DELETE: &str = "OnDelete";
 
 /// DaemonSetList is a collection of daemon sets.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -375,7 +390,7 @@ pub struct IngressLoadBalancerIngress {
 #[serde(rename_all = "camelCase")]
 pub struct IngressPortStatus {
     pub port: i32,
-    pub protocol: String,
+    pub protocol: Protocol,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 }
@@ -412,7 +427,7 @@ pub struct HTTPIngressPath {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path_type: Option<String>,
+    pub path_type: Option<PathType>,
     pub backend: IngressBackend,
 }
 
@@ -499,8 +514,8 @@ pub struct ReplicaSetStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ReplicaSetCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: ReplicaSetConditionType,
+    pub status: ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -510,6 +525,8 @@ pub struct ReplicaSetCondition {
 }
 
 pub const REPLICA_SET_REPLICA_FAILURE: &str = "ReplicaFailure";
+pub const POLICY_TYPE_INGRESS: &str = "Ingress";
+pub const POLICY_TYPE_EGRESS: &str = "Egress";
 
 // =============================================================================
 // NetworkPolicy
@@ -537,7 +554,7 @@ pub struct NetworkPolicySpec {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub egress: Vec<NetworkPolicyEgressRule>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub policy_types: Vec<String>,
+    pub policy_types: Vec<PolicyType>,
 }
 
 /// NetworkPolicyIngressRule matches traffic if ports and from match.
@@ -565,7 +582,7 @@ pub struct NetworkPolicyEgressRule {
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyPort {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub protocol: Option<String>,
+    pub protocol: Option<Protocol>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

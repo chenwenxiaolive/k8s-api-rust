@@ -1,7 +1,23 @@
 //! Autoscaling v2beta1 API type definitions (deprecated)
 
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta};
+use k8s_api_core::resource::Quantity;
+use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
+
+pub type MetricSourceType = String;
+pub type HorizontalPodAutoscalerConditionType = String;
+
+// MetricSourceType constants
+pub const METRIC_SOURCE_TYPE_OBJECT: &str = "Object";
+pub const METRIC_SOURCE_TYPE_PODS: &str = "Pods";
+pub const METRIC_SOURCE_TYPE_RESOURCE: &str = "Resource";
+pub const METRIC_SOURCE_TYPE_CONTAINER_RESOURCE: &str = "ContainerResource";
+pub const METRIC_SOURCE_TYPE_EXTERNAL: &str = "External";
+
+// HorizontalPodAutoscalerConditionType constants
+pub const HPA_CONDITION_SCALING_ACTIVE: &str = "ScalingActive";
+pub const HPA_CONDITION_ABLE_TO_SCALE: &str = "AbleToScale";
+pub const HPA_CONDITION_SCALING_LIMITED: &str = "ScalingLimited";
 
 // =============================================================================
 // HorizontalPodAutoscaler
@@ -28,7 +44,7 @@ pub struct HorizontalPodAutoscalerList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     #[serde(default)]
-    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub metadata: ListMeta,
     pub items: Vec<HorizontalPodAutoscaler>,
 }
 
@@ -77,9 +93,9 @@ pub struct HorizontalPodAutoscalerStatus {
 pub struct HorizontalPodAutoscalerCondition {
     /// Type describes the current condition.
     #[serde(rename = "type")]
-    pub condition_type: String,
+    pub condition_type: HorizontalPodAutoscalerConditionType,
     /// Status is the status of the condition (True, False, Unknown).
-    pub status: String,
+    pub status: crate::core::v1::ConditionStatus,
     /// LastTransitionTime is the last time the condition transitioned from one status to another.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
@@ -114,7 +130,7 @@ pub struct CrossVersionObjectReference {
 pub struct MetricSpec {
     /// Type is the type of metric source.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: MetricSourceType,
     /// Object refers to a metric describing a single kubernetes object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object: Option<ObjectMetricSource>,
@@ -138,7 +154,7 @@ pub struct MetricSpec {
 pub struct MetricStatus {
     /// Type is the type of metric source.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: MetricSourceType,
     /// Object refers to a metric describing a single kubernetes object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object: Option<ObjectMetricStatus>,
@@ -162,11 +178,11 @@ pub struct MetricStatus {
 pub struct ObjectMetricSource {
     pub target: CrossVersionObjectReference,
     pub metric_name: String,
-    pub target_value: String,
+    pub target_value: Quantity,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub average_value: Option<String>,
+    pub average_value: Option<Quantity>,
 }
 
 /// ObjectMetricStatus indicates the current value of a metric describing a kubernetes object.
@@ -175,11 +191,11 @@ pub struct ObjectMetricSource {
 pub struct ObjectMetricStatus {
     pub target: CrossVersionObjectReference,
     pub metric_name: String,
-    pub current_value: String,
+    pub current_value: Quantity,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub average_value: Option<String>,
+    pub average_value: Option<Quantity>,
 }
 
 /// PodsMetricSource indicates how to scale on a metric describing each pod in the current scale target.
@@ -187,7 +203,7 @@ pub struct ObjectMetricStatus {
 #[serde(rename_all = "camelCase")]
 pub struct PodsMetricSource {
     pub metric_name: String,
-    pub target_average_value: String,
+    pub target_average_value: Quantity,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
 }
@@ -197,7 +213,7 @@ pub struct PodsMetricSource {
 #[serde(rename_all = "camelCase")]
 pub struct PodsMetricStatus {
     pub metric_name: String,
-    pub current_average_value: String,
+    pub current_average_value: Quantity,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
 }
@@ -207,11 +223,11 @@ pub struct PodsMetricStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceMetricSource {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_average_utilization: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target_average_value: Option<String>,
+    pub target_average_value: Option<Quantity>,
 }
 
 /// ResourceMetricStatus indicates the current value of a resource metric known to Kubernetes.
@@ -219,11 +235,11 @@ pub struct ResourceMetricSource {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceMetricStatus {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current_average_utilization: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub current_average_value: Option<String>,
+    pub current_average_value: Option<Quantity>,
 }
 
 /// ContainerResourceMetricSource indicates how to scale on a resource metric known to Kubernetes.
@@ -231,13 +247,13 @@ pub struct ResourceMetricStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerResourceMetricSource {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     /// Container is the name of the container in the pods of the scaling target.
     pub container: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_average_utilization: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target_average_value: Option<String>,
+    pub target_average_value: Option<Quantity>,
 }
 
 /// ContainerResourceMetricStatus indicates the current value of a resource metric known to Kubernetes.
@@ -245,13 +261,13 @@ pub struct ContainerResourceMetricSource {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerResourceMetricStatus {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     /// Container is the name of the container in the pods of the scaling target.
     pub container: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current_average_utilization: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub current_average_value: Option<String>,
+    pub current_average_value: Option<Quantity>,
 }
 
 /// ExternalMetricSource indicates how to scale on a metric not associated with any Kubernetes object.
@@ -262,9 +278,9 @@ pub struct ExternalMetricSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metric_selector: Option<LabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target_value: Option<String>,
+    pub target_value: Option<Quantity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target_average_value: Option<String>,
+    pub target_average_value: Option<Quantity>,
 }
 
 /// ExternalMetricStatus indicates the current value of a global metric not associated with any Kubernetes object.
@@ -274,7 +290,7 @@ pub struct ExternalMetricStatus {
     pub metric_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metric_selector: Option<LabelSelector>,
-    pub current_value: String,
+    pub current_value: Quantity,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub current_average_value: Option<String>,
+    pub current_average_value: Option<Quantity>,
 }

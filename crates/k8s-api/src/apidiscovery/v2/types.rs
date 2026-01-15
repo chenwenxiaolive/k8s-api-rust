@@ -7,6 +7,9 @@
 use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type DiscoveryFreshness = String;
+pub type ResourceScope = String;
+
 // =============================================================================
 // APIGroupDiscovery
 // =============================================================================
@@ -51,7 +54,7 @@ pub struct APIVersionDiscovery {
     pub resources: Vec<APIResourceDiscovery>,
     /// freshness marks whether a group version's discovery document is up to date.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub freshness: String,
+    pub freshness: DiscoveryFreshness,
 }
 
 /// APIResourceDiscovery provides information about an API resource for discovery.
@@ -64,7 +67,7 @@ pub struct APIResourceDiscovery {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub response_kind: Option<GroupVersionKind>,
     /// scope indicates the scope of a resource, either Cluster or Namespaced.
-    pub scope: String,
+    pub scope: ResourceScope,
     /// singularResource is the singular name of the resource.
     pub singular_resource: String,
     /// verbs is a list of supported API operation types.

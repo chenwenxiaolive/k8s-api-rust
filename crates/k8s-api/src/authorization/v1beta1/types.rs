@@ -1,7 +1,11 @@
 //! Authorization v1beta1 API type definitions (deprecated)
 
+use crate::authorization::v1::{FieldSelectorAttributes, LabelSelectorAttributes};
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
+
+pub type ExtraValue = Vec<String>;
 
 // =============================================================================
 // SubjectAccessReview
@@ -31,8 +35,8 @@ pub struct SubjectAccessReviewSpec {
     pub user: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub groups: Vec<String>,
-    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
-    pub extra: std::collections::BTreeMap<String, Vec<String>>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub extra: BTreeMap<String, ExtraValue>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub uid: String,
 }
@@ -54,6 +58,10 @@ pub struct ResourceAttributes {
     pub subresource: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub field_selector: Option<FieldSelectorAttributes>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label_selector: Option<LabelSelectorAttributes>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]

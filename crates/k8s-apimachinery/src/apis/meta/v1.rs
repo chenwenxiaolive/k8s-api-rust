@@ -268,6 +268,29 @@ pub struct LabelSelectorRequirement {
     pub values: Vec<String>,
 }
 
+pub type FieldSelectorOperator = String;
+
+/// FieldSelectorRequirement is a selector that contains values, a key, and an operator.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FieldSelectorRequirement {
+    /// key is the field selector key that the requirement applies to.
+    pub key: String,
+
+    /// operator represents a key's relationship to a set of values.
+    pub operator: FieldSelectorOperator,
+
+    /// values is an array of string values.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub values: Vec<String>,
+}
+
+// Field selector operator constants
+pub const FIELD_SELECTOR_OP_IN: &str = "In";
+pub const FIELD_SELECTOR_OP_NOT_IN: &str = "NotIn";
+pub const FIELD_SELECTOR_OP_EXISTS: &str = "Exists";
+pub const FIELD_SELECTOR_OP_DOES_NOT_EXIST: &str = "DoesNotExist";
+
 /// Status is a return value for calls that don't return other objects.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

@@ -4,6 +4,8 @@ use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+pub type ExtraValue = Vec<String>;
+
 // =============================================================================
 // TokenReview
 // =============================================================================
@@ -66,7 +68,7 @@ pub struct UserInfo {
     pub groups: Vec<String>,
     /// Extra holds additional information provided by the authenticator.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
-    pub extra: BTreeMap<String, Vec<String>>,
+    pub extra: BTreeMap<String, ExtraValue>,
 }
 
 // =============================================================================

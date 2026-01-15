@@ -1,7 +1,40 @@
 //! Autoscaling v2 API type definitions
 
+use k8s_api_core::resource::Quantity;
 use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
+
+pub type ScalingPolicySelect = String;
+pub type HPAScalingPolicyType = String;
+pub type MetricSourceType = String;
+pub type MetricTargetType = String;
+pub type HorizontalPodAutoscalerConditionType = String;
+
+// ScalingPolicySelect constants
+pub const SCALING_POLICY_SELECT_MAX: &str = "Max";
+pub const SCALING_POLICY_SELECT_MIN: &str = "Min";
+pub const SCALING_POLICY_SELECT_DISABLED: &str = "Disabled";
+
+// HPAScalingPolicyType constants
+pub const HPA_SCALING_POLICY_PODS: &str = "Pods";
+pub const HPA_SCALING_POLICY_PERCENT: &str = "Percent";
+
+// MetricSourceType constants
+pub const METRIC_SOURCE_TYPE_OBJECT: &str = "Object";
+pub const METRIC_SOURCE_TYPE_PODS: &str = "Pods";
+pub const METRIC_SOURCE_TYPE_RESOURCE: &str = "Resource";
+pub const METRIC_SOURCE_TYPE_CONTAINER_RESOURCE: &str = "ContainerResource";
+pub const METRIC_SOURCE_TYPE_EXTERNAL: &str = "External";
+
+// MetricTargetType constants
+pub const METRIC_TARGET_TYPE_UTILIZATION: &str = "Utilization";
+pub const METRIC_TARGET_TYPE_VALUE: &str = "Value";
+pub const METRIC_TARGET_TYPE_AVERAGE_VALUE: &str = "AverageValue";
+
+// HorizontalPodAutoscalerConditionType constants
+pub const HPA_CONDITION_SCALING_ACTIVE: &str = "ScalingActive";
+pub const HPA_CONDITION_ABLE_TO_SCALE: &str = "AbleToScale";
+pub const HPA_CONDITION_SCALING_LIMITED: &str = "ScalingLimited";
 
 // =============================================================================
 // HorizontalPodAutoscaler
@@ -80,9 +113,9 @@ pub struct HorizontalPodAutoscalerStatus {
 pub struct HorizontalPodAutoscalerCondition {
     /// Type describes the current condition.
     #[serde(rename = "type")]
-    pub condition_type: String,
+    pub condition_type: HorizontalPodAutoscalerConditionType,
     /// Status is the status of the condition (True, False, Unknown).
-    pub status: String,
+    pub status: crate::core::v1::ConditionStatus,
     /// LastTransitionTime is the last time the condition transitioned from one status to another.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
@@ -117,7 +150,7 @@ pub struct CrossVersionObjectReference {
 pub struct MetricSpec {
     /// Type is the type of metric source.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: MetricSourceType,
     /// Object refers to a metric describing a single kubernetes object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object: Option<ObjectMetricSource>,
@@ -141,7 +174,7 @@ pub struct MetricSpec {
 pub struct MetricStatus {
     /// Type is the type of metric source.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: MetricSourceType,
     /// Object refers to a metric describing a single kubernetes object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object: Option<ObjectMetricStatus>,
@@ -198,7 +231,7 @@ pub struct PodsMetricStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceMetricSource {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     pub target: MetricTarget,
 }
 
@@ -207,7 +240,7 @@ pub struct ResourceMetricSource {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceMetricStatus {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     pub current: MetricValueStatus,
 }
 
@@ -216,7 +249,7 @@ pub struct ResourceMetricStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerResourceMetricSource {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     /// Container is the name of the container in the pods of the scaling target.
     pub container: String,
     pub target: MetricTarget,
@@ -227,7 +260,7 @@ pub struct ContainerResourceMetricSource {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerResourceMetricStatus {
     /// Name is the name of the resource in question.
-    pub name: String,
+    pub name: crate::core::v1::ResourceName,
     /// Container is the name of the container in the pods of the scaling target.
     pub container: String,
     pub current: MetricValueStatus,
@@ -266,13 +299,13 @@ pub struct MetricIdentifier {
 pub struct MetricTarget {
     /// Type represents whether the metric type is Utilization, Value, or AverageValue.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: MetricTargetType,
     /// Value is the target value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: Option<Quantity>,
     /// AverageValue is the target value of the average of the metric across all relevant pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub average_value: Option<String>,
+    pub average_value: Option<Quantity>,
     /// AverageUtilization is the target value of the average of the resource metric across all relevant pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub average_utilization: Option<i32>,
@@ -284,10 +317,10 @@ pub struct MetricTarget {
 pub struct MetricValueStatus {
     /// Value is the current value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: Option<Quantity>,
     /// AverageValue is the current value of the average of the metric across all relevant pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub average_value: Option<String>,
+    pub average_value: Option<Quantity>,
     /// AverageUtilization is the current value of the average of the resource metric across all relevant pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub average_utilization: Option<i32>,
@@ -318,13 +351,13 @@ pub struct HPAScalingRules {
     pub stabilization_window_seconds: Option<i32>,
     /// SelectPolicy is used to specify which policy should be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub select_policy: Option<String>,
+    pub select_policy: Option<ScalingPolicySelect>,
     /// Policies is a list of potential scaling polices which can be used during scaling.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub policies: Vec<HPAScalingPolicy>,
     /// Tolerance is the tolerance on the ratio between the current and desired metric value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerance: Option<String>,
+    pub tolerance: Option<Quantity>,
 }
 
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
@@ -333,7 +366,7 @@ pub struct HPAScalingRules {
 pub struct HPAScalingPolicy {
     /// Type is used to specify the scaling policy.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: HPAScalingPolicyType,
     /// Value contains the amount of change which is permitted by the policy.
     pub value: i32,
     /// PeriodSeconds specifies the window of time for which the policy should hold true.
