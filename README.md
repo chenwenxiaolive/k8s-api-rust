@@ -192,11 +192,11 @@ k8s-api-rust/
 | authorization | 4 | SubjectAccessReview, SelfSubjectAccessReview, LocalSubjectAccessReview, SelfSubjectRulesReview |
 | storage | 5 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity |
 | rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding |
-| apps | 2 | Deployment, StatefulSet |
+| apps | 4 | Deployment, StatefulSet, DaemonSet, ReplicaSet |
 | batch | 2 | Job, CronJob |
 | networking | 1 | Ingress |
 | policy | 2 | PodDisruptionBudget, Eviction |
-| autoscaling | 1 | HorizontalPodAutoscaler |
+| autoscaling | 3 | HorizontalPodAutoscaler (v1, v2beta1, v2beta2) |
 | discovery | 1 | EndpointSlice |
 | events | 1 | Event |
 | certificates | 1 | CertificateSigningRequest |
@@ -205,7 +205,7 @@ k8s-api-rust/
 | node | 1 | RuntimeClass |
 | scheduling | 1 | PriorityClass |
 
-**Total: 38 version conversions implemented**
+**Total: 42 version conversions implemented**
 
 ### Validation (k8s-api-validation)
 
