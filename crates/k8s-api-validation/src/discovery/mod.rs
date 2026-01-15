@@ -640,6 +640,7 @@ mod tests {
                     for_zones: vec![ForZone {
                         name: "us-west-2a".to_string(),
                     }],
+                    for_nodes: Vec::new(),
                 }),
                 ..Default::default()
             }],
@@ -661,6 +662,7 @@ mod tests {
                     for_zones: vec![ForZone {
                         name: String::new(), // Empty zone name
                     }],
+                    for_nodes: Vec::new(),
                 }),
                 ..Default::default()
             }],

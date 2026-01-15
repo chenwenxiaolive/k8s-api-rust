@@ -809,11 +809,13 @@ pub mod v1beta3 {
             &spec.priority_level_configuration.name,
             &format!("{}.priorityLevelConfiguration.name", field),
         ));
-        errors.extend(validate_matching_precedence(
-            spec.matching_precedence,
-            &format!("{}.matchingPrecedence", field),
-            schema_name,
-        ));
+        if let Some(value) = spec.matching_precedence {
+            errors.extend(validate_matching_precedence(
+                value,
+                &format!("{}.matchingPrecedence", field),
+                schema_name,
+            ));
+        }
 
         if let Some(method) = &spec.distinguisher_method {
             errors.extend(validate_flow_distinguisher_method(
@@ -1014,7 +1016,7 @@ pub mod v1beta3 {
         ));
         errors.extend(validate_namespaces(
             &rule.namespaces,
-            rule.cluster_scope,
+            rule.cluster_scope.unwrap_or(false),
             &format!("{}.namespaces", field),
         ));
 
@@ -1132,11 +1134,13 @@ pub mod v1beta3 {
     ) -> ValidationResult {
         let mut errors = Vec::new();
 
-        if limited.nominal_concurrency_shares < 0 {
-            errors.push(ValidationError::invalid(
-                &format!("{}.nominalConcurrencyShares", field),
-                "must be a non-negative integer",
-            ));
+        if let Some(value) = limited.nominal_concurrency_shares {
+            if value < 0 {
+                errors.push(ValidationError::invalid(
+                    &format!("{}.nominalConcurrencyShares", field),
+                    "must be a non-negative integer",
+                ));
+            }
         }
 
         if let Some(limit_response) = &limited.limit_response {
@@ -1236,30 +1240,40 @@ pub mod v1beta3 {
     ) -> ValidationResult {
         let mut errors = Vec::new();
 
-        if queuing.queue_length_limit <= 0 {
-            errors.push(ValidationError::invalid(
-                &format!("{}.queueLengthLimit", field),
-                "must be positive",
-            ));
+        if let Some(value) = queuing.queue_length_limit {
+            if value <= 0 {
+                errors.push(ValidationError::invalid(
+                    &format!("{}.queueLengthLimit", field),
+                    "must be positive",
+                ));
+            }
         }
 
-        if queuing.queues <= 0 {
-            errors.push(ValidationError::invalid(
-                &format!("{}.queues", field),
-                "must be positive",
-            ));
+        if let Some(value) = queuing.queues {
+            if value <= 0 {
+                errors.push(ValidationError::invalid(
+                    &format!("{}.queues", field),
+                    "must be positive",
+                ));
+            }
         }
 
-        if queuing.hand_size <= 0 {
-            errors.push(ValidationError::invalid(
-                &format!("{}.handSize", field),
-                "must be positive",
-            ));
-        } else if queuing.hand_size > queuing.queues {
-            errors.push(ValidationError::invalid(
-                &format!("{}.handSize", field),
-                "should not be greater than queues",
-            ));
+        if let Some(value) = queuing.hand_size {
+            if value <= 0 {
+                errors.push(ValidationError::invalid(
+                    &format!("{}.handSize", field),
+                    "must be positive",
+                ));
+            }
+        }
+
+        if let (Some(queues), Some(hand_size)) = (queuing.queues, queuing.hand_size) {
+            if hand_size > queues {
+                errors.push(ValidationError::invalid(
+                    &format!("{}.handSize", field),
+                    "should not be greater than queues",
+                ));
+            }
         }
 
         errors
@@ -1280,7 +1294,7 @@ mod tests {
                 priority_level_configuration: api_v1beta3::PriorityLevelConfigurationReference {
                     name: "".to_string(),
                 },
-                matching_precedence: 10,
+                matching_precedence: Some(10),
                 ..Default::default()
             }),
             ..Default::default()
@@ -1300,7 +1314,7 @@ mod tests {
             spec: Some(api_v1beta3::PriorityLevelConfigurationSpec {
                 type_: "Limited".to_string(),
                 limited: Some(api_v1beta3::LimitedPriorityLevelConfiguration {
-                    nominal_concurrency_shares: 10,
+                    nominal_concurrency_shares: Some(10),
                     ..Default::default()
                 }),
                 ..Default::default()
@@ -1326,7 +1340,7 @@ mod tests {
                 priority_level_configuration: api_v1beta3::PriorityLevelConfigurationReference {
                     name: "pl".to_string(),
                 },
-                matching_precedence: 10,
+                matching_precedence: Some(10),
                 rules: vec![api_v1beta3::PolicyRulesWithSubjects {
                     subjects: vec![api_v1beta3::Subject {
                         kind: "User".to_string(),

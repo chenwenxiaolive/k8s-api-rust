@@ -698,7 +698,7 @@ mod tests {
                 },
                 target: MetricTarget {
                     type_: "AverageValue".to_string(),
-                    average_value: Some("100".to_string()),
+                    average_value: Some("100".parse().unwrap()),
                     ..Default::default()
                 },
             }),
@@ -854,7 +854,7 @@ mod tests {
                 },
                 target: MetricTarget {
                     type_: "AverageValue".to_string(),
-                    average_value: Some("1k".to_string()),
+                    average_value: Some("1k".parse().unwrap()),
                     ..Default::default()
                 },
             }),
@@ -881,7 +881,7 @@ mod tests {
                 },
                 target: MetricTarget {
                     type_: "Value".to_string(),
-                    value: Some("10k".to_string()),
+                    value: Some("10k".parse().unwrap()),
                     ..Default::default()
                 },
             }),
