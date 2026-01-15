@@ -143,7 +143,7 @@ fn convert_ingress_rule_to_v1(
     k8s_api::networking::v1::IngressRule {
         host: rule.host.clone(),
         ingress_rule_value: k8s_api::networking::v1::IngressRuleValue {
-            http: rule.http.as_ref().map(|h| {
+            http: rule.ingress_rule_value.http.as_ref().map(|h| {
                 k8s_api::networking::v1::HTTPIngressRuleValue {
                     paths: h.paths.iter().map(|p| convert_http_ingress_path_to_v1(p)).collect(),
                 }
@@ -157,11 +157,17 @@ fn convert_ingress_rule_from_v1(
 ) -> k8s_api::networking::v1beta1::IngressRule {
     k8s_api::networking::v1beta1::IngressRule {
         host: rule.host.clone(),
-        http: rule.ingress_rule_value.http.as_ref().map(|h| {
-            k8s_api::networking::v1beta1::HTTPIngressRuleValue {
-                paths: h.paths.iter().map(|p| convert_http_ingress_path_from_v1(p)).collect(),
-            }
-        }),
+        ingress_rule_value: k8s_api::networking::v1beta1::IngressRuleValue {
+            http: rule.ingress_rule_value.http.as_ref().map(|h| {
+                k8s_api::networking::v1beta1::HTTPIngressRuleValue {
+                    paths: h
+                        .paths
+                        .iter()
+                        .map(|p| convert_http_ingress_path_from_v1(p))
+                        .collect(),
+                }
+            }),
+        },
     }
 }
 
@@ -313,17 +319,19 @@ mod tests {
                 }),
                 rules: vec![k8s_api::networking::v1beta1::IngressRule {
                     host: "example.com".to_string(),
-                    http: Some(k8s_api::networking::v1beta1::HTTPIngressRuleValue {
-                        paths: vec![k8s_api::networking::v1beta1::HTTPIngressPath {
-                            path: "/api".to_string(),
-                            path_type: Some("Prefix".to_string()),
-                            backend: k8s_api::networking::v1beta1::IngressBackend {
-                                service_name: "api-service".to_string(),
-                                service_port: Some(IntOrString::Int(8080)),
-                                ..Default::default()
-                            },
-                        }],
-                    }),
+                    ingress_rule_value: k8s_api::networking::v1beta1::IngressRuleValue {
+                        http: Some(k8s_api::networking::v1beta1::HTTPIngressRuleValue {
+                            paths: vec![k8s_api::networking::v1beta1::HTTPIngressPath {
+                                path: "/api".to_string(),
+                                path_type: Some("Prefix".to_string()),
+                                backend: k8s_api::networking::v1beta1::IngressBackend {
+                                    service_name: "api-service".to_string(),
+                                    service_port: Some(IntOrString::Int(8080)),
+                                    ..Default::default()
+                                },
+                            }],
+                        }),
+                    },
                 }],
                 ..Default::default()
             }),

@@ -163,15 +163,18 @@ fn convert_statefulset_spec_to_v1(
                 rolling_update: s.rolling_update.as_ref().map(|ru| {
                     k8s_api::apps::v1::RollingUpdateStatefulSetStrategy {
                         partition: ru.partition,
-                        max_unavailable: None,
+                        max_unavailable: ru.max_unavailable.clone(),
                     }
                 }),
             }
         }),
         revision_history_limit: spec.revision_history_limit,
         min_ready_seconds: None,
-        persistent_volume_claim_retention_policy: None,
-        ordinals: None,
+        persistent_volume_claim_retention_policy: spec
+            .persistent_volume_claim_retention_policy
+            .as_ref()
+            .map(convert_pvc_retention_to_v1),
+        ordinals: spec.ordinals.as_ref().map(convert_ordinals_to_v1),
     })
 }
 
@@ -191,12 +194,52 @@ fn convert_statefulset_spec_from_v1(
                 rolling_update: s.rolling_update.as_ref().map(|ru| {
                     k8s_api::apps::v1beta1::RollingUpdateStatefulSetStrategy {
                         partition: ru.partition,
+                        max_unavailable: ru.max_unavailable.clone(),
                     }
                 }),
             }
         }),
         revision_history_limit: spec.revision_history_limit,
+        persistent_volume_claim_retention_policy: spec
+            .persistent_volume_claim_retention_policy
+            .as_ref()
+            .map(convert_pvc_retention_from_v1),
+        ordinals: spec.ordinals.as_ref().map(convert_ordinals_from_v1),
     })
+}
+
+fn convert_pvc_retention_to_v1(
+    policy: &k8s_api::apps::v1beta1::StatefulSetPersistentVolumeClaimRetentionPolicy,
+) -> k8s_api::apps::v1::StatefulSetPersistentVolumeClaimRetentionPolicy {
+    k8s_api::apps::v1::StatefulSetPersistentVolumeClaimRetentionPolicy {
+        when_deleted: policy.when_deleted.clone(),
+        when_scaled: policy.when_scaled.clone(),
+    }
+}
+
+fn convert_pvc_retention_from_v1(
+    policy: &k8s_api::apps::v1::StatefulSetPersistentVolumeClaimRetentionPolicy,
+) -> k8s_api::apps::v1beta1::StatefulSetPersistentVolumeClaimRetentionPolicy {
+    k8s_api::apps::v1beta1::StatefulSetPersistentVolumeClaimRetentionPolicy {
+        when_deleted: policy.when_deleted.clone(),
+        when_scaled: policy.when_scaled.clone(),
+    }
+}
+
+fn convert_ordinals_to_v1(
+    ordinals: &k8s_api::apps::v1beta1::StatefulSetOrdinals,
+) -> k8s_api::apps::v1::StatefulSetOrdinals {
+    k8s_api::apps::v1::StatefulSetOrdinals {
+        start: ordinals.start,
+    }
+}
+
+fn convert_ordinals_from_v1(
+    ordinals: &k8s_api::apps::v1::StatefulSetOrdinals,
+) -> k8s_api::apps::v1beta1::StatefulSetOrdinals {
+    k8s_api::apps::v1beta1::StatefulSetOrdinals {
+        start: ordinals.start,
+    }
 }
 
 fn convert_statefulset_status_to_v1(

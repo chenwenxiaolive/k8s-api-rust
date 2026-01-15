@@ -36,6 +36,7 @@ fn convert_job_spec_to_v1(
         completions: spec.completions,
         active_deadline_seconds: spec.active_deadline_seconds,
         pod_failure_policy: None, // v1beta1 doesn't have this
+        success_policy: None,     // v1beta1 doesn't have this
         backoff_limit: spec.backoff_limit,
         backoff_limit_per_index: None,
         max_failed_indexes: None,

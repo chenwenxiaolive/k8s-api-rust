@@ -185,17 +185,27 @@ k8s-api-rust/
 
 | Module | Conversions | Types |
 |--------|-------------|-------|
+| admission | 1 | AdmissionReview |
+| admissionregistration | 4 | MutatingWebhookConfiguration, ValidatingWebhookConfiguration, ValidatingAdmissionPolicy, ValidatingAdmissionPolicyBinding |
+| apidiscovery | 2 | APIGroupDiscovery, APIGroupDiscoveryList |
+| authentication | 2 | TokenReview, SelfSubjectReview |
+| authorization | 4 | SubjectAccessReview, SelfSubjectAccessReview, LocalSubjectAccessReview, SelfSubjectRulesReview |
 | storage | 5 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity |
 | rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding |
 | apps | 2 | Deployment, StatefulSet |
 | batch | 2 | Job, CronJob |
-| networking | 2 | NetworkPolicy, Ingress |
+| networking | 1 | Ingress |
 | policy | 2 | PodDisruptionBudget, Eviction |
 | autoscaling | 1 | HorizontalPodAutoscaler |
 | discovery | 1 | EndpointSlice |
 | events | 1 | Event |
+| certificates | 1 | CertificateSigningRequest |
+| coordination | 1 | Lease |
+| flowcontrol | 2 | FlowSchema, PriorityLevelConfiguration |
+| node | 1 | RuntimeClass |
+| scheduling | 1 | PriorityClass |
 
-**Total: 20 version conversions implemented**
+**Total: 38 version conversions implemented**
 
 ### Validation (k8s-api-validation)
 

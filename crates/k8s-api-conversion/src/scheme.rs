@@ -1,5 +1,6 @@
 //! Conversion scheme and traits
 
+use serde::{de::DeserializeOwned, Serialize};
 use thiserror::Error;
 
 /// Error that can occur during type conversion.
@@ -24,4 +25,19 @@ pub trait Convertible<T> {
     fn convert_from(other: &T) -> Result<Self, ConversionError>
     where
         Self: Sized;
+}
+
+pub(crate) fn convert_via_json<T, U>(value: &T) -> Result<U, ConversionError>
+where
+    T: Serialize,
+    U: DeserializeOwned,
+{
+    let value = serde_json::to_value(value).map_err(|err| ConversionError::FieldConversion {
+        field: "json".to_string(),
+        message: err.to_string(),
+    })?;
+    serde_json::from_value(value).map_err(|err| ConversionError::FieldConversion {
+        field: "json".to_string(),
+        message: err.to_string(),
+    })
 }

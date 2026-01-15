@@ -10,5 +10,6 @@ chrono = { workspace = true }
 k8s-api = { workspace = true }
 k8s-api-core = { workspace = true }
 k8s-apimachinery = { workspace = true }
+serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }

@@ -23,15 +23,25 @@
 //! let converted_back = DeploymentV1Beta1::convert_from(&v1_deployment).unwrap();
 //! ```
 
+pub mod admission;
+pub mod admissionregistration;
+pub mod apidiscovery;
 pub mod apps;
 pub mod autoscaling;
 pub mod batch;
 pub mod core;
+pub mod authentication;
+pub mod authorization;
+pub mod certificates;
+pub mod coordination;
 pub mod discovery;
 pub mod events;
+pub mod flowcontrol;
 pub mod networking;
+pub mod node;
 pub mod policy;
 pub mod rbac;
+pub mod scheduling;
 pub mod scheme;
 pub mod storage;
 

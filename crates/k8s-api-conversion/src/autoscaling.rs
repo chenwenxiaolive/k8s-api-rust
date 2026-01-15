@@ -344,7 +344,7 @@ mod tests {
                         },
                         target: k8s_api::autoscaling::v2::MetricTarget {
                             type_: "AverageValue".to_string(),
-                            average_value: Some("100".to_string()),
+                            average_value: Some(k8s_api_core::Quantity::new("100")),
                             ..Default::default()
                         },
                     }),

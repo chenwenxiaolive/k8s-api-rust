@@ -66,8 +66,7 @@ fn convert_endpoint_to_v1(
         node_name: endpoint.node_name.clone(),
         // v1 has zone field, try to extract from topology if available
         zone: endpoint.topology.get("topology.kubernetes.io/zone").cloned(),
-        // v1 has hints, not available in v1beta1
-        hints: None,
+        hints: endpoint.hints.as_ref().map(convert_hints_to_v1),
     }
 }
 
@@ -87,6 +86,7 @@ fn convert_endpoint_from_v1(
         target_ref: endpoint.target_ref.as_ref().map(convert_object_ref_from_v1),
         topology,
         node_name: endpoint.node_name.clone(),
+        hints: endpoint.hints.as_ref().map(convert_hints_from_v1),
     }
 }
 
@@ -160,6 +160,40 @@ fn convert_port_from_v1(
     }
 }
 
+fn convert_hints_to_v1(
+    hints: &k8s_api::discovery::v1beta1::EndpointHints,
+) -> k8s_api::discovery::v1::EndpointHints {
+    k8s_api::discovery::v1::EndpointHints {
+        for_zones: hints
+            .for_zones
+            .iter()
+            .map(|zone| k8s_api::discovery::v1::ForZone { name: zone.name.clone() })
+            .collect(),
+        for_nodes: hints
+            .for_nodes
+            .iter()
+            .map(|node| k8s_api::discovery::v1::ForNode { name: node.name.clone() })
+            .collect(),
+    }
+}
+
+fn convert_hints_from_v1(
+    hints: &k8s_api::discovery::v1::EndpointHints,
+) -> k8s_api::discovery::v1beta1::EndpointHints {
+    k8s_api::discovery::v1beta1::EndpointHints {
+        for_zones: hints
+            .for_zones
+            .iter()
+            .map(|zone| k8s_api::discovery::v1beta1::ForZone { name: zone.name.clone() })
+            .collect(),
+        for_nodes: hints
+            .for_nodes
+            .iter()
+            .map(|node| k8s_api::discovery::v1beta1::ForNode { name: node.name.clone() })
+            .collect(),
+    }
+}
+
 // =============================================================================
 // Tests
 // =============================================================================
@@ -224,6 +258,7 @@ mod tests {
                     for_zones: vec![k8s_api::discovery::v1::ForZone {
                         name: "us-east-1a".to_string(),
                     }],
+                    for_nodes: Vec::new(),
                 }),
                 ..Default::default()
             }],
@@ -272,6 +307,7 @@ mod tests {
                 node_name: Some("worker-1".to_string()),
                 topology: topology.clone(),
                 target_ref: None,
+                hints: None,
             }],
             ports: vec![
                 k8s_api::discovery::v1beta1::EndpointPort {

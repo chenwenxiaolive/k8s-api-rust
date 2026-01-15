@@ -46,7 +46,7 @@ fn convert_pdb_spec_to_v1(
         min_available: spec.min_available.as_ref().map(|v| int_or_string_to_json(v)),
         max_unavailable: spec.max_unavailable.as_ref().map(|v| int_or_string_to_json(v)),
         selector: spec.selector.clone(),
-        unhealthy_pod_eviction_policy: None, // v1beta1 doesn't have this
+        unhealthy_pod_eviction_policy: spec.unhealthy_pod_eviction_policy.clone(),
     }
 }
 
@@ -57,6 +57,7 @@ fn convert_pdb_spec_from_v1(
         min_available: spec.min_available.as_ref().and_then(|v| json_to_int_or_string(v)),
         max_unavailable: spec.max_unavailable.as_ref().and_then(|v| json_to_int_or_string(v)),
         selector: spec.selector.clone(),
+        unhealthy_pod_eviction_policy: spec.unhealthy_pod_eviction_policy.clone(),
     }
 }
 

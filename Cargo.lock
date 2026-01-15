@@ -133,6 +133,7 @@ dependencies = [
  "k8s-api",
  "k8s-api-core",
  "k8s-apimachinery",
+ "serde",
  "serde_json",
  "thiserror",
 ]
