@@ -144,7 +144,7 @@ k8s-api-rust/
 
 ## Current Status
 
-**Total Tests: 240 (all passing)**
+**Total Tests: 298 (all passing)**
 
 ### API Types Coverage (k8s-api)
 
@@ -185,6 +185,7 @@ k8s-api-rust/
 
 | Module | Conversions | Types |
 |--------|-------------|-------|
+| abac | 1 | Policy (v0, v1beta1) |
 | admission | 1 | AdmissionReview |
 | admissionregistration | 6 | MutatingWebhookConfiguration, ValidatingWebhookConfiguration, ValidatingAdmissionPolicy (v1alpha1, v1beta1), ValidatingAdmissionPolicyBinding (v1alpha1, v1beta1), MutatingAdmissionPolicy (v1alpha1, v1beta1), MutatingAdmissionPolicyBinding (v1alpha1, v1beta1) |
 | apidiscovery | 2 | APIGroupDiscovery, APIGroupDiscoveryList |
@@ -193,9 +194,9 @@ k8s-api-rust/
 | storage | 6 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity, VolumeAttributesClass |
 | resource | 4 | ResourceClaim, ResourceClaimTemplate, DeviceClass, ResourceSlice (v1alpha3, v1beta1, v1beta2) |
 | rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding (v1alpha1, v1beta1) |
-| apps | 4 | Deployment, StatefulSet, DaemonSet, ReplicaSet |
+| apps | 5 | Deployment, StatefulSet, DaemonSet, ReplicaSet, ControllerRevision |
 | batch | 2 | Job, CronJob |
-| networking | 1 | Ingress |
+| networking | 2 | Ingress, IngressClass |
 | policy | 2 | PodDisruptionBudget, Eviction |
 | autoscaling | 3 | HorizontalPodAutoscaler (v1, v2beta1, v2beta2) |
 | discovery | 1 | EndpointSlice |
@@ -206,7 +207,7 @@ k8s-api-rust/
 | node | 1 | RuntimeClass (v1alpha1, v1beta1) |
 | scheduling | 1 | PriorityClass (v1alpha1, v1beta1) |
 
-**Total: 50 version conversions implemented**
+**Total: 53 version conversions implemented**
 
 ### Validation (k8s-api-validation)
 
@@ -230,8 +231,18 @@ k8s-api-rust/
 | discovery | 1 | EndpointSlice |
 | flowcontrol | 4 | FlowSchema, PriorityLevelConfiguration |
 | resource | 12 | ResourceClaim, ResourceClass, ResourceSlice |
+| abac | 2 | Policy |
+| admission | 2 | AdmissionReview |
+| apidiscovery | 4 | APIGroupDiscovery, APIGroupDiscoveryList |
+| apiextensions | 1 | CustomResourceDefinition |
+| apiregistration | 1 | APIService |
+| apiserverinternal | 1 | StorageVersion |
+| events | 2 | Event |
+| extensions | 1 | Ingress |
+| imagepolicy | 1 | ImageReview |
+| storagemigration | 1 | StorageVersionMigration |
 
-**Total: 140 validation functions across 18 modules**
+**Total: 156 validation functions across 28 modules**
 
 ### Serialization Tests
 
@@ -239,6 +250,17 @@ k8s-api-rust/
 - ✅ apps/v1: Deployment, StatefulSet, DaemonSet, ReplicaSet
 - ✅ batch/v1: Job, CronJob
 - ✅ rbac/v1: Role, ClusterRole, RoleBinding, ClusterRoleBinding
+- ✅ scheduling/v1: PriorityClass
+- ✅ coordination/v1: Lease
+- ✅ admission/v1: AdmissionReview
+- ✅ events/v1: Event
+- ✅ apiregistration/v1: APIService
+- ✅ apiextensions/v1: CustomResourceDefinition
+- ✅ apidiscovery/v2: APIGroupDiscovery
+- ✅ apiserverinternal/v1alpha1: StorageVersion
+- ✅ imagepolicy/v1alpha1: ImageReview
+- ✅ storagemigration/v1alpha1: StorageVersionMigration
+- ✅ extensions/v1beta1: Ingress
 
 ### Roadmap
 
@@ -260,6 +282,17 @@ k8s-api-rust/
 - [x] `scheduling` module validation ✅
 - [x] Additional serialization tests ✅
 - [x] Documentation examples ✅
+
+### Next Steps (Planned Order)
+
+1. [x] Expand version conversion coverage for remaining multi-version API groups/types
+   - Added `abac` Policy and apps ControllerRevision conversions
+2. [x] Add validation coverage for remaining API groups
+   - Added `admission`, `events`, `extensions`, `imagepolicy`, `apiserverinternal`, `apidiscovery`,
+     `abac`, `apiregistration`, `apiextensions`, `storagemigration`
+3. [x] Add serialization round-trip tests for untested modules
+   - Added tests for admission, events, apiregistration, apiextensions, apidiscovery, imagepolicy,
+     apiserverinternal, storagemigration, and extensions
 
 ## Source Reference
 

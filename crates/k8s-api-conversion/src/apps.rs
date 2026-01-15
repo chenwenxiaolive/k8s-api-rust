@@ -843,6 +843,70 @@ fn convert_replicaset_status_from_v1_to_beta2(
     }
 }
 
+// =============================================================================
+// ControllerRevision: v1beta1/v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1::ControllerRevision>
+    for k8s_api::apps::v1beta1::ControllerRevision
+{
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::ControllerRevision, ConversionError> {
+        Ok(k8s_api::apps::v1::ControllerRevision {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1",
+                "ControllerRevision",
+            ),
+            metadata: self.metadata.clone(),
+            data: self.data.clone(),
+            revision: self.revision,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::apps::v1::ControllerRevision,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta1",
+                "ControllerRevision",
+            ),
+            metadata: other.metadata.clone(),
+            data: other.data.clone(),
+            revision: other.revision,
+        })
+    }
+}
+
+impl Convertible<k8s_api::apps::v1::ControllerRevision>
+    for k8s_api::apps::v1beta2::ControllerRevision
+{
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::ControllerRevision, ConversionError> {
+        Ok(k8s_api::apps::v1::ControllerRevision {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1",
+                "ControllerRevision",
+            ),
+            metadata: self.metadata.clone(),
+            data: self.data.clone(),
+            revision: self.revision,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::apps::v1::ControllerRevision,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta2",
+                "ControllerRevision",
+            ),
+            metadata: other.metadata.clone(),
+            data: other.data.clone(),
+            revision: other.revision,
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -919,5 +983,27 @@ mod tests {
 
         assert_eq!(roundtrip.metadata.name, "beta2");
         assert_eq!(roundtrip.spec.as_ref().unwrap().replicas, Some(2));
+    }
+
+    #[test]
+    fn test_controller_revision_roundtrip() {
+        use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+
+        let v1beta1_revision = k8s_api::apps::v1beta1::ControllerRevision {
+            metadata: ObjectMeta::named("rev-1"),
+            data: Some(serde_json::json!({"key": "value"})),
+            revision: 1,
+            ..Default::default()
+        };
+
+        let v1_revision: k8s_api::apps::v1::ControllerRevision =
+            v1beta1_revision.convert_to().unwrap();
+        assert_eq!(v1_revision.metadata.name, "rev-1");
+        assert_eq!(v1_revision.revision, 1);
+
+        let v1beta2_roundtrip: k8s_api::apps::v1beta2::ControllerRevision =
+            k8s_api::apps::v1beta2::ControllerRevision::convert_from(&v1_revision).unwrap();
+        assert_eq!(v1beta2_roundtrip.metadata.name, "rev-1");
+        assert_eq!(v1beta2_roundtrip.revision, 1);
     }
 }

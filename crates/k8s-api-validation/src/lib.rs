@@ -2,9 +2,15 @@
 //!
 //! This crate provides validation logic for Kubernetes API types.
 
+pub mod abac;
+pub mod admission;
+pub mod admissionregistration;
+pub mod apidiscovery;
+pub mod apiextensions;
+pub mod apiregistration;
+pub mod apiserverinternal;
 pub mod apps;
 pub mod autoscaling;
-pub mod admissionregistration;
 pub mod authentication;
 pub mod authorization;
 pub mod batch;
@@ -13,7 +19,10 @@ pub mod common;
 pub mod coordination;
 pub mod core;
 pub mod discovery;
+pub mod events;
+pub mod extensions;
 pub mod flowcontrol;
+pub mod imagepolicy;
 pub mod networking;
 pub mod node;
 pub mod policy;
@@ -21,6 +30,7 @@ pub mod rbac;
 pub mod resource;
 pub mod scheduling;
 pub mod storage;
+pub mod storagemigration;
 
 use thiserror::Error;
 

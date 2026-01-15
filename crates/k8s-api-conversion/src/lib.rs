@@ -23,6 +23,7 @@
 //! let converted_back = DeploymentV1Beta1::convert_from(&v1_deployment).unwrap();
 //! ```
 
+pub mod abac;
 pub mod admission;
 pub mod admissionregistration;
 pub mod apidiscovery;
