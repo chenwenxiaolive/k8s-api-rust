@@ -212,6 +212,34 @@ impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy>
     }
 }
 
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy>
+    for k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicy
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy, ConversionError> {
+        let mut converted: k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy =
+            convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1",
+            "ValidatingAdmissionPolicy",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy,
+    ) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicy =
+            convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1alpha1",
+            "ValidatingAdmissionPolicy",
+        );
+        Ok(converted)
+    }
+}
+
 // =============================================================================
 // ValidatingAdmissionPolicyBinding: v1beta1 <-> v1
 // =============================================================================
@@ -243,5 +271,131 @@ impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBi
             "ValidatingAdmissionPolicyBinding",
         );
         Ok(converted)
+    }
+}
+
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBinding>
+    for k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyBinding
+{
+    fn convert_to(
+        &self,
+    )
+        -> Result<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBinding, ConversionError>
+    {
+        let mut converted: k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBinding =
+            convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1",
+            "ValidatingAdmissionPolicyBinding",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBinding,
+    ) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyBinding =
+            convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1alpha1",
+            "ValidatingAdmissionPolicyBinding",
+        );
+        Ok(converted)
+    }
+}
+
+// =============================================================================
+// MutatingAdmissionPolicy: v1alpha1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicy>
+    for k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicy
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicy, ConversionError>
+    {
+        let mut converted: k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicy =
+            convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1beta1",
+            "MutatingAdmissionPolicy",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicy,
+    ) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicy =
+            convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1alpha1",
+            "MutatingAdmissionPolicy",
+        );
+        Ok(converted)
+    }
+}
+
+// =============================================================================
+// MutatingAdmissionPolicyBinding: v1alpha1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBinding>
+    for k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicyBinding
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBinding, ConversionError>
+    {
+        let mut converted: k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBinding =
+            convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1beta1",
+            "MutatingAdmissionPolicyBinding",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBinding,
+    ) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicyBinding =
+            convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "admissionregistration.k8s.io/v1alpha1",
+            "MutatingAdmissionPolicyBinding",
+        );
+        Ok(converted)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+
+    #[test]
+    fn test_validating_admission_policy_v1alpha1_to_v1() {
+        let v1alpha1 = k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicy {
+            metadata: ObjectMeta::named("alpha-policy"),
+            ..Default::default()
+        };
+
+        let v1: k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy =
+            v1alpha1.convert_to().unwrap();
+        assert_eq!(v1.metadata.name, "alpha-policy");
+    }
+
+    #[test]
+    fn test_mutating_admission_policy_alpha_to_beta() {
+        let v1alpha1 = k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicy {
+            metadata: ObjectMeta::named("alpha-mutation"),
+            ..Default::default()
+        };
+
+        let v1beta1: k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicy =
+            v1alpha1.convert_to().unwrap();
+        assert_eq!(v1beta1.metadata.name, "alpha-mutation");
     }
 }

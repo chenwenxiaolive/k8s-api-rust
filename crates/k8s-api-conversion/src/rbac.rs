@@ -35,6 +35,34 @@ impl Convertible<k8s_api::rbac::v1::Role> for k8s_api::rbac::v1beta1::Role {
 }
 
 // =============================================================================
+// Role: v1 <-> v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::rbac::v1::Role> for k8s_api::rbac::v1alpha1::Role {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::Role, ConversionError> {
+        Ok(k8s_api::rbac::v1::Role {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "Role",
+            ),
+            metadata: self.metadata.clone(),
+            rules: self.rules.iter().map(convert_policy_rule_alpha_to_v1).collect(),
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::Role) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "Role",
+            ),
+            metadata: other.metadata.clone(),
+            rules: other.rules.iter().map(convert_policy_rule_alpha_from_v1).collect(),
+        })
+    }
+}
+
+// =============================================================================
 // ClusterRole: v1 <-> v1beta1
 // =============================================================================
 
@@ -68,6 +96,42 @@ impl Convertible<k8s_api::rbac::v1::ClusterRole> for k8s_api::rbac::v1beta1::Clu
 }
 
 // =============================================================================
+// ClusterRole: v1 <-> v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::rbac::v1::ClusterRole> for k8s_api::rbac::v1alpha1::ClusterRole {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::ClusterRole, ConversionError> {
+        Ok(k8s_api::rbac::v1::ClusterRole {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "ClusterRole",
+            ),
+            metadata: self.metadata.clone(),
+            rules: self.rules.iter().map(convert_policy_rule_alpha_to_v1).collect(),
+            aggregation_rule: self
+                .aggregation_rule
+                .as_ref()
+                .map(convert_aggregation_rule_alpha_to_v1),
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::ClusterRole) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "ClusterRole",
+            ),
+            metadata: other.metadata.clone(),
+            rules: other.rules.iter().map(convert_policy_rule_alpha_from_v1).collect(),
+            aggregation_rule: other
+                .aggregation_rule
+                .as_ref()
+                .map(convert_aggregation_rule_alpha_from_v1),
+        })
+    }
+}
+
+// =============================================================================
 // RoleBinding: v1 <-> v1beta1
 // =============================================================================
 
@@ -93,6 +157,36 @@ impl Convertible<k8s_api::rbac::v1::RoleBinding> for k8s_api::rbac::v1beta1::Rol
             metadata: other.metadata.clone(),
             subjects: other.subjects.iter().map(convert_subject_from_v1).collect(),
             role_ref: convert_role_ref_from_v1(&other.role_ref),
+        })
+    }
+}
+
+// =============================================================================
+// RoleBinding: v1 <-> v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::rbac::v1::RoleBinding> for k8s_api::rbac::v1alpha1::RoleBinding {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::RoleBinding, ConversionError> {
+        Ok(k8s_api::rbac::v1::RoleBinding {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "RoleBinding",
+            ),
+            metadata: self.metadata.clone(),
+            subjects: self.subjects.iter().map(convert_subject_alpha_to_v1).collect(),
+            role_ref: convert_role_ref_alpha_to_v1(&self.role_ref),
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::RoleBinding) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "RoleBinding",
+            ),
+            metadata: other.metadata.clone(),
+            subjects: other.subjects.iter().map(convert_subject_alpha_from_v1).collect(),
+            role_ref: convert_role_ref_alpha_from_v1(&other.role_ref),
         })
     }
 }
@@ -132,6 +226,42 @@ impl Convertible<k8s_api::rbac::v1::ClusterRoleBinding>
 }
 
 // =============================================================================
+// ClusterRoleBinding: v1 <-> v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::rbac::v1::ClusterRoleBinding>
+    for k8s_api::rbac::v1alpha1::ClusterRoleBinding
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::rbac::v1::ClusterRoleBinding, ConversionError> {
+        Ok(k8s_api::rbac::v1::ClusterRoleBinding {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "ClusterRoleBinding",
+            ),
+            metadata: self.metadata.clone(),
+            subjects: self.subjects.iter().map(convert_subject_alpha_to_v1).collect(),
+            role_ref: convert_role_ref_alpha_to_v1(&self.role_ref),
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::rbac::v1::ClusterRoleBinding,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "ClusterRoleBinding",
+            ),
+            metadata: other.metadata.clone(),
+            subjects: other.subjects.iter().map(convert_subject_alpha_from_v1).collect(),
+            role_ref: convert_role_ref_alpha_from_v1(&other.role_ref),
+        })
+    }
+}
+
+// =============================================================================
 // Helper conversion functions
 // =============================================================================
 
@@ -159,6 +289,30 @@ fn convert_policy_rule_from_v1(
     }
 }
 
+fn convert_policy_rule_alpha_to_v1(
+    rule: &k8s_api::rbac::v1alpha1::PolicyRule,
+) -> k8s_api::rbac::v1::PolicyRule {
+    k8s_api::rbac::v1::PolicyRule {
+        verbs: rule.verbs.clone(),
+        api_groups: rule.api_groups.clone(),
+        resources: rule.resources.clone(),
+        resource_names: rule.resource_names.clone(),
+        non_resource_urls: rule.non_resource_urls.clone(),
+    }
+}
+
+fn convert_policy_rule_alpha_from_v1(
+    rule: &k8s_api::rbac::v1::PolicyRule,
+) -> k8s_api::rbac::v1alpha1::PolicyRule {
+    k8s_api::rbac::v1alpha1::PolicyRule {
+        verbs: rule.verbs.clone(),
+        api_groups: rule.api_groups.clone(),
+        resources: rule.resources.clone(),
+        resource_names: rule.resource_names.clone(),
+        non_resource_urls: rule.non_resource_urls.clone(),
+    }
+}
+
 fn convert_subject_to_v1(subject: &k8s_api::rbac::v1beta1::Subject) -> k8s_api::rbac::v1::Subject {
     k8s_api::rbac::v1::Subject {
         kind: subject.kind.clone(),
@@ -172,6 +326,24 @@ fn convert_subject_from_v1(subject: &k8s_api::rbac::v1::Subject) -> k8s_api::rba
     k8s_api::rbac::v1beta1::Subject {
         kind: subject.kind.clone(),
         api_group: subject.api_group.clone(),
+        name: subject.name.clone(),
+        namespace: subject.namespace.clone(),
+    }
+}
+
+fn convert_subject_alpha_to_v1(subject: &k8s_api::rbac::v1alpha1::Subject) -> k8s_api::rbac::v1::Subject {
+    k8s_api::rbac::v1::Subject {
+        kind: subject.kind.clone(),
+        api_group: subject.api_version.clone(),
+        name: subject.name.clone(),
+        namespace: subject.namespace.clone(),
+    }
+}
+
+fn convert_subject_alpha_from_v1(subject: &k8s_api::rbac::v1::Subject) -> k8s_api::rbac::v1alpha1::Subject {
+    k8s_api::rbac::v1alpha1::Subject {
+        kind: subject.kind.clone(),
+        api_version: subject.api_group.clone(),
         name: subject.name.clone(),
         namespace: subject.namespace.clone(),
     }
@@ -193,6 +365,26 @@ fn convert_role_ref_from_v1(role_ref: &k8s_api::rbac::v1::RoleRef) -> k8s_api::r
     }
 }
 
+fn convert_role_ref_alpha_to_v1(
+    role_ref: &k8s_api::rbac::v1alpha1::RoleRef,
+) -> k8s_api::rbac::v1::RoleRef {
+    k8s_api::rbac::v1::RoleRef {
+        api_group: role_ref.api_group.clone(),
+        kind: role_ref.kind.clone(),
+        name: role_ref.name.clone(),
+    }
+}
+
+fn convert_role_ref_alpha_from_v1(
+    role_ref: &k8s_api::rbac::v1::RoleRef,
+) -> k8s_api::rbac::v1alpha1::RoleRef {
+    k8s_api::rbac::v1alpha1::RoleRef {
+        api_group: role_ref.api_group.clone(),
+        kind: role_ref.kind.clone(),
+        name: role_ref.name.clone(),
+    }
+}
+
 fn convert_aggregation_rule_to_v1(
     rule: &k8s_api::rbac::v1beta1::AggregationRule,
 ) -> k8s_api::rbac::v1::AggregationRule {
@@ -205,6 +397,22 @@ fn convert_aggregation_rule_from_v1(
     rule: &k8s_api::rbac::v1::AggregationRule,
 ) -> k8s_api::rbac::v1beta1::AggregationRule {
     k8s_api::rbac::v1beta1::AggregationRule {
+        cluster_role_selectors: rule.cluster_role_selectors.clone(),
+    }
+}
+
+fn convert_aggregation_rule_alpha_to_v1(
+    rule: &k8s_api::rbac::v1alpha1::AggregationRule,
+) -> k8s_api::rbac::v1::AggregationRule {
+    k8s_api::rbac::v1::AggregationRule {
+        cluster_role_selectors: rule.cluster_role_selectors.clone(),
+    }
+}
+
+fn convert_aggregation_rule_alpha_from_v1(
+    rule: &k8s_api::rbac::v1::AggregationRule,
+) -> k8s_api::rbac::v1alpha1::AggregationRule {
+    k8s_api::rbac::v1alpha1::AggregationRule {
         cluster_role_selectors: rule.cluster_role_selectors.clone(),
     }
 }
@@ -448,5 +656,23 @@ mod tests {
 
         assert_eq!(v1_role.rules[0].non_resource_urls.len(), 2);
         assert!(v1_role.rules[0].non_resource_urls.contains(&"/healthz".to_string()));
+    }
+
+    #[test]
+    fn test_role_v1alpha1_to_v1() {
+        let v1alpha1 = k8s_api::rbac::v1alpha1::Role {
+            metadata: ObjectMeta::named("alpha-role"),
+            rules: vec![k8s_api::rbac::v1alpha1::PolicyRule {
+                verbs: vec!["get".to_string()],
+                api_groups: vec!["".to_string()],
+                resources: vec!["pods".to_string()],
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1: k8s_api::rbac::v1::Role = v1alpha1.convert_to().unwrap();
+        assert_eq!(v1.metadata.name, "alpha-role");
+        assert_eq!(v1.rules[0].resources, vec!["pods".to_string()]);
     }
 }

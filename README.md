@@ -186,12 +186,13 @@ k8s-api-rust/
 | Module | Conversions | Types |
 |--------|-------------|-------|
 | admission | 1 | AdmissionReview |
-| admissionregistration | 4 | MutatingWebhookConfiguration, ValidatingWebhookConfiguration, ValidatingAdmissionPolicy, ValidatingAdmissionPolicyBinding |
+| admissionregistration | 6 | MutatingWebhookConfiguration, ValidatingWebhookConfiguration, ValidatingAdmissionPolicy (v1alpha1, v1beta1), ValidatingAdmissionPolicyBinding (v1alpha1, v1beta1), MutatingAdmissionPolicy (v1alpha1, v1beta1), MutatingAdmissionPolicyBinding (v1alpha1, v1beta1) |
 | apidiscovery | 2 | APIGroupDiscovery, APIGroupDiscoveryList |
 | authentication | 2 | TokenReview, SelfSubjectReview |
 | authorization | 4 | SubjectAccessReview, SelfSubjectAccessReview, LocalSubjectAccessReview, SelfSubjectRulesReview |
-| storage | 5 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity |
-| rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding |
+| storage | 6 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity, VolumeAttributesClass |
+| resource | 4 | ResourceClaim, ResourceClaimTemplate, DeviceClass, ResourceSlice (v1alpha3, v1beta1, v1beta2) |
+| rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding (v1alpha1, v1beta1) |
 | apps | 4 | Deployment, StatefulSet, DaemonSet, ReplicaSet |
 | batch | 2 | Job, CronJob |
 | networking | 1 | Ingress |
@@ -199,13 +200,13 @@ k8s-api-rust/
 | autoscaling | 3 | HorizontalPodAutoscaler (v1, v2beta1, v2beta2) |
 | discovery | 1 | EndpointSlice |
 | events | 1 | Event |
-| certificates | 1 | CertificateSigningRequest |
+| certificates | 2 | CertificateSigningRequest, ClusterTrustBundle (v1alpha1, v1beta1) |
 | coordination | 1 | Lease |
 | flowcontrol | 2 | FlowSchema, PriorityLevelConfiguration |
-| node | 1 | RuntimeClass |
-| scheduling | 1 | PriorityClass |
+| node | 1 | RuntimeClass (v1alpha1, v1beta1) |
+| scheduling | 1 | PriorityClass (v1alpha1, v1beta1) |
 
-**Total: 42 version conversions implemented**
+**Total: 50 version conversions implemented**
 
 ### Validation (k8s-api-validation)
 

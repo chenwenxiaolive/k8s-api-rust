@@ -41,6 +41,7 @@ pub mod networking;
 pub mod node;
 pub mod policy;
 pub mod rbac;
+pub mod resource;
 pub mod scheduling;
 pub mod scheme;
 pub mod storage;

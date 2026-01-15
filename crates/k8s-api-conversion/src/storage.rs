@@ -211,6 +211,140 @@ fn convert_volume_attachment_status_from_v1(
 }
 
 // =============================================================================
+// VolumeAttachment: v1 <-> v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::VolumeAttachment>
+    for k8s_api::storage::v1alpha1::VolumeAttachment
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::VolumeAttachment, ConversionError> {
+        Ok(k8s_api::storage::v1::VolumeAttachment {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttachment",
+            ),
+            metadata: self.metadata.clone(),
+            spec: convert_volume_attachment_spec_alpha_to_v1(&self.spec),
+            status: self
+                .status
+                .as_ref()
+                .map(convert_volume_attachment_status_alpha_to_v1),
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttachment,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1alpha1",
+                "VolumeAttachment",
+            ),
+            metadata: other.metadata.clone(),
+            spec: convert_volume_attachment_spec_alpha_from_v1(&other.spec),
+            status: other
+                .status
+                .as_ref()
+                .map(convert_volume_attachment_status_alpha_from_v1),
+        })
+    }
+}
+
+fn convert_volume_attachment_spec_alpha_to_v1(
+    spec: &k8s_api::storage::v1alpha1::VolumeAttachmentSpec,
+) -> k8s_api::storage::v1::VolumeAttachmentSpec {
+    k8s_api::storage::v1::VolumeAttachmentSpec {
+        attacher: spec.attacher.clone(),
+        source: k8s_api::storage::v1::VolumeAttachmentSource {
+            persistent_volume_name: spec.source.persistent_volume_name.clone(),
+            inline_volume_spec: spec.source.inline_volume_spec.clone(),
+        },
+        node_name: spec.node_name.clone(),
+    }
+}
+
+fn convert_volume_attachment_spec_alpha_from_v1(
+    spec: &k8s_api::storage::v1::VolumeAttachmentSpec,
+) -> k8s_api::storage::v1alpha1::VolumeAttachmentSpec {
+    k8s_api::storage::v1alpha1::VolumeAttachmentSpec {
+        attacher: spec.attacher.clone(),
+        source: k8s_api::storage::v1alpha1::VolumeAttachmentSource {
+            persistent_volume_name: spec.source.persistent_volume_name.clone(),
+            inline_volume_spec: spec.source.inline_volume_spec.clone(),
+        },
+        node_name: spec.node_name.clone(),
+    }
+}
+
+fn convert_volume_attachment_status_alpha_to_v1(
+    status: &k8s_api::storage::v1alpha1::VolumeAttachmentStatus,
+) -> k8s_api::storage::v1::VolumeAttachmentStatus {
+    k8s_api::storage::v1::VolumeAttachmentStatus {
+        attached: status.attached,
+        attachment_metadata: status
+            .attachment_metadata
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect(),
+        attach_error: status.attach_error.as_ref().map(|e| {
+            k8s_api::storage::v1::VolumeError {
+                time: e.time.as_ref().and_then(|t| t.0.map(|dt| dt.to_rfc3339())),
+                message: e.message.clone(),
+            }
+        }),
+        detach_error: status.detach_error.as_ref().map(|e| {
+            k8s_api::storage::v1::VolumeError {
+                time: e.time.as_ref().and_then(|t| t.0.map(|dt| dt.to_rfc3339())),
+                message: e.message.clone(),
+            }
+        }),
+    }
+}
+
+fn convert_volume_attachment_status_alpha_from_v1(
+    status: &k8s_api::storage::v1::VolumeAttachmentStatus,
+) -> k8s_api::storage::v1alpha1::VolumeAttachmentStatus {
+    k8s_api::storage::v1alpha1::VolumeAttachmentStatus {
+        attached: status.attached,
+        attachment_metadata: status
+            .attachment_metadata
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect(),
+        attach_error: status.attach_error.as_ref().map(|e| {
+            k8s_api::storage::v1alpha1::VolumeError {
+                time: e.time.as_ref().and_then(|t| {
+                    chrono::DateTime::parse_from_rfc3339(t)
+                        .ok()
+                        .map(|dt| {
+                            k8s_apimachinery::apis::meta::v1::Time(Some(
+                                dt.with_timezone(&chrono::Utc),
+                            ))
+                        })
+                }),
+                message: e.message.clone(),
+                error_code: None,
+            }
+        }),
+        detach_error: status.detach_error.as_ref().map(|e| {
+            k8s_api::storage::v1alpha1::VolumeError {
+                time: e.time.as_ref().and_then(|t| {
+                    chrono::DateTime::parse_from_rfc3339(t)
+                        .ok()
+                        .map(|dt| {
+                            k8s_apimachinery::apis::meta::v1::Time(Some(
+                                dt.with_timezone(&chrono::Utc),
+                            ))
+                        })
+                }),
+                message: e.message.clone(),
+                error_code: None,
+            }
+        }),
+    }
+}
+
+// =============================================================================
 // CSIDriver: v1 <-> v1beta1
 // =============================================================================
 
@@ -383,6 +517,124 @@ impl Convertible<k8s_api::storage::v1::CSIStorageCapacity>
             node_topology: other.node_topology.clone(),
             capacity: other.capacity.clone(),
             maximum_volume_size: other.maximum_volume_size.clone(),
+        })
+    }
+}
+
+// =============================================================================
+// CSIStorageCapacity: v1 <-> v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::CSIStorageCapacity>
+    for k8s_api::storage::v1alpha1::CSIStorageCapacity
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::CSIStorageCapacity, ConversionError> {
+        Ok(k8s_api::storage::v1::CSIStorageCapacity {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "CSIStorageCapacity",
+            ),
+            metadata: self.metadata.clone(),
+            storage_class_name: self.storage_class_name.clone(),
+            node_topology: self.node_topology.clone(),
+            capacity: self.capacity.clone(),
+            maximum_volume_size: self.maximum_volume_size.clone(),
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::CSIStorageCapacity,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1alpha1",
+                "CSIStorageCapacity",
+            ),
+            metadata: other.metadata.clone(),
+            storage_class_name: other.storage_class_name.clone(),
+            node_topology: other.node_topology.clone(),
+            capacity: other.capacity.clone(),
+            maximum_volume_size: other.maximum_volume_size.clone(),
+        })
+    }
+}
+
+// =============================================================================
+// VolumeAttributesClass: v1 <-> v1beta1/v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::VolumeAttributesClass>
+    for k8s_api::storage::v1beta1::VolumeAttributesClass
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::VolumeAttributesClass, ConversionError> {
+        Ok(k8s_api::storage::v1::VolumeAttributesClass {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttributesClass",
+            ),
+            metadata: self.metadata.clone(),
+            driver_name: self.driver_name.clone(),
+            parameters: self
+                .parameters
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect(),
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttributesClass,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "VolumeAttributesClass",
+            ),
+            metadata: other.metadata.clone(),
+            driver_name: other.driver_name.clone(),
+            parameters: other
+                .parameters
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect(),
+        })
+    }
+}
+
+impl Convertible<k8s_api::storage::v1::VolumeAttributesClass>
+    for k8s_api::storage::v1alpha1::VolumeAttributesClass
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::VolumeAttributesClass, ConversionError> {
+        Ok(k8s_api::storage::v1::VolumeAttributesClass {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttributesClass",
+            ),
+            metadata: self.metadata.clone(),
+            driver_name: self.driver_name.clone(),
+            parameters: self
+                .parameters
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect(),
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttributesClass,
+    ) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1alpha1",
+                "VolumeAttributesClass",
+            ),
+            metadata: other.metadata.clone(),
+            driver_name: other.driver_name.clone(),
+            parameters: other
+                .parameters
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect(),
         })
     }
 }
@@ -663,5 +915,71 @@ mod tests {
         assert_eq!(back.metadata.name, "roundtrip-cap");
         assert_eq!(back.storage_class_name, "standard");
         assert_eq!(back.capacity, Some("500Gi".to_string()));
+    }
+
+    #[test]
+    fn test_volume_attachment_v1alpha1_to_v1() {
+        let v1alpha1 = k8s_api::storage::v1alpha1::VolumeAttachment {
+            metadata: ObjectMeta::named("alpha-attachment"),
+            spec: k8s_api::storage::v1alpha1::VolumeAttachmentSpec {
+                attacher: "csi.example.com".to_string(),
+                source: k8s_api::storage::v1alpha1::VolumeAttachmentSource {
+                    persistent_volume_name: Some("pv-alpha".to_string()),
+                    inline_volume_spec: None,
+                },
+                node_name: "node-a".to_string(),
+            },
+            ..Default::default()
+        };
+
+        let v1: k8s_api::storage::v1::VolumeAttachment = v1alpha1.convert_to().unwrap();
+
+        assert_eq!(v1.metadata.name, "alpha-attachment");
+        assert_eq!(v1.spec.attacher, "csi.example.com");
+        assert_eq!(
+            v1.spec.source.persistent_volume_name,
+            Some("pv-alpha".to_string())
+        );
+    }
+
+    #[test]
+    fn test_volume_attributes_class_v1beta1_to_v1() {
+        let v1beta1 = k8s_api::storage::v1beta1::VolumeAttributesClass {
+            metadata: ObjectMeta::named("attr-class"),
+            driver_name: "csi.example.com".to_string(),
+            parameters: {
+                let mut params = HashMap::new();
+                params.insert("key".to_string(), "value".to_string());
+                params
+            },
+            ..Default::default()
+        };
+
+        let v1: k8s_api::storage::v1::VolumeAttributesClass = v1beta1.convert_to().unwrap();
+        assert_eq!(v1.metadata.name, "attr-class");
+        assert_eq!(v1.driver_name, "csi.example.com");
+        assert_eq!(v1.parameters.get("key"), Some(&"value".to_string()));
+    }
+
+    #[test]
+    fn test_volume_attributes_class_v1alpha1_roundtrip() {
+        let v1alpha1 = k8s_api::storage::v1alpha1::VolumeAttributesClass {
+            metadata: ObjectMeta::named("alpha-class"),
+            driver_name: "csi.alpha.com".to_string(),
+            parameters: {
+                let mut params = HashMap::new();
+                params.insert("mode".to_string(), "fast".to_string());
+                params
+            },
+            ..Default::default()
+        };
+
+        let v1: k8s_api::storage::v1::VolumeAttributesClass = v1alpha1.convert_to().unwrap();
+        let back: k8s_api::storage::v1alpha1::VolumeAttributesClass =
+            k8s_api::storage::v1alpha1::VolumeAttributesClass::convert_from(&v1).unwrap();
+
+        assert_eq!(back.metadata.name, "alpha-class");
+        assert_eq!(back.driver_name, "csi.alpha.com");
+        assert_eq!(back.parameters.get("mode"), Some(&"fast".to_string()));
     }
 }

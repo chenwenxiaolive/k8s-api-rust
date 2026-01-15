@@ -2,6 +2,7 @@
 //!
 //! This module provides conversions between certificates API versions.
 
+use crate::scheme::convert_via_json;
 use crate::{ConversionError, Convertible};
 use chrono::{DateTime, Utc};
 
@@ -135,4 +136,59 @@ fn parse_time(time: &Option<String>) -> Option<k8s_apimachinery::apis::meta::v1:
 
 fn format_time(time: &Option<k8s_apimachinery::apis::meta::v1::Time>) -> Option<String> {
     time.as_ref().and_then(|t| t.0.as_ref().map(|dt| dt.to_rfc3339()))
+}
+
+// =============================================================================
+// ClusterTrustBundle: v1alpha1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::certificates::v1beta1::ClusterTrustBundle>
+    for k8s_api::certificates::v1alpha1::ClusterTrustBundle
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::certificates::v1beta1::ClusterTrustBundle, ConversionError> {
+        let mut converted: k8s_api::certificates::v1beta1::ClusterTrustBundle =
+            convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "certificates.k8s.io/v1beta1",
+            "ClusterTrustBundle",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(
+        other: &k8s_api::certificates::v1beta1::ClusterTrustBundle,
+    ) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::certificates::v1alpha1::ClusterTrustBundle =
+            convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "certificates.k8s.io/v1alpha1",
+            "ClusterTrustBundle",
+        );
+        Ok(converted)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+
+    #[test]
+    fn test_cluster_trust_bundle_alpha_to_beta() {
+        let alpha = k8s_api::certificates::v1alpha1::ClusterTrustBundle {
+            metadata: ObjectMeta::named("trust-bundle"),
+            spec: k8s_api::certificates::v1alpha1::ClusterTrustBundleSpec {
+                signer_name: "example.com/signer".to_string(),
+                trust_bundle: "-----BEGIN CERTIFICATE-----\n...".to_string(),
+            },
+            ..Default::default()
+        };
+
+        let beta: k8s_api::certificates::v1beta1::ClusterTrustBundle =
+            alpha.convert_to().unwrap();
+        assert_eq!(beta.metadata.name, "trust-bundle");
+        assert_eq!(beta.spec.signer_name, "example.com/signer");
+    }
 }
