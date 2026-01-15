@@ -150,31 +150,36 @@ k8s-api-rust/
 
 | Module | Types | Status |
 |--------|-------|--------|
-| core | 185 | ✅ Complete |
-| resource | 102 | ✅ Types defined |
-| storage | 54 | ✅ Complete |
-| admissionregistration | 53 | ✅ Types defined |
-| networking | 50 | ✅ Complete |
-| apps | 50 | ✅ Complete |
-| extensions | 45 | ✅ Types defined |
-| flowcontrol | 44 | ✅ Types defined |
-| autoscaling | 31 | ✅ Complete |
-| policy | 26 | ✅ Complete |
-| authorization | 26 | ✅ Types defined |
-| batch | 25 | ✅ Complete |
-| rbac | 24 | ✅ Complete |
-| authentication | 17 | ✅ Types defined |
-| apiextensions | 17 | ✅ Types defined |
-| discovery | 13 | ✅ Complete |
-| certificates | 12 | ✅ Types defined |
-| node | 9 | ✅ Types defined |
-| events | 9 | ✅ Types defined |
-| coordination | 6 | ✅ Types defined |
-| imagepolicy | 4 | ✅ Types defined |
-| abac | 3 | ✅ Types defined |
-| scheduling | 2 | ✅ Types defined |
+| core | 309 | ✅ Complete |
+| resource | 186 | ✅ Complete |
+| flowcontrol | 120 | ✅ Complete |
+| admissionregistration | 118 | ✅ Complete |
+| apps | 110 | ✅ Complete |
+| autoscaling | 101 | ✅ Complete |
+| networking | 65 | ✅ Complete |
+| storage | 62 | ✅ Complete |
+| extensions | 52 | ✅ Complete |
+| rbac | 36 | ✅ Complete |
+| batch | 34 | ✅ Complete |
+| authorization | 30 | ✅ Complete |
+| policy | 28 | ✅ Complete |
+| certificates | 26 | ✅ Complete |
+| authentication | 21 | ✅ Complete |
+| discovery | 19 | ✅ Complete |
+| apiextensions | 18 | ✅ Complete |
+| admission | 16 | ✅ Complete |
+| apidiscovery | 16 | ✅ Complete |
+| node | 15 | ✅ Complete |
+| coordination | 13 | ✅ Complete |
+| events | 9 | ✅ Complete |
+| apiserverinternal | 8 | ✅ Complete |
+| storagemigration | 7 | ✅ Complete |
+| scheduling | 6 | ✅ Complete |
+| apiregistration | 5 | ✅ Complete |
+| imagepolicy | 4 | ✅ Complete |
+| abac | 3 | ✅ Complete |
 
-**Total: 835 API types across 29 modules**
+**Total: 1437 API types across 28 modules**
 
 ### Version Conversion (k8s-api-conversion)
 

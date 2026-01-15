@@ -5,6 +5,8 @@
 use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type AddressType = String;
+
 // =============================================================================
 // EndpointSlice
 // =============================================================================
@@ -18,7 +20,7 @@ pub struct EndpointSlice {
     #[serde(default)]
     pub metadata: ObjectMeta,
     /// addressType specifies the type of address carried by this EndpointSlice.
-    pub address_type: String,
+    pub address_type: AddressType,
     /// endpoints is a list of unique endpoints in this slice.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub endpoints: Vec<Endpoint>,
@@ -47,6 +49,9 @@ pub struct Endpoint {
     /// nodeName represents the name of the Node hosting this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_name: Option<String>,
+    /// hints contains information associated with how an endpoint should be consumed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hints: Option<EndpointHints>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -61,6 +66,34 @@ pub struct EndpointConditions {
     /// terminating indicates that this endpoint is terminating.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub terminating: Option<bool>,
+}
+
+/// EndpointHints provides hints describing how an endpoint should be consumed.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EndpointHints {
+    /// forZones indicates the zone(s) this endpoint should be consumed by.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub for_zones: Vec<ForZone>,
+    /// forNodes indicates the node(s) this endpoint should be consumed by.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub for_nodes: Vec<ForNode>,
+}
+
+/// ForZone provides information about which zones should consume this endpoint.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ForZone {
+    /// name represents the name of the zone.
+    pub name: String,
+}
+
+/// ForNode provides information about which nodes should consume this endpoint.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ForNode {
+    /// name represents the name of the node.
+    pub name: String,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]

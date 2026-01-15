@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type AddressType = String;
+
 // =============================================================================
 // EndpointSlice
 // =============================================================================
@@ -16,7 +18,7 @@ pub struct EndpointSlice {
     #[serde(default)]
     pub metadata: ObjectMeta,
     /// AddressType specifies the type of address carried by this EndpointSlice.
-    pub address_type: String,
+    pub address_type: AddressType,
     /// Endpoints is a list of unique endpoints in this slice.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub endpoints: Vec<Endpoint>,
@@ -87,6 +89,9 @@ pub struct EndpointHints {
     /// ForZones indicates the zone(s) this endpoint should be consumed by.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub for_zones: Vec<ForZone>,
+    /// ForNodes indicates the node(s) this endpoint should be consumed by.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub for_nodes: Vec<ForNode>,
 }
 
 /// ForZone provides information about which zones should consume this endpoint.
@@ -94,6 +99,14 @@ pub struct EndpointHints {
 #[serde(rename_all = "camelCase")]
 pub struct ForZone {
     /// Name represents the name of the zone.
+    pub name: String,
+}
+
+/// ForNode provides information about which nodes should consume this endpoint.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ForNode {
+    /// Name represents the name of the node.
     pub name: String,
 }
 
@@ -134,3 +147,8 @@ pub struct ObjectReference {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub field_path: String,
 }
+
+// AddressType constants
+pub const ADDRESS_TYPE_IPV4: &str = "IPv4";
+pub const ADDRESS_TYPE_IPV6: &str = "IPv6";
+pub const ADDRESS_TYPE_FQDN: &str = "FQDN";

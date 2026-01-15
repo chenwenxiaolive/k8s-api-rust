@@ -5,6 +5,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::core::v1::PodTemplateSpec;
 
+pub type CompletionMode = String;
+pub type PodFailurePolicyAction = String;
+pub type PodFailurePolicyOnExitCodesOperator = String;
+pub type PodReplacementPolicy = String;
+pub type JobConditionType = String;
+pub type ConcurrencyPolicy = String;
+
 // =============================================================================
 // Job
 // =============================================================================
@@ -59,6 +66,10 @@ pub struct JobSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod_failure_policy: Option<PodFailurePolicy>,
 
+    /// Specifies the policy when the Job can be declared as succeeded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub success_policy: Option<SuccessPolicy>,
+
     /// Specifies the number of retries before marking this job failed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backoff_limit: Option<i32>,
@@ -88,7 +99,7 @@ pub struct JobSpec {
 
     /// completionMode specifies how Pod completions are tracked.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub completion_mode: Option<String>,
+    pub completion_mode: Option<CompletionMode>,
 
     /// suspend specifies whether the Job controller should create Pods or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -96,7 +107,7 @@ pub struct JobSpec {
 
     /// podReplacementPolicy specifies when to create replacement Pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pod_replacement_policy: Option<String>,
+    pub pod_replacement_policy: Option<PodReplacementPolicy>,
 
     /// ManagedBy field indicates the controller that manages a Job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -109,10 +120,27 @@ pub struct PodFailurePolicy {
     pub rules: Vec<PodFailurePolicyRule>,
 }
 
+/// SuccessPolicy describes when a Job can be declared as succeeded.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SuccessPolicy {
+    pub rules: Vec<SuccessPolicyRule>,
+}
+
+/// SuccessPolicyRule describes rule for declaring a Job as succeeded.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SuccessPolicyRule {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeeded_indexes: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeeded_count: Option<i32>,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodFailurePolicyRule {
-    pub action: String,
+    pub action: PodFailurePolicyAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub on_exit_codes: Option<PodFailurePolicyOnExitCodesRequirement>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -124,7 +152,7 @@ pub struct PodFailurePolicyRule {
 pub struct PodFailurePolicyOnExitCodesRequirement {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container_name: Option<String>,
-    pub operator: String,
+    pub operator: PodFailurePolicyOnExitCodesOperator,
     pub values: Vec<i32>,
 }
 
@@ -132,8 +160,8 @@ pub struct PodFailurePolicyOnExitCodesRequirement {
 #[serde(rename_all = "camelCase")]
 pub struct PodFailurePolicyOnPodConditionsPattern {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: crate::core::v1::PodConditionType,
+    pub status: crate::core::v1::ConditionStatus,
 }
 
 /// JobStatus represents the current state of a Job.
@@ -178,8 +206,8 @@ pub struct JobStatus {
 #[serde(rename_all = "camelCase")]
 pub struct JobCondition {
     #[serde(rename = "type")]
-    pub condition_type: String,
-    pub status: String,
+    pub condition_type: JobConditionType,
+    pub status: crate::core::v1::ConditionStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_probe_time: Option<Time>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -263,7 +291,7 @@ pub struct CronJobSpec {
 
     /// Specifies how to treat concurrent executions of a Job.
     #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub concurrency_policy: String,
+    pub concurrency_policy: ConcurrencyPolicy,
 
     /// This flag tells the controller to suspend subsequent executions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -318,6 +346,36 @@ pub struct CronJobList {
 
     pub items: Vec<CronJob>,
 }
+
+// CompletionMode constants
+pub const COMPLETION_MODE_NON_INDEXED: &str = "NonIndexed";
+pub const COMPLETION_MODE_INDEXED: &str = "Indexed";
+
+// PodFailurePolicyAction constants
+pub const POD_FAILURE_POLICY_ACTION_FAIL_JOB: &str = "FailJob";
+pub const POD_FAILURE_POLICY_ACTION_FAIL_INDEX: &str = "FailIndex";
+pub const POD_FAILURE_POLICY_ACTION_IGNORE: &str = "Ignore";
+pub const POD_FAILURE_POLICY_ACTION_COUNT: &str = "Count";
+
+// PodFailurePolicyOnExitCodesOperator constants
+pub const POD_FAILURE_POLICY_ON_EXIT_CODES_OP_IN: &str = "In";
+pub const POD_FAILURE_POLICY_ON_EXIT_CODES_OP_NOT_IN: &str = "NotIn";
+
+// PodReplacementPolicy constants
+pub const POD_REPLACEMENT_POLICY_TERMINATING_OR_FAILED: &str = "TerminatingOrFailed";
+pub const POD_REPLACEMENT_POLICY_FAILED: &str = "Failed";
+
+// JobConditionType constants
+pub const JOB_CONDITION_SUSPENDED: &str = "Suspended";
+pub const JOB_CONDITION_COMPLETE: &str = "Complete";
+pub const JOB_CONDITION_FAILED: &str = "Failed";
+pub const JOB_CONDITION_FAILURE_TARGET: &str = "FailureTarget";
+pub const JOB_CONDITION_SUCCESS_CRITERIA_MET: &str = "SuccessCriteriaMet";
+
+// ConcurrencyPolicy constants
+pub const CONCURRENCY_POLICY_ALLOW: &str = "Allow";
+pub const CONCURRENCY_POLICY_FORBID: &str = "Forbid";
+pub const CONCURRENCY_POLICY_REPLACE: &str = "Replace";
 
 // =============================================================================
 // Tests

@@ -9,6 +9,8 @@ use k8s_api_core::IntOrString;
 use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub type PathType = String;
+
 // =============================================================================
 // IPAddress (K8s 1.31+)
 // =============================================================================
@@ -160,6 +162,7 @@ pub struct IngressList {
     pub items: Vec<Ingress>,
 }
 
+
 /// IngressSpec describes the Ingress the user wishes to exist.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -245,7 +248,15 @@ pub struct IngressRule {
     /// host is the fully qualified domain name of a network host.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub host: String,
-    /// http contains HTTP rules.
+    #[serde(flatten)]
+    pub ingress_rule_value: IngressRuleValue,
+}
+
+/// IngressRuleValue represents a rule to apply against incoming requests.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IngressRuleValue {
+    /// http is currently the only supported IngressRuleValue.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<HTTPIngressRuleValue>,
 }
@@ -267,7 +278,7 @@ pub struct HTTPIngressPath {
     pub path: String,
     /// pathType determines the interpretation of the path matching.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path_type: Option<String>,
+    pub path_type: Option<PathType>,
     /// backend defines the referenced service endpoint to which the traffic will be forwarded.
     #[serde(default)]
     pub backend: IngressBackend,

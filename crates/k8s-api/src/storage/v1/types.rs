@@ -4,6 +4,10 @@ use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+pub type VolumeBindingMode = String;
+pub type FSGroupPolicy = String;
+pub type VolumeLifecycleMode = String;
+
 // =============================================================================
 // StorageClass
 // =============================================================================
@@ -32,7 +36,7 @@ pub struct StorageClass {
     pub allow_volume_expansion: Option<bool>,
     /// VolumeBindingMode indicates how PersistentVolumeClaims should be provisioned and bound.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volume_binding_mode: Option<String>,
+    pub volume_binding_mode: Option<VolumeBindingMode>,
     /// AllowedTopologies restrict the node topologies where volumes can be dynamically provisioned.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub allowed_topologies: Vec<TopologySelectorTerm>,
@@ -182,13 +186,13 @@ pub struct CSIDriverSpec {
     pub pod_info_on_mount: Option<bool>,
     /// VolumeLifecycleModes defines what kind of volumes this CSI volume driver supports.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub volume_lifecycle_modes: Vec<String>,
+    pub volume_lifecycle_modes: Vec<VolumeLifecycleMode>,
     /// StorageCapacity indicates that the CSI volume driver wants pod scheduling to consider the storage capacity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage_capacity: Option<bool>,
     /// FSGroupPolicy defines if the underlying volume supports changing ownership and permission of the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fs_group_policy: Option<String>,
+    pub fs_group_policy: Option<FSGroupPolicy>,
     /// TokenRequests indicates the CSI driver needs pod service account tokens.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub token_requests: Vec<TokenRequest>,
@@ -292,6 +296,19 @@ pub struct CSIStorageCapacity {
     pub maximum_volume_size: Option<String>,
 }
 
+// VolumeBindingMode constants
+pub const VOLUME_BINDING_IMMEDIATE: &str = "Immediate";
+pub const VOLUME_BINDING_WAIT_FOR_FIRST_CONSUMER: &str = "WaitForFirstConsumer";
+
+// FSGroupPolicy constants
+pub const FS_GROUP_POLICY_READ_WRITE_ONCE_WITH_FSTYPE: &str = "ReadWriteOnceWithFSType";
+pub const FS_GROUP_POLICY_FILE: &str = "File";
+pub const FS_GROUP_POLICY_NONE: &str = "None";
+
+// VolumeLifecycleMode constants
+pub const VOLUME_LIFECYCLE_PERSISTENT: &str = "Persistent";
+pub const VOLUME_LIFECYCLE_EPHEMERAL: &str = "Ephemeral";
+
 /// CSIStorageCapacityList is a collection of CSIStorageCapacity objects.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -301,4 +318,34 @@ pub struct CSIStorageCapacityList {
     #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<CSIStorageCapacity>,
+}
+
+// =============================================================================
+// VolumeAttributesClass
+// =============================================================================
+
+/// VolumeAttributesClass represents a specification of mutable volume attributes.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VolumeAttributesClass {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: ObjectMeta,
+    /// DriverName is the name of the CSI driver.
+    pub driver_name: String,
+    /// Parameters hold volume attributes defined by the CSI driver.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub parameters: BTreeMap<String, String>,
+}
+
+/// VolumeAttributesClassList is a collection of VolumeAttributesClass objects.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VolumeAttributesClassList {
+    #[serde(flatten)]
+    pub type_meta: TypeMeta,
+    #[serde(default)]
+    pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
+    pub items: Vec<VolumeAttributesClass>,
 }
