@@ -91,6 +91,25 @@ let json = serde_json::to_string_pretty(&pod)?;
 println!("{}", json);
 ```
 
+### Example: Creating a PriorityClass
+
+```rust
+use k8s_api::scheduling::v1::PriorityClass;
+use k8s_apimachinery::{ObjectMeta, TypeMeta};
+
+let class = PriorityClass {
+    type_meta: TypeMeta::new("scheduling.k8s.io/v1", "PriorityClass"),
+    metadata: ObjectMeta::named("high-priority"),
+    value: 1000,
+    global_default: Some(false),
+    description: "critical workloads".to_string(),
+    preemption_policy: Some("PreemptLowerPriority".to_string()),
+};
+
+let json = serde_json::to_string_pretty(&class)?;
+println!("{}", json);
+```
+
 ### Feature Flags
 
 Enable only the API groups you need:
@@ -222,9 +241,9 @@ k8s-api-rust/
 **Low Priority:**
 - [x] `coordination` module validation ✅
 - [x] `node` module validation ✅
-- [ ] `scheduling` module validation
-- [ ] Additional serialization tests
-- [ ] Documentation examples
+- [x] `scheduling` module validation ✅
+- [x] Additional serialization tests ✅
+- [x] Documentation examples ✅
 
 ## Source Reference
 

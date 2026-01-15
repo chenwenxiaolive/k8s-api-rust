@@ -85,7 +85,7 @@ fn validate_lease_spec(spec: &LeaseSpec, field: &str) -> ValidationResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{MicroTime, ObjectMeta};
 
     #[test]
     fn test_validate_lease_valid() {
@@ -234,8 +234,9 @@ mod tests {
                 holder_identity: Some("worker-node-1".to_string()),
                 lease_duration_seconds: Some(40),
                 lease_transitions: Some(0),
-                acquire_time: Some("2024-01-15T10:00:00.000000Z".to_string()),
-                renew_time: Some("2024-01-15T10:01:00.000000Z".to_string()),
+                acquire_time: Some(MicroTime::now()),
+                renew_time: Some(MicroTime::now()),
+                ..Default::default()
             }),
             ..Default::default()
         };

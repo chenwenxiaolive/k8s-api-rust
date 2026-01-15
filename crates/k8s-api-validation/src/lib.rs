@@ -19,6 +19,7 @@ pub mod node;
 pub mod policy;
 pub mod rbac;
 pub mod resource;
+pub mod scheduling;
 pub mod storage;
 
 use thiserror::Error;

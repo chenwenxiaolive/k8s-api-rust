@@ -38,3 +38,27 @@ pub struct PriorityClassList {
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<PriorityClass>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_priority_class_serialization_roundtrip() {
+        let class = PriorityClass {
+            type_meta: TypeMeta::new("scheduling.k8s.io/v1", "PriorityClass"),
+            metadata: ObjectMeta::named("high-priority"),
+            value: 1000,
+            global_default: Some(false),
+            description: "critical workloads".to_string(),
+            preemption_policy: Some("PreemptLowerPriority".to_string()),
+        };
+
+        let json = serde_json::to_string(&class).unwrap();
+        let parsed: PriorityClass = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(class.metadata.name, parsed.metadata.name);
+        assert_eq!(class.value, parsed.value);
+        assert_eq!(class.preemption_policy, parsed.preemption_policy);
+    }
+}

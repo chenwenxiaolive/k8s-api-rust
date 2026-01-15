@@ -108,7 +108,7 @@ fn validate_allocation_mode(
 }
 
 fn validate_node_selection(
-    node_name: &str,
+    node_name: Option<&str>,
     node_selector: &Option<serde_json::Value>,
     all_nodes: &Option<bool>,
     field: &str,
@@ -116,7 +116,7 @@ fn validate_node_selection(
 ) -> ValidationResult {
     let mut errors = Vec::new();
 
-    let has_node_name = !node_name.is_empty();
+    let has_node_name = node_name.map_or(false, |value| !value.is_empty());
     let has_node_selector = node_selector.is_some();
     let has_all_nodes = all_nodes.is_some();
     let set_count = has_node_name as u8 + has_node_selector as u8 + has_all_nodes as u8;
@@ -135,11 +135,13 @@ fn validate_node_selection(
         ));
     }
 
-    if has_node_name {
-        errors.extend(validate_dns_subdomain_name(
-            node_name,
-            &format!("{}.nodeName", field),
-        ));
+    if let Some(value) = node_name {
+        if !value.is_empty() {
+            errors.extend(validate_dns_subdomain_name(
+                value,
+                &format!("{}.nodeName", field),
+            ));
+        }
     }
 
     errors
@@ -148,7 +150,7 @@ fn validate_node_selection(
 pub mod v1beta1 {
     use super::*;
     use k8s_api::resource::v1beta1 as api;
-    use std::collections::BTreeSet;
+    use std::collections::{BTreeMap, BTreeSet};
 
     pub fn validate_resource_claim(claim: &api::ResourceClaim) -> ValidationResult {
         let mut errors = Vec::new();
@@ -198,21 +200,61 @@ pub mod v1beta1 {
         errors
     }
 
+    fn gather_request_names(requests: &[api::DeviceRequest]) -> BTreeMap<String, BTreeSet<String>> {
+        let mut names = BTreeMap::new();
+
+        for request in requests {
+            let mut sub_names = BTreeSet::new();
+            for subrequest in request.first_available.iter() {
+                sub_names.insert(subrequest.name.clone());
+            }
+            names.insert(request.name.clone(), sub_names);
+        }
+
+        names
+    }
+
+    fn request_name_exists(
+        name: &str,
+        request_names: &BTreeMap<String, BTreeSet<String>>,
+    ) -> bool {
+        let mut parts = name.split('/');
+        let request_name = match parts.next() {
+            Some(value) => value,
+            None => return false,
+        };
+        let subrequest_name = parts.next();
+        if parts.next().is_some() {
+            return false;
+        }
+
+        let Some(subrequests) = request_names.get(request_name) else {
+            return false;
+        };
+
+        match subrequest_name {
+            Some(sub) => subrequests.contains(sub),
+            None => true,
+        }
+    }
+
     fn validate_device_claim(claim: &api::DeviceClaim, field: &str) -> ValidationResult {
         let mut errors = Vec::new();
-        let mut request_names = BTreeSet::new();
+        let mut seen_requests = BTreeSet::new();
 
         for (i, request) in claim.requests.iter().enumerate() {
             let request_field = format!("{}.requests[{}]", field, i);
             errors.extend(validate_device_request(request, &request_field));
 
-            if !request.name.is_empty() && !request_names.insert(request.name.clone()) {
+            if !request.name.is_empty() && !seen_requests.insert(request.name.clone()) {
                 errors.push(ValidationError::duplicate(
                     format!("{}.name", request_field),
                     request.name.clone(),
                 ));
             }
         }
+
+        let request_names = gather_request_names(&claim.requests);
 
         for (i, constraint) in claim.constraints.iter().enumerate() {
             let constraint_field = format!("{}.constraints[{}]", field, i);
@@ -242,12 +284,84 @@ pub mod v1beta1 {
             &request.name,
             &format!("{}.name", field),
         ));
+
+        let uses_first_available = !request.first_available.is_empty();
+
+        if uses_first_available {
+            if !request.device_class_name.is_empty() {
+                errors.push(ValidationError::invalid(
+                    &format!("{}.deviceClassName", field),
+                    "deviceClassName must be empty when firstAvailable is set",
+                ));
+            }
+
+            if !request.selectors.is_empty()
+                || !request.allocation_mode.is_empty()
+                || request.count.is_some()
+                || request.admin_access.is_some()
+                || !request.tolerations.is_empty()
+                || request.capacity.is_some()
+            {
+                errors.push(ValidationError::invalid(
+                    field,
+                    "request fields must be set on subrequests when firstAvailable is used",
+                ));
+            }
+        } else {
+            errors.extend(validate_required_dns_subdomain(
+                &request.device_class_name,
+                &format!("{}.deviceClassName", field),
+            ));
+
+            for (i, selector) in request.selectors.iter().enumerate() {
+                errors.extend(validate_device_selector(
+                    selector,
+                    &format!("{}.selectors[{}]", field, i),
+                ));
+            }
+
+            errors.extend(validate_allocation_mode(
+                &request.allocation_mode,
+                request.count,
+                &format!("{}.allocationMode", field),
+                &format!("{}.count", field),
+            ));
+        }
+
+        if uses_first_available {
+            let mut seen = BTreeSet::new();
+            for (i, subrequest) in request.first_available.iter().enumerate() {
+                let sub_field = format!("{}.firstAvailable[{}]", field, i);
+                errors.extend(validate_device_subrequest(subrequest, &sub_field));
+
+                if !subrequest.name.is_empty() && !seen.insert(subrequest.name.clone()) {
+                    errors.push(ValidationError::duplicate(
+                        format!("{}.name", sub_field),
+                        subrequest.name.clone(),
+                    ));
+                }
+            }
+        }
+
+        errors
+    }
+
+    fn validate_device_subrequest(
+        subrequest: &api::DeviceSubRequest,
+        field: &str,
+    ) -> ValidationResult {
+        let mut errors = Vec::new();
+
+        errors.extend(validate_required_dns_label(
+            &subrequest.name,
+            &format!("{}.name", field),
+        ));
         errors.extend(validate_required_dns_subdomain(
-            &request.device_class_name,
+            &subrequest.device_class_name,
             &format!("{}.deviceClassName", field),
         ));
 
-        for (i, selector) in request.selectors.iter().enumerate() {
+        for (i, selector) in subrequest.selectors.iter().enumerate() {
             errors.extend(validate_device_selector(
                 selector,
                 &format!("{}.selectors[{}]", field, i),
@@ -255,8 +369,8 @@ pub mod v1beta1 {
         }
 
         errors.extend(validate_allocation_mode(
-            &request.allocation_mode,
-            request.count,
+            &subrequest.allocation_mode,
+            subrequest.count,
             &format!("{}.allocationMode", field),
             &format!("{}.count", field),
         ));
@@ -287,7 +401,7 @@ pub mod v1beta1 {
     fn validate_device_constraint(
         constraint: &api::DeviceConstraint,
         field: &str,
-        request_names: &BTreeSet<String>,
+        request_names: &BTreeMap<String, BTreeSet<String>>,
     ) -> ValidationResult {
         let mut errors = Vec::new();
         let mut seen = BTreeSet::new();
@@ -301,13 +415,27 @@ pub mod v1beta1 {
 
         for (i, name) in constraint.requests.iter().enumerate() {
             let name_field = format!("{}.requests[{}]", field, i);
-            errors.extend(validate_required_dns_label(name, &name_field));
 
-            if !seen.insert(name.clone()) {
-                errors.push(ValidationError::duplicate(name_field.as_str(), name.clone()));
+            let mut parts = name.split('/');
+            let first = parts.next().unwrap_or("");
+            let second = parts.next();
+            if parts.next().is_some() {
+                errors.push(ValidationError::invalid(
+                    &name_field,
+                    "request must be request or request/subrequest",
+                ));
+            } else {
+                errors.extend(validate_required_dns_label(first, &name_field));
+                if let Some(value) = second {
+                    errors.extend(validate_required_dns_label(value, &name_field));
+                }
             }
 
-            if !request_names.contains(name) {
+            if !seen.insert(name.clone()) {
+                errors.push(ValidationError::duplicate(name_field.clone(), name.clone()));
+            }
+
+            if !request_name_exists(name, request_names) {
                 errors.push(ValidationError::invalid(
                     &name_field,
                     "request must reference an existing request",
@@ -315,15 +443,28 @@ pub mod v1beta1 {
             }
         }
 
-        if let Some(match_attribute) = &constraint.match_attribute {
+        let has_match = constraint.match_attribute.is_some();
+        let has_distinct = constraint.distinct_attribute.is_some();
+
+        if has_match && has_distinct {
+            errors.push(ValidationError::invalid(
+                field,
+                "matchAttribute and distinctAttribute are mutually exclusive",
+            ));
+        } else if let Some(match_attribute) = &constraint.match_attribute {
             errors.extend(validate_label_key(
                 match_attribute,
                 &format!("{}.matchAttribute", field),
             ));
+        } else if let Some(distinct_attribute) = &constraint.distinct_attribute {
+            errors.extend(validate_label_key(
+                distinct_attribute,
+                &format!("{}.distinctAttribute", field),
+            ));
         } else {
             errors.push(ValidationError::required(
-                &format!("{}.matchAttribute", field),
-                "matchAttribute is required",
+                field,
+                "matchAttribute or distinctAttribute is required",
             ));
         }
 
@@ -333,20 +474,34 @@ pub mod v1beta1 {
     fn validate_device_claim_configuration(
         config: &api::DeviceClaimConfiguration,
         field: &str,
-        request_names: &BTreeSet<String>,
+        request_names: &BTreeMap<String, BTreeSet<String>>,
     ) -> ValidationResult {
         let mut errors = Vec::new();
         let mut seen = BTreeSet::new();
 
         for (i, name) in config.requests.iter().enumerate() {
             let name_field = format!("{}.requests[{}]", field, i);
-            errors.extend(validate_required_dns_label(name, &name_field));
 
-            if !seen.insert(name.clone()) {
-                errors.push(ValidationError::duplicate(name_field.as_str(), name.clone()));
+            let mut parts = name.split('/');
+            let first = parts.next().unwrap_or("");
+            let second = parts.next();
+            if parts.next().is_some() {
+                errors.push(ValidationError::invalid(
+                    &name_field,
+                    "request must be request or request/subrequest",
+                ));
+            } else {
+                errors.extend(validate_required_dns_label(first, &name_field));
+                if let Some(value) = second {
+                    errors.extend(validate_required_dns_label(value, &name_field));
+                }
             }
 
-            if !request_names.contains(name) {
+            if !seen.insert(name.clone()) {
+                errors.push(ValidationError::duplicate(name_field.clone(), name.clone()));
+            }
+
+            if !request_name_exists(name, request_names) {
                 errors.push(ValidationError::invalid(
                     &name_field,
                     "request must reference an existing request",
@@ -354,7 +509,7 @@ pub mod v1beta1 {
             }
         }
 
-        if let Some(opaque) = &config.opaque {
+        if let Some(opaque) = &config.device_configuration.opaque {
             errors.extend(validate_opaque_device_configuration(
                 opaque,
                 &format!("{}.opaque", field),
@@ -400,7 +555,7 @@ pub mod v1beta1 {
         config: &api::DeviceClassConfiguration,
         field: &str,
     ) -> ValidationResult {
-        if let Some(opaque) = &config.opaque {
+        if let Some(opaque) = &config.device_configuration.opaque {
             validate_opaque_device_configuration(opaque, &format!("{}.opaque", field))
         } else {
             vec![ValidationError::required(
@@ -436,7 +591,7 @@ pub mod v1beta1 {
         errors.extend(validate_resource_pool(&spec.pool, &format!("{}.pool", field)));
 
         errors.extend(validate_node_selection(
-            &spec.node_name,
+            Some(spec.node_name.as_str()),
             &spec.node_selector,
             &spec.all_nodes,
             field,
@@ -452,6 +607,21 @@ pub mod v1beta1 {
                 errors.push(ValidationError::duplicate(
                     format!("{}.name", device_field),
                     device.name.clone(),
+                ));
+            }
+        }
+
+        let mut counter_set_names = BTreeSet::new();
+        for (i, counter_set) in spec.shared_counters.iter().enumerate() {
+            let counter_field = format!("{}.sharedCounters[{}]", field, i);
+            errors.extend(validate_counter_set(counter_set, &counter_field));
+
+            if !counter_set.name.is_empty()
+                && !counter_set_names.insert(counter_set.name.clone())
+            {
+                errors.push(ValidationError::duplicate(
+                    format!("{}.name", counter_field),
+                    counter_set.name.clone(),
                 ));
             }
         }
@@ -509,6 +679,64 @@ pub mod v1beta1 {
             let key_field = format!("{}.capacity[{}]", field, key);
             errors.extend(validate_label_key(key, &key_field));
             errors.extend(validate_device_capacity(value, &key_field));
+        }
+
+        let mut counter_sets = BTreeSet::new();
+        for (i, counter) in basic.consumes_counters.iter().enumerate() {
+            let counter_field = format!("{}.consumesCounters[{}]", field, i);
+            errors.extend(validate_device_counter_consumption(counter, &counter_field));
+
+            if !counter.counter_set.is_empty() && !counter_sets.insert(counter.counter_set.clone()) {
+                errors.push(ValidationError::duplicate(
+                    format!("{}.counterSet", counter_field),
+                    counter.counter_set.clone(),
+                ));
+            }
+        }
+
+        errors.extend(validate_node_selection(
+            basic.node_name.as_deref(),
+            &basic.node_selector,
+            &basic.all_nodes,
+            field,
+            false,
+        ));
+
+        errors
+    }
+
+    fn validate_device_counter_consumption(
+        counter: &api::DeviceCounterConsumption,
+        field: &str,
+    ) -> ValidationResult {
+        let mut errors = Vec::new();
+
+        errors.extend(validate_required_dns_label(
+            &counter.counter_set,
+            &format!("{}.counterSet", field),
+        ));
+
+        for (key, value) in &counter.counters {
+            let key_field = format!("{}.counters[{}]", field, key);
+            errors.extend(validate_label_key(key, &key_field));
+            errors.extend(validate_quantity(&value.value, &format!("{}.value", key_field)));
+        }
+
+        errors
+    }
+
+    fn validate_counter_set(counter_set: &api::CounterSet, field: &str) -> ValidationResult {
+        let mut errors = Vec::new();
+
+        errors.extend(validate_required_dns_label(
+            &counter_set.name,
+            &format!("{}.name", field),
+        ));
+
+        for (key, value) in &counter_set.counters {
+            let key_field = format!("{}.counters[{}]", field, key);
+            errors.extend(validate_required_dns_label(key, &key_field));
+            errors.extend(validate_quantity(&value.value, &format!("{}.value", key_field)));
         }
 
         errors
@@ -627,10 +855,8 @@ pub mod v1beta2 {
 
         for request in requests {
             let mut sub_names = BTreeSet::new();
-            if let Some(subrequests) = &request.first_available {
-                for subrequest in subrequests {
-                    sub_names.insert(subrequest.name.clone());
-                }
+            for subrequest in request.first_available.iter() {
+                sub_names.insert(subrequest.name.clone());
             }
             names.insert(request.name.clone(), sub_names);
         }
@@ -710,22 +936,56 @@ pub mod v1beta2 {
             &format!("{}.name", field),
         ));
 
-        let uses_first_available = request
-            .first_available
-            .as_ref()
-            .map_or(false, |list| !list.is_empty());
+        let has_exact = request.exactly.is_some();
+        let has_first_available = !request.first_available.is_empty();
 
-        if !uses_first_available {
-            errors.extend(validate_required_dns_subdomain(
-                &request.device_class_name,
-                &format!("{}.deviceClassName", field),
+        if has_exact && has_first_available {
+            errors.push(ValidationError::invalid(
+                field,
+                "exactly and firstAvailable are mutually exclusive",
             ));
-        } else if !request.device_class_name.is_empty() {
-            errors.extend(validate_dns_subdomain_name(
-                &request.device_class_name,
-                &format!("{}.deviceClassName", field),
+        } else if !has_exact && !has_first_available {
+            errors.push(ValidationError::required(
+                field,
+                "either exactly or firstAvailable is required",
             ));
         }
+
+        if let Some(exact) = &request.exactly {
+            errors.extend(validate_exact_device_request(
+                exact,
+                &format!("{}.exactly", field),
+            ));
+        }
+
+        if has_first_available {
+            let mut seen = BTreeSet::new();
+            for (i, subrequest) in request.first_available.iter().enumerate() {
+                let sub_field = format!("{}.firstAvailable[{}]", field, i);
+                errors.extend(validate_device_subrequest(subrequest, &sub_field));
+
+                if !subrequest.name.is_empty() && !seen.insert(subrequest.name.clone()) {
+                    errors.push(ValidationError::duplicate(
+                        format!("{}.name", sub_field),
+                        subrequest.name.clone(),
+                    ));
+                }
+            }
+        }
+
+        errors
+    }
+
+    fn validate_exact_device_request(
+        request: &api::ExactDeviceRequest,
+        field: &str,
+    ) -> ValidationResult {
+        let mut errors = Vec::new();
+
+        errors.extend(validate_required_dns_subdomain(
+            &request.device_class_name,
+            &format!("{}.deviceClassName", field),
+        ));
 
         for (i, selector) in request.selectors.iter().enumerate() {
             errors.extend(validate_device_selector(
@@ -741,19 +1001,11 @@ pub mod v1beta2 {
             &format!("{}.count", field),
         ));
 
-        if let Some(subrequests) = &request.first_available {
-            let mut seen = BTreeSet::new();
-            for (i, subrequest) in subrequests.iter().enumerate() {
-                let sub_field = format!("{}.firstAvailable[{}]", field, i);
-                errors.extend(validate_device_subrequest(subrequest, &sub_field));
-
-                if !subrequest.name.is_empty() && !seen.insert(subrequest.name.clone()) {
-                    errors.push(ValidationError::duplicate(
-                        format!("{}.name", sub_field),
-                        subrequest.name.clone(),
-                    ));
-                }
-            }
+        if let Some(capacity) = &request.capacity {
+            errors.extend(validate_capacity_requirements(
+                capacity,
+                &format!("{}.capacity", field),
+            ));
         }
 
         errors
@@ -787,6 +1039,28 @@ pub mod v1beta2 {
             &format!("{}.allocationMode", field),
             &format!("{}.count", field),
         ));
+
+        if let Some(capacity) = &subrequest.capacity {
+            errors.extend(validate_capacity_requirements(
+                capacity,
+                &format!("{}.capacity", field),
+            ));
+        }
+
+        errors
+    }
+
+    fn validate_capacity_requirements(
+        capacity: &api::CapacityRequirements,
+        field: &str,
+    ) -> ValidationResult {
+        let mut errors = Vec::new();
+
+        for (key, value) in &capacity.requests {
+            let key_field = format!("{}.requests[{}]", field, key);
+            errors.extend(validate_label_key(key, &key_field));
+            errors.extend(validate_quantity(value, &format!("{}.value", key_field)));
+        }
 
         errors
     }
@@ -856,15 +1130,28 @@ pub mod v1beta2 {
             }
         }
 
-        if let Some(match_attribute) = &constraint.match_attribute {
+        let has_match = constraint.match_attribute.is_some();
+        let has_distinct = constraint.distinct_attribute.is_some();
+
+        if has_match && has_distinct {
+            errors.push(ValidationError::invalid(
+                field,
+                "matchAttribute and distinctAttribute are mutually exclusive",
+            ));
+        } else if let Some(match_attribute) = &constraint.match_attribute {
             errors.extend(validate_label_key(
                 match_attribute,
                 &format!("{}.matchAttribute", field),
             ));
+        } else if let Some(distinct_attribute) = &constraint.distinct_attribute {
+            errors.extend(validate_label_key(
+                distinct_attribute,
+                &format!("{}.distinctAttribute", field),
+            ));
         } else {
             errors.push(ValidationError::required(
-                &format!("{}.matchAttribute", field),
-                "matchAttribute is required",
+                field,
+                "matchAttribute or distinctAttribute is required",
             ));
         }
 
@@ -909,7 +1196,7 @@ pub mod v1beta2 {
             }
         }
 
-        if let Some(opaque) = &config.opaque {
+        if let Some(opaque) = &config.device_configuration.opaque {
             errors.extend(validate_opaque_device_configuration(
                 opaque,
                 &format!("{}.opaque", field),
@@ -955,7 +1242,7 @@ pub mod v1beta2 {
         config: &api::DeviceClassConfiguration,
         field: &str,
     ) -> ValidationResult {
-        if let Some(opaque) = &config.opaque {
+        if let Some(opaque) = &config.device_configuration.opaque {
             validate_opaque_device_configuration(opaque, &format!("{}.opaque", field))
         } else {
             vec![ValidationError::required(
@@ -991,7 +1278,7 @@ pub mod v1beta2 {
         errors.extend(validate_resource_pool(&spec.pool, &format!("{}.pool", field)));
 
         errors.extend(validate_node_selection(
-            &spec.node_name,
+            spec.node_name.as_deref(),
             &spec.node_selector,
             &spec.all_nodes,
             field,
@@ -1011,15 +1298,17 @@ pub mod v1beta2 {
             }
         }
 
-        let mut shared_names = BTreeSet::new();
-        for (i, shared) in spec.shared_capacity.iter().enumerate() {
-            let shared_field = format!("{}.sharedCapacity[{}]", field, i);
-            errors.extend(validate_shared_capacity(shared, &shared_field));
+        let mut counter_set_names = BTreeSet::new();
+        for (i, counter_set) in spec.shared_counters.iter().enumerate() {
+            let counter_field = format!("{}.sharedCounters[{}]", field, i);
+            errors.extend(validate_counter_set(counter_set, &counter_field));
 
-            if !shared.name.is_empty() && !shared_names.insert(shared.name.clone()) {
+            if !counter_set.name.is_empty()
+                && !counter_set_names.insert(counter_set.name.clone())
+            {
                 errors.push(ValidationError::duplicate(
-                    format!("{}.name", shared_field),
-                    shared.name.clone(),
+                    format!("{}.name", counter_field),
+                    counter_set.name.clone(),
                 ));
             }
         }
@@ -1027,17 +1316,19 @@ pub mod v1beta2 {
         errors
     }
 
-    fn validate_shared_capacity(capacity: &api::SharedCapacity, field: &str) -> ValidationResult {
+    fn validate_counter_set(counter_set: &api::CounterSet, field: &str) -> ValidationResult {
         let mut errors = Vec::new();
 
         errors.extend(validate_required_dns_label(
-            &capacity.name,
+            &counter_set.name,
             &format!("{}.name", field),
         ));
-        errors.extend(validate_quantity(
-            &capacity.capacity,
-            &format!("{}.capacity", field),
-        ));
+
+        for (key, value) in &counter_set.counters {
+            let key_field = format!("{}.counters[{}]", field, key);
+            errors.extend(validate_required_dns_label(key, &key_field));
+            errors.extend(validate_quantity(&value.value, &format!("{}.value", key_field)));
+        }
 
         errors
     }
@@ -1072,30 +1363,20 @@ pub mod v1beta2 {
             &format!("{}.name", field),
         ));
 
-        if let Some(basic) = &device.basic {
-            errors.extend(validate_basic_device(basic, &format!("{}.basic", field)));
-        }
-
-        errors
-    }
-
-    fn validate_basic_device(basic: &api::BasicDevice, field: &str) -> ValidationResult {
-        let mut errors = Vec::new();
-
-        for (key, value) in &basic.attributes {
+        for (key, value) in &device.attributes {
             let key_field = format!("{}.attributes[{}]", field, key);
             errors.extend(validate_label_key(key, &key_field));
             errors.extend(validate_device_attribute(value, &key_field));
         }
 
-        for (key, value) in &basic.capacity {
+        for (key, value) in &device.capacity {
             let key_field = format!("{}.capacity[{}]", field, key);
             errors.extend(validate_label_key(key, &key_field));
             errors.extend(validate_device_capacity(value, &key_field));
         }
 
         let mut counter_sets = BTreeSet::new();
-        for (i, counter) in basic.consumes_counters.iter().enumerate() {
+        for (i, counter) in device.consumes_counters.iter().enumerate() {
             let counter_field = format!("{}.consumesCounters[{}]", field, i);
             errors.extend(validate_device_counter_consumption(counter, &counter_field));
 
@@ -1108,9 +1389,9 @@ pub mod v1beta2 {
         }
 
         errors.extend(validate_node_selection(
-            &basic.node_name,
-            &basic.node_selector,
-            &basic.all_nodes,
+            device.node_name.as_deref(),
+            &device.node_selector,
+            &device.all_nodes,
             field,
             false,
         ));
@@ -1132,7 +1413,7 @@ pub mod v1beta2 {
         for (key, value) in &counter.counters {
             let key_field = format!("{}.counters[{}]", field, key);
             errors.extend(validate_label_key(key, &key_field));
-            errors.extend(validate_quantity(value, &key_field));
+            errors.extend(validate_quantity(&value.value, &format!("{}.value", key_field)));
         }
 
         errors
@@ -1491,7 +1772,7 @@ pub mod v1alpha3 {
         errors.extend(validate_resource_pool(&spec.pool, &format!("{}.pool", field)));
 
         errors.extend(validate_node_selection(
-            &spec.node_name,
+            Some(spec.node_name.as_str()),
             &spec.node_selector,
             &spec.all_nodes,
             field,
@@ -1638,9 +1919,13 @@ mod tests {
                 devices: Some(api_v1beta2::DeviceClaim {
                     requests: vec![api_v1beta2::DeviceRequest {
                         name: "req".to_string(),
-                        device_class_name: "example.com".to_string(),
-                        allocation_mode: "ExactCount".to_string(),
-                        count: Some(1),
+                        exactly: Some(api_v1beta2::ExactDeviceRequest {
+                            device_class_name: "example.com".to_string(),
+                            allocation_mode: "ExactCount".to_string(),
+                            count: Some(1),
+                            ..Default::default()
+                        }),
+                        first_available: Vec::new(),
                         ..Default::default()
                     }],
                     ..Default::default()
@@ -1661,9 +1946,13 @@ mod tests {
                 devices: Some(api_v1beta2::DeviceClaim {
                     requests: vec![api_v1beta2::DeviceRequest {
                         name: "req".to_string(),
-                        device_class_name: "".to_string(),
-                        allocation_mode: "ExactCount".to_string(),
-                        count: Some(1),
+                        exactly: Some(api_v1beta2::ExactDeviceRequest {
+                            device_class_name: "".to_string(),
+                            allocation_mode: "ExactCount".to_string(),
+                            count: Some(1),
+                            ..Default::default()
+                        }),
+                        first_available: Vec::new(),
                         ..Default::default()
                     }],
                     ..Default::default()

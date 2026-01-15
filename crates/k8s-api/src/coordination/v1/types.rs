@@ -60,3 +60,31 @@ pub struct LeaseSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preferred_holder: Option<String>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_lease_serialization_roundtrip() {
+        let lease = Lease {
+            type_meta: TypeMeta::new("coordination.k8s.io/v1", "Lease"),
+            metadata: ObjectMeta::namespaced("default", "leader-lease"),
+            spec: Some(LeaseSpec {
+                holder_identity: Some("controller-1".to_string()),
+                lease_duration_seconds: Some(30),
+                lease_transitions: Some(2),
+                ..Default::default()
+            }),
+        };
+
+        let json = serde_json::to_string(&lease).unwrap();
+        let parsed: Lease = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(lease.metadata.name, parsed.metadata.name);
+        assert_eq!(
+            lease.spec.as_ref().unwrap().holder_identity,
+            parsed.spec.as_ref().unwrap().holder_identity
+        );
+    }
+}

@@ -747,6 +747,7 @@ mod tests {
                     value: 4,
                     period_seconds: 60,
                 }],
+                tolerance: None,
             }),
             scale_down: Some(HPAScalingRules {
                 stabilization_window_seconds: Some(300),
@@ -756,6 +757,7 @@ mod tests {
                     value: 10,
                     period_seconds: 60,
                 }],
+                tolerance: None,
             }),
         };
 
