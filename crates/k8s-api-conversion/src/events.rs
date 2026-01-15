@@ -99,6 +99,46 @@ impl Convertible<k8s_api::events::v1::Event> for k8s_api::events::v1beta1::Event
 }
 
 // =============================================================================
+// EventList: v1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::events::v1::EventList> for k8s_api::events::v1beta1::EventList {
+    fn convert_to(&self) -> Result<k8s_api::events::v1::EventList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::events::v1::EventList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "events.k8s.io/v1",
+                "EventList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::events::v1::EventList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::events::v1beta1::Event::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "events.k8s.io/v1beta1",
+                "EventList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // Helper conversion functions
 // =============================================================================
 

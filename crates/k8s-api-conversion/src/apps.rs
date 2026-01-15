@@ -907,6 +907,398 @@ impl Convertible<k8s_api::apps::v1::ControllerRevision>
     }
 }
 
+// =============================================================================
+// ControllerRevisionList: v1beta1/v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1::ControllerRevisionList>
+    for k8s_api::apps::v1beta1::ControllerRevisionList
+{
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::ControllerRevisionList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::ControllerRevisionList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1",
+                "ControllerRevisionList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::ControllerRevisionList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta1::ControllerRevision::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta1",
+                "ControllerRevisionList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::apps::v1::ControllerRevisionList>
+    for k8s_api::apps::v1beta2::ControllerRevisionList
+{
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::ControllerRevisionList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::ControllerRevisionList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1",
+                "ControllerRevisionList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::ControllerRevisionList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta2::ControllerRevision::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta2",
+                "ControllerRevisionList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// DeploymentList: v1beta1/v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1::DeploymentList> for k8s_api::apps::v1beta1::DeploymentList {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::DeploymentList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::DeploymentList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1", "DeploymentList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::DeploymentList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta1::Deployment::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta1",
+                "DeploymentList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::apps::v1::DeploymentList> for k8s_api::apps::v1beta2::DeploymentList {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::DeploymentList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::DeploymentList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1", "DeploymentList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::DeploymentList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta2::Deployment::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta2",
+                "DeploymentList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// StatefulSetList: v1beta1/v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1::StatefulSetList> for k8s_api::apps::v1beta1::StatefulSetList {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::StatefulSetList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::StatefulSetList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1", "StatefulSetList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::StatefulSetList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta1::StatefulSet::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta1",
+                "StatefulSetList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::apps::v1::StatefulSetList> for k8s_api::apps::v1beta2::StatefulSetList {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::StatefulSetList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::StatefulSetList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1", "StatefulSetList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::StatefulSetList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta2::StatefulSet::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta2",
+                "StatefulSetList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// DaemonSetList: v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1::DaemonSetList> for k8s_api::apps::v1beta2::DaemonSetList {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::DaemonSetList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::DaemonSetList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1", "DaemonSetList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::DaemonSetList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta2::DaemonSet::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta2",
+                "DaemonSetList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// ReplicaSetList: v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1::ReplicaSetList> for k8s_api::apps::v1beta2::ReplicaSetList {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1::ReplicaSetList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::apps::v1::ReplicaSetList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1", "ReplicaSetList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1::ReplicaSetList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::apps::v1beta2::ReplicaSet::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "apps/v1beta2",
+                "ReplicaSetList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// Scale: v1beta1 <-> v1beta2
+// =============================================================================
+
+impl Convertible<k8s_api::apps::v1beta2::Scale> for k8s_api::apps::v1beta1::Scale {
+    fn convert_to(&self) -> Result<k8s_api::apps::v1beta2::Scale, ConversionError> {
+        Ok(k8s_api::apps::v1beta2::Scale {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1beta2", "Scale"),
+            metadata: self.metadata.clone(),
+            spec: self.spec.as_ref().map(convert_scale_spec_to_v1beta2),
+            status: self.status.as_ref().map(convert_scale_status_to_v1beta2),
+        })
+    }
+
+    fn convert_from(other: &k8s_api::apps::v1beta2::Scale) -> Result<Self, ConversionError> {
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("apps/v1beta1", "Scale"),
+            metadata: other.metadata.clone(),
+            spec: other.spec.as_ref().map(convert_scale_spec_from_v1beta2),
+            status: other.status.as_ref().map(convert_scale_status_from_v1beta2),
+        })
+    }
+}
+
+fn convert_scale_spec_to_v1beta2(
+    spec: &k8s_api::apps::v1beta1::ScaleSpec,
+) -> k8s_api::apps::v1beta2::ScaleSpec {
+    k8s_api::apps::v1beta2::ScaleSpec {
+        replicas: spec.replicas.unwrap_or(0),
+    }
+}
+
+fn convert_scale_spec_from_v1beta2(
+    spec: &k8s_api::apps::v1beta2::ScaleSpec,
+) -> k8s_api::apps::v1beta1::ScaleSpec {
+    k8s_api::apps::v1beta1::ScaleSpec {
+        replicas: Some(spec.replicas),
+    }
+}
+
+fn convert_scale_status_to_v1beta2(
+    status: &k8s_api::apps::v1beta1::ScaleStatus,
+) -> k8s_api::apps::v1beta2::ScaleStatus {
+    let selector = status
+        .selector
+        .as_deref()
+        .map(parse_selector_string)
+        .unwrap_or_default();
+
+    k8s_api::apps::v1beta2::ScaleStatus {
+        replicas: status.replicas,
+        selector,
+        target_selector: status.target_selector.clone().unwrap_or_default(),
+    }
+}
+
+fn convert_scale_status_from_v1beta2(
+    status: &k8s_api::apps::v1beta2::ScaleStatus,
+) -> k8s_api::apps::v1beta1::ScaleStatus {
+    let selector = if status.selector.is_empty() {
+        None
+    } else {
+        Some(
+            status
+                .selector
+                .iter()
+                .map(|(k, v)| format!("{}={}", k, v))
+                .collect::<Vec<_>>()
+                .join(","),
+        )
+    };
+    let target_selector = if status.target_selector.is_empty() {
+        None
+    } else {
+        Some(status.target_selector.clone())
+    };
+
+    k8s_api::apps::v1beta1::ScaleStatus {
+        replicas: status.replicas,
+        selector,
+        target_selector,
+    }
+}
+
+fn parse_selector_string(value: &str) -> std::collections::BTreeMap<String, String> {
+    let mut map = std::collections::BTreeMap::new();
+    for part in value.split(',') {
+        if let Some((key, val)) = part.split_once('=') {
+            let key = key.trim();
+            let val = val.trim();
+            if !key.is_empty() && !val.is_empty() {
+                map.insert(key.to_string(), val.to_string());
+            }
+        }
+    }
+    map
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1005,5 +1397,49 @@ mod tests {
             k8s_api::apps::v1beta2::ControllerRevision::convert_from(&v1_revision).unwrap();
         assert_eq!(v1beta2_roundtrip.metadata.name, "rev-1");
         assert_eq!(v1beta2_roundtrip.revision, 1);
+    }
+
+    #[test]
+    fn test_deployment_list_roundtrip() {
+        use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
+
+        let list = k8s_api::apps::v1beta1::DeploymentList {
+            metadata: ListMeta::default(),
+            items: vec![k8s_api::apps::v1beta1::Deployment {
+                metadata: ObjectMeta::named("deploy"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::apps::v1::DeploymentList = list.convert_to().unwrap();
+        assert_eq!(v1_list.items.len(), 1);
+
+        let roundtrip: k8s_api::apps::v1beta1::DeploymentList =
+            k8s_api::apps::v1beta1::DeploymentList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items[0].metadata.name, "deploy");
+    }
+
+    #[test]
+    fn test_scale_beta_roundtrip() {
+        use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+
+        let v1beta1_scale = k8s_api::apps::v1beta1::Scale {
+            metadata: ObjectMeta::named("scale"),
+            spec: Some(k8s_api::apps::v1beta1::ScaleSpec { replicas: Some(3) }),
+            status: Some(k8s_api::apps::v1beta1::ScaleStatus {
+                replicas: 2,
+                selector: Some("app=demo".to_string()),
+                target_selector: Some("app=demo".to_string()),
+            }),
+            ..Default::default()
+        };
+
+        let v1beta2_scale: k8s_api::apps::v1beta2::Scale = v1beta1_scale.convert_to().unwrap();
+        assert_eq!(v1beta2_scale.status.as_ref().unwrap().replicas, 2);
+
+        let roundtrip: k8s_api::apps::v1beta1::Scale =
+            k8s_api::apps::v1beta1::Scale::convert_from(&v1beta2_scale).unwrap();
+        assert_eq!(roundtrip.spec.as_ref().unwrap().replicas, Some(3));
     }
 }

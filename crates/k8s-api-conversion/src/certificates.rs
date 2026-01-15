@@ -42,6 +42,52 @@ impl Convertible<k8s_api::certificates::v1::CertificateSigningRequest>
     }
 }
 
+// =============================================================================
+// CertificateSigningRequestList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::certificates::v1::CertificateSigningRequestList>
+    for k8s_api::certificates::v1beta1::CertificateSigningRequestList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::certificates::v1::CertificateSigningRequestList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::certificates::v1::CertificateSigningRequestList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "certificates.k8s.io/v1",
+                "CertificateSigningRequestList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::certificates::v1::CertificateSigningRequestList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::certificates::v1beta1::CertificateSigningRequest::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "certificates.k8s.io/v1beta1",
+                "CertificateSigningRequestList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
 fn convert_csr_spec_to_v1(
     spec: &k8s_api::certificates::v1beta1::CertificateSigningRequestSpec,
 ) -> Result<k8s_api::certificates::v1::CertificateSigningRequestSpec, ConversionError> {
@@ -167,6 +213,52 @@ impl Convertible<k8s_api::certificates::v1beta1::ClusterTrustBundle>
             "ClusterTrustBundle",
         );
         Ok(converted)
+    }
+}
+
+// =============================================================================
+// ClusterTrustBundleList: v1alpha1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::certificates::v1beta1::ClusterTrustBundleList>
+    for k8s_api::certificates::v1alpha1::ClusterTrustBundleList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::certificates::v1beta1::ClusterTrustBundleList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::certificates::v1beta1::ClusterTrustBundleList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "certificates.k8s.io/v1beta1",
+                "ClusterTrustBundleList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::certificates::v1beta1::ClusterTrustBundleList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::certificates::v1alpha1::ClusterTrustBundle::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "certificates.k8s.io/v1alpha1",
+                "ClusterTrustBundleList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
     }
 }
 

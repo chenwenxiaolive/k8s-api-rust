@@ -52,6 +52,55 @@ impl Convertible<k8s_api::admissionregistration::v1::MutatingWebhookConfiguratio
     }
 }
 
+// =============================================================================
+// MutatingWebhookConfigurationList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1::MutatingWebhookConfigurationList>
+    for k8s_api::admissionregistration::v1beta1::MutatingWebhookConfigurationList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<
+        k8s_api::admissionregistration::v1::MutatingWebhookConfigurationList,
+        ConversionError,
+    > {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1::MutatingWebhookConfigurationList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1",
+                "MutatingWebhookConfigurationList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::MutatingWebhookConfigurationList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1beta1::MutatingWebhookConfiguration::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1beta1",
+                "MutatingWebhookConfigurationList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
 fn convert_mutating_webhook_to_v1(
     webhook: &k8s_api::admissionregistration::v1beta1::MutatingWebhook,
 ) -> Result<k8s_api::admissionregistration::v1::MutatingWebhook, ConversionError> {
@@ -141,6 +190,55 @@ impl Convertible<k8s_api::admissionregistration::v1::ValidatingWebhookConfigurat
     }
 }
 
+// =============================================================================
+// ValidatingWebhookConfigurationList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingWebhookConfigurationList>
+    for k8s_api::admissionregistration::v1beta1::ValidatingWebhookConfigurationList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<
+        k8s_api::admissionregistration::v1::ValidatingWebhookConfigurationList,
+        ConversionError,
+    > {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1::ValidatingWebhookConfigurationList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1",
+                "ValidatingWebhookConfigurationList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingWebhookConfigurationList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1beta1::ValidatingWebhookConfiguration::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1beta1",
+                "ValidatingWebhookConfigurationList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
 fn convert_validating_webhook_to_v1(
     webhook: &k8s_api::admissionregistration::v1beta1::ValidatingWebhook,
 ) -> Result<k8s_api::admissionregistration::v1::ValidatingWebhook, ConversionError> {
@@ -212,6 +310,96 @@ impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy>
     }
 }
 
+// =============================================================================
+// ValidatingAdmissionPolicyList: v1beta1/v1alpha1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList>
+    for k8s_api::admissionregistration::v1beta1::ValidatingAdmissionPolicyList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList, ConversionError>
+    {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1",
+                "ValidatingAdmissionPolicyList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1beta1::ValidatingAdmissionPolicy::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1beta1",
+                "ValidatingAdmissionPolicyList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList>
+    for k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList, ConversionError>
+    {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1",
+                "ValidatingAdmissionPolicyList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicy::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1alpha1",
+                "ValidatingAdmissionPolicyList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
 impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicy>
     for k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicy
 {
@@ -271,6 +459,100 @@ impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBi
             "ValidatingAdmissionPolicyBinding",
         );
         Ok(converted)
+    }
+}
+
+// =============================================================================
+// ValidatingAdmissionPolicyBindingList: v1beta1/v1alpha1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList>
+    for k8s_api::admissionregistration::v1beta1::ValidatingAdmissionPolicyBindingList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<
+        k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList,
+        ConversionError,
+    > {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1",
+                "ValidatingAdmissionPolicyBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1beta1::ValidatingAdmissionPolicyBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1beta1",
+                "ValidatingAdmissionPolicyBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList>
+    for k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyBindingList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<
+        k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList,
+        ConversionError,
+    > {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1",
+                "ValidatingAdmissionPolicyBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyBindingList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1alpha1",
+                "ValidatingAdmissionPolicyBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
     }
 }
 
@@ -338,6 +620,55 @@ impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolic
 }
 
 // =============================================================================
+// MutatingAdmissionPolicyList: v1alpha1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyList>
+    for k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicyList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<
+        k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyList,
+        ConversionError,
+    > {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1beta1",
+                "MutatingAdmissionPolicyList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicy::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1alpha1",
+                "MutatingAdmissionPolicyList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // MutatingAdmissionPolicyBinding: v1alpha1 <-> v1beta1
 // =============================================================================
 
@@ -367,6 +698,55 @@ impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolic
             "MutatingAdmissionPolicyBinding",
         );
         Ok(converted)
+    }
+}
+
+// =============================================================================
+// MutatingAdmissionPolicyBindingList: v1alpha1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBindingList>
+    for k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicyBindingList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<
+        k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBindingList,
+        ConversionError,
+    > {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1beta1",
+                "MutatingAdmissionPolicyBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicyBindingList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::admissionregistration::v1alpha1::MutatingAdmissionPolicyBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "admissionregistration.k8s.io/v1alpha1",
+                "MutatingAdmissionPolicyBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
     }
 }
 

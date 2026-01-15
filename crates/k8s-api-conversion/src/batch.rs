@@ -28,6 +28,40 @@ impl Convertible<k8s_api::batch::v1::Job> for k8s_api::batch::v1beta1::Job {
     }
 }
 
+// =============================================================================
+// JobList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::batch::v1::JobList> for k8s_api::batch::v1beta1::JobList {
+    fn convert_to(&self) -> Result<k8s_api::batch::v1::JobList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::batch::v1::JobList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("batch/v1", "JobList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::batch::v1::JobList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::batch::v1beta1::Job::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("batch/v1beta1", "JobList"),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
 fn convert_job_spec_to_v1(
     spec: &k8s_api::batch::v1beta1::JobSpec,
 ) -> Result<k8s_api::batch::v1::JobSpec, ConversionError> {
@@ -135,6 +169,43 @@ impl Convertible<k8s_api::batch::v1::CronJob> for k8s_api::batch::v1beta1::CronJ
             metadata: other.metadata.clone(),
             spec: other.spec.as_ref().map(|s| convert_cronjob_spec_from_v1(s)).transpose()?,
             status: other.status.as_ref().map(|s| convert_cronjob_status_from_v1(s)),
+        })
+    }
+}
+
+// =============================================================================
+// CronJobList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::batch::v1::CronJobList> for k8s_api::batch::v1beta1::CronJobList {
+    fn convert_to(&self) -> Result<k8s_api::batch::v1::CronJobList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::batch::v1::CronJobList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("batch/v1", "CronJobList"),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::batch::v1::CronJobList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::batch::v1beta1::CronJob::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "batch/v1beta1",
+                "CronJobList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }

@@ -2,6 +2,7 @@
 //!
 //! This module provides conversions between networking API versions.
 
+use crate::scheme::convert_via_json;
 use crate::{ConversionError, Convertible};
 use k8s_api_core::IntOrString;
 
@@ -31,6 +32,48 @@ impl Convertible<k8s_api::networking::v1::Ingress> for k8s_api::networking::v1be
             metadata: other.metadata.clone(),
             spec: other.spec.as_ref().map(|s| convert_ingress_spec_from_v1(s)),
             status: other.status.as_ref().map(|s| convert_ingress_status_from_v1(s)),
+        })
+    }
+}
+
+// =============================================================================
+// IngressList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::networking::v1::IngressList>
+    for k8s_api::networking::v1beta1::IngressList
+{
+    fn convert_to(&self) -> Result<k8s_api::networking::v1::IngressList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::networking::v1::IngressList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1",
+                "IngressList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::networking::v1::IngressList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::networking::v1beta1::Ingress::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1beta1",
+                "IngressList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }
@@ -297,6 +340,186 @@ impl Convertible<k8s_api::networking::v1::IngressClass>
                     }),
                 }
             }),
+        })
+    }
+}
+
+// =============================================================================
+// IngressClassList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::networking::v1::IngressClassList>
+    for k8s_api::networking::v1beta1::IngressClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::networking::v1::IngressClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::networking::v1::IngressClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1",
+                "IngressClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::networking::v1::IngressClassList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::networking::v1beta1::IngressClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1beta1",
+                "IngressClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// IPAddress: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::networking::v1::IPAddress> for k8s_api::networking::v1beta1::IPAddress {
+    fn convert_to(&self) -> Result<k8s_api::networking::v1::IPAddress, ConversionError> {
+        let mut converted: k8s_api::networking::v1::IPAddress = convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "networking.k8s.io/v1",
+            "IPAddress",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(other: &k8s_api::networking::v1::IPAddress) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::networking::v1beta1::IPAddress = convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "networking.k8s.io/v1beta1",
+            "IPAddress",
+        );
+        Ok(converted)
+    }
+}
+
+// =============================================================================
+// IPAddressList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::networking::v1::IPAddressList>
+    for k8s_api::networking::v1beta1::IPAddressList
+{
+    fn convert_to(&self) -> Result<k8s_api::networking::v1::IPAddressList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::networking::v1::IPAddressList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1",
+                "IPAddressList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::networking::v1::IPAddressList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::networking::v1beta1::IPAddress::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1beta1",
+                "IPAddressList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
+// ServiceCIDR: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::networking::v1::ServiceCIDR>
+    for k8s_api::networking::v1beta1::ServiceCIDR
+{
+    fn convert_to(&self) -> Result<k8s_api::networking::v1::ServiceCIDR, ConversionError> {
+        let mut converted: k8s_api::networking::v1::ServiceCIDR = convert_via_json(self)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "networking.k8s.io/v1",
+            "ServiceCIDR",
+        );
+        Ok(converted)
+    }
+
+    fn convert_from(other: &k8s_api::networking::v1::ServiceCIDR) -> Result<Self, ConversionError> {
+        let mut converted: k8s_api::networking::v1beta1::ServiceCIDR = convert_via_json(other)?;
+        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+            "networking.k8s.io/v1beta1",
+            "ServiceCIDR",
+        );
+        Ok(converted)
+    }
+}
+
+// =============================================================================
+// ServiceCIDRList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::networking::v1::ServiceCIDRList>
+    for k8s_api::networking::v1beta1::ServiceCIDRList
+{
+    fn convert_to(&self) -> Result<k8s_api::networking::v1::ServiceCIDRList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::networking::v1::ServiceCIDRList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1",
+                "ServiceCIDRList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::networking::v1::ServiceCIDRList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::networking::v1beta1::ServiceCIDR::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "networking.k8s.io/v1beta1",
+                "ServiceCIDRList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }

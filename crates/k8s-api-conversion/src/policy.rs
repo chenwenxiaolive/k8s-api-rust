@@ -39,6 +39,52 @@ impl Convertible<k8s_api::policy::v1::PodDisruptionBudget>
     }
 }
 
+// =============================================================================
+// PodDisruptionBudgetList: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::policy::v1::PodDisruptionBudgetList>
+    for k8s_api::policy::v1beta1::PodDisruptionBudgetList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::policy::v1::PodDisruptionBudgetList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::policy::v1::PodDisruptionBudgetList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "policy/v1",
+                "PodDisruptionBudgetList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::policy::v1::PodDisruptionBudgetList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::policy::v1beta1::PodDisruptionBudget::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "policy/v1beta1",
+                "PodDisruptionBudgetList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
 fn convert_pdb_spec_to_v1(
     spec: &k8s_api::policy::v1beta1::PodDisruptionBudgetSpec,
 ) -> k8s_api::policy::v1::PodDisruptionBudgetSpec {

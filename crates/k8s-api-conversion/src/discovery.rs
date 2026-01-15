@@ -50,6 +50,50 @@ impl Convertible<k8s_api::discovery::v1::EndpointSlice>
 }
 
 // =============================================================================
+// EndpointSliceList: v1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::discovery::v1::EndpointSliceList>
+    for k8s_api::discovery::v1beta1::EndpointSliceList
+{
+    fn convert_to(&self) -> Result<k8s_api::discovery::v1::EndpointSliceList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::discovery::v1::EndpointSliceList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "discovery.k8s.io/v1",
+                "EndpointSliceList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::discovery::v1::EndpointSliceList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::discovery::v1beta1::EndpointSlice::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "discovery.k8s.io/v1beta1",
+                "EndpointSliceList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // Helper conversion functions
 // =============================================================================
 

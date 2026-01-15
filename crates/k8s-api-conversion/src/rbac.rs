@@ -418,6 +418,306 @@ fn convert_aggregation_rule_alpha_from_v1(
 }
 
 // =============================================================================
+// List conversions: v1beta1/v1alpha1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::rbac::v1::RoleList> for k8s_api::rbac::v1beta1::RoleList {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::RoleList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::RoleList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "RoleList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::RoleList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1beta1::Role::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1beta1",
+                "RoleList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::RoleList> for k8s_api::rbac::v1alpha1::RoleList {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::RoleList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::RoleList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "RoleList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::RoleList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1alpha1::Role::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "RoleList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::RoleBindingList> for k8s_api::rbac::v1beta1::RoleBindingList {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::RoleBindingList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::RoleBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "RoleBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::RoleBindingList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1beta1::RoleBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1beta1",
+                "RoleBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::RoleBindingList> for k8s_api::rbac::v1alpha1::RoleBindingList {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::RoleBindingList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::RoleBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "RoleBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::RoleBindingList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1alpha1::RoleBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "RoleBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::ClusterRoleList> for k8s_api::rbac::v1beta1::ClusterRoleList {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::ClusterRoleList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::ClusterRoleList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "ClusterRoleList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::ClusterRoleList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1beta1::ClusterRole::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1beta1",
+                "ClusterRoleList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::ClusterRoleList> for k8s_api::rbac::v1alpha1::ClusterRoleList {
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::ClusterRoleList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::ClusterRoleList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "ClusterRoleList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::rbac::v1::ClusterRoleList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1alpha1::ClusterRole::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "ClusterRoleList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::ClusterRoleBindingList>
+    for k8s_api::rbac::v1beta1::ClusterRoleBindingList
+{
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::ClusterRoleBindingList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::ClusterRoleBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "ClusterRoleBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::rbac::v1::ClusterRoleBindingList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1beta1::ClusterRoleBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1beta1",
+                "ClusterRoleBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::rbac::v1::ClusterRoleBindingList>
+    for k8s_api::rbac::v1alpha1::ClusterRoleBindingList
+{
+    fn convert_to(&self) -> Result<k8s_api::rbac::v1::ClusterRoleBindingList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::rbac::v1::ClusterRoleBindingList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1",
+                "ClusterRoleBindingList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::rbac::v1::ClusterRoleBindingList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::rbac::v1alpha1::ClusterRoleBinding::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "rbac.authorization.k8s.io/v1alpha1",
+                "ClusterRoleBindingList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // Tests
 // =============================================================================
 

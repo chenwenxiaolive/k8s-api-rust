@@ -86,6 +86,50 @@ fn convert_topology_term_from_v1(
 }
 
 // =============================================================================
+// StorageClassList: v1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::StorageClassList>
+    for k8s_api::storage::v1beta1::StorageClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::StorageClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::StorageClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "StorageClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::StorageClassList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1beta1::StorageClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "StorageClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // VolumeAttachment: v1 <-> v1beta1
 // =============================================================================
 
@@ -345,6 +389,90 @@ fn convert_volume_attachment_status_alpha_from_v1(
 }
 
 // =============================================================================
+// VolumeAttachmentList: v1 <-> v1beta1/v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::VolumeAttachmentList>
+    for k8s_api::storage::v1beta1::VolumeAttachmentList
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::VolumeAttachmentList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::VolumeAttachmentList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttachmentList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttachmentList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1beta1::VolumeAttachment::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "VolumeAttachmentList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::storage::v1::VolumeAttachmentList>
+    for k8s_api::storage::v1alpha1::VolumeAttachmentList
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::VolumeAttachmentList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::VolumeAttachmentList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttachmentList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttachmentList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1alpha1::VolumeAttachment::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1alpha1",
+                "VolumeAttachmentList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // CSIDriver: v1 <-> v1beta1
 // =============================================================================
 
@@ -418,6 +546,48 @@ fn convert_csi_driver_spec_from_v1(
 }
 
 // =============================================================================
+// CSIDriverList: v1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::CSIDriverList>
+    for k8s_api::storage::v1beta1::CSIDriverList
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::CSIDriverList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::CSIDriverList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "CSIDriverList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::storage::v1::CSIDriverList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1beta1::CSIDriver::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "CSIDriverList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // CSINode: v1 <-> v1beta1
 // =============================================================================
 
@@ -480,6 +650,46 @@ fn convert_csi_node_spec_from_v1(
                 }),
             })
             .collect(),
+    }
+}
+
+// =============================================================================
+// CSINodeList: v1 <-> v1beta1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::CSINodeList> for k8s_api::storage::v1beta1::CSINodeList {
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::CSINodeList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::CSINodeList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "CSINodeList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::storage::v1::CSINodeList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1beta1::CSINode::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "CSINodeList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
     }
 }
 
@@ -560,6 +770,90 @@ impl Convertible<k8s_api::storage::v1::CSIStorageCapacity>
 }
 
 // =============================================================================
+// CSIStorageCapacityList: v1 <-> v1beta1/v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::CSIStorageCapacityList>
+    for k8s_api::storage::v1beta1::CSIStorageCapacityList
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::CSIStorageCapacityList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::CSIStorageCapacityList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "CSIStorageCapacityList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::CSIStorageCapacityList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1beta1::CSIStorageCapacity::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "CSIStorageCapacityList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::storage::v1::CSIStorageCapacityList>
+    for k8s_api::storage::v1alpha1::CSIStorageCapacityList
+{
+    fn convert_to(&self) -> Result<k8s_api::storage::v1::CSIStorageCapacityList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::CSIStorageCapacityList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "CSIStorageCapacityList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::CSIStorageCapacityList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1alpha1::CSIStorageCapacity::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1alpha1",
+                "CSIStorageCapacityList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // VolumeAttributesClass: v1 <-> v1beta1/v1alpha1
 // =============================================================================
 
@@ -635,6 +929,94 @@ impl Convertible<k8s_api::storage::v1::VolumeAttributesClass>
                 .iter()
                 .map(|(k, v)| (k.clone(), v.clone()))
                 .collect(),
+        })
+    }
+}
+
+// =============================================================================
+// VolumeAttributesClassList: v1 <-> v1beta1/v1alpha1
+// =============================================================================
+
+impl Convertible<k8s_api::storage::v1::VolumeAttributesClassList>
+    for k8s_api::storage::v1beta1::VolumeAttributesClassList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::storage::v1::VolumeAttributesClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::VolumeAttributesClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttributesClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttributesClassList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1beta1::VolumeAttributesClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1beta1",
+                "VolumeAttributesClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::storage::v1::VolumeAttributesClassList>
+    for k8s_api::storage::v1alpha1::VolumeAttributesClassList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::storage::v1::VolumeAttributesClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::storage::v1::VolumeAttributesClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1",
+                "VolumeAttributesClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::storage::v1::VolumeAttributesClassList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::storage::v1alpha1::VolumeAttributesClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "storage.k8s.io/v1alpha1",
+                "VolumeAttributesClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }

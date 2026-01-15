@@ -56,3 +56,87 @@ impl Convertible<k8s_api::scheduling::v1::PriorityClass>
         Ok(converted)
     }
 }
+
+// =============================================================================
+// PriorityClassList: v1beta1/v1alpha1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::scheduling::v1::PriorityClassList>
+    for k8s_api::scheduling::v1beta1::PriorityClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::scheduling::v1::PriorityClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::scheduling::v1::PriorityClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "scheduling.k8s.io/v1",
+                "PriorityClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::scheduling::v1::PriorityClassList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::scheduling::v1beta1::PriorityClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "scheduling.k8s.io/v1beta1",
+                "PriorityClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::scheduling::v1::PriorityClassList>
+    for k8s_api::scheduling::v1alpha1::PriorityClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::scheduling::v1::PriorityClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::scheduling::v1::PriorityClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "scheduling.k8s.io/v1",
+                "PriorityClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::scheduling::v1::PriorityClassList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::scheduling::v1alpha1::PriorityClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "scheduling.k8s.io/v1alpha1",
+                "PriorityClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}

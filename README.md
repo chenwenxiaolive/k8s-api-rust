@@ -144,7 +144,7 @@ k8s-api-rust/
 
 ## Current Status
 
-**Total Tests: 298 (all passing)**
+**Total Tests: 300 (all passing)**
 
 ### API Types Coverage (k8s-api)
 
@@ -187,27 +187,27 @@ k8s-api-rust/
 |--------|-------------|-------|
 | abac | 1 | Policy (v0, v1beta1) |
 | admission | 1 | AdmissionReview |
-| admissionregistration | 6 | MutatingWebhookConfiguration, ValidatingWebhookConfiguration, ValidatingAdmissionPolicy (v1alpha1, v1beta1), ValidatingAdmissionPolicyBinding (v1alpha1, v1beta1), MutatingAdmissionPolicy (v1alpha1, v1beta1), MutatingAdmissionPolicyBinding (v1alpha1, v1beta1) |
+| admissionregistration | 12 | MutatingWebhookConfiguration, MutatingWebhookConfigurationList, ValidatingWebhookConfiguration, ValidatingWebhookConfigurationList, ValidatingAdmissionPolicy (v1alpha1, v1beta1), ValidatingAdmissionPolicyList, ValidatingAdmissionPolicyBinding (v1alpha1, v1beta1), ValidatingAdmissionPolicyBindingList, MutatingAdmissionPolicy (v1alpha1, v1beta1), MutatingAdmissionPolicyList, MutatingAdmissionPolicyBinding (v1alpha1, v1beta1), MutatingAdmissionPolicyBindingList |
 | apidiscovery | 2 | APIGroupDiscovery, APIGroupDiscoveryList |
 | authentication | 2 | TokenReview, SelfSubjectReview |
 | authorization | 4 | SubjectAccessReview, SelfSubjectAccessReview, LocalSubjectAccessReview, SelfSubjectRulesReview |
-| storage | 6 | StorageClass, VolumeAttachment, CSIDriver, CSINode, CSIStorageCapacity, VolumeAttributesClass |
-| resource | 4 | ResourceClaim, ResourceClaimTemplate, DeviceClass, ResourceSlice (v1alpha3, v1beta1, v1beta2) |
-| rbac | 4 | Role, ClusterRole, RoleBinding, ClusterRoleBinding (v1alpha1, v1beta1) |
-| apps | 5 | Deployment, StatefulSet, DaemonSet, ReplicaSet, ControllerRevision |
-| batch | 2 | Job, CronJob |
-| networking | 2 | Ingress, IngressClass |
-| policy | 2 | PodDisruptionBudget, Eviction |
-| autoscaling | 3 | HorizontalPodAutoscaler (v1, v2beta1, v2beta2) |
-| discovery | 1 | EndpointSlice |
-| events | 1 | Event |
-| certificates | 2 | CertificateSigningRequest, ClusterTrustBundle (v1alpha1, v1beta1) |
-| coordination | 1 | Lease |
-| flowcontrol | 2 | FlowSchema, PriorityLevelConfiguration |
-| node | 1 | RuntimeClass (v1alpha1, v1beta1) |
-| scheduling | 1 | PriorityClass (v1alpha1, v1beta1) |
+| storage | 12 | StorageClass, StorageClassList, VolumeAttachment, VolumeAttachmentList, CSIDriver, CSIDriverList, CSINode, CSINodeList, CSIStorageCapacity, CSIStorageCapacityList, VolumeAttributesClass, VolumeAttributesClassList |
+| resource | 8 | ResourceClaim, ResourceClaimList, ResourceClaimTemplate, ResourceClaimTemplateList, DeviceClass, DeviceClassList, ResourceSlice, ResourceSliceList (v1alpha3, v1beta1, v1beta2) |
+| rbac | 8 | Role, RoleList, RoleBinding, RoleBindingList, ClusterRole, ClusterRoleList, ClusterRoleBinding, ClusterRoleBindingList (v1alpha1, v1beta1) |
+| apps | 11 | Deployment, DeploymentList, StatefulSet, StatefulSetList, DaemonSet, DaemonSetList, ReplicaSet, ReplicaSetList, ControllerRevision, ControllerRevisionList, Scale (v1beta1, v1beta2) |
+| batch | 4 | Job, JobList, CronJob, CronJobList |
+| networking | 8 | Ingress, IngressList, IngressClass, IngressClassList, IPAddress, IPAddressList, ServiceCIDR, ServiceCIDRList |
+| policy | 3 | PodDisruptionBudget, PodDisruptionBudgetList, Eviction |
+| autoscaling | 2 | HorizontalPodAutoscaler, HorizontalPodAutoscalerList (v1, v2beta1, v2beta2) |
+| discovery | 2 | EndpointSlice, EndpointSliceList |
+| events | 2 | Event, EventList |
+| certificates | 4 | CertificateSigningRequest, CertificateSigningRequestList, ClusterTrustBundle, ClusterTrustBundleList (v1alpha1, v1beta1) |
+| coordination | 4 | Lease, LeaseList, LeaseCandidate, LeaseCandidateList |
+| flowcontrol | 4 | FlowSchema, FlowSchemaList, PriorityLevelConfiguration, PriorityLevelConfigurationList |
+| node | 2 | RuntimeClass, RuntimeClassList (v1alpha1, v1beta1) |
+| scheduling | 2 | PriorityClass, PriorityClassList (v1alpha1, v1beta1) |
 
-**Total: 53 version conversions implemented**
+**Total: 98 version conversions implemented**
 
 ### Validation (k8s-api-validation)
 
@@ -286,7 +286,7 @@ k8s-api-rust/
 ### Next Steps (Planned Order)
 
 1. [x] Expand version conversion coverage for remaining multi-version API groups/types
-   - Added `abac` Policy and apps ControllerRevision conversions
+   - Added list conversions and remaining multi-version resources (apps lists/Scale, networking IPAddress/ServiceCIDR, storage lists, etc.)
 2. [x] Add validation coverage for remaining API groups
    - Added `admission`, `events`, `extensions`, `imagepolicy`, `apiserverinternal`, `apidiscovery`,
      `abac`, `apiregistration`, `apiextensions`, `storagemigration`

@@ -110,6 +110,166 @@ impl Convertible<k8s_api::resource::v1::ResourceSlice> for k8s_api::resource::v1
 }
 
 // =============================================================================
+// List conversions: v1beta2 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::resource::v1::ResourceClaimList>
+    for k8s_api::resource::v1beta2::ResourceClaimList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::ResourceClaimList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceClaimList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceClaimList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::ResourceClaimList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta2::ResourceClaim::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta2",
+                "ResourceClaimList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::ResourceClaimTemplateList>
+    for k8s_api::resource::v1beta2::ResourceClaimTemplateList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::resource::v1::ResourceClaimTemplateList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceClaimTemplateList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceClaimTemplateList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::resource::v1::ResourceClaimTemplateList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta2::ResourceClaimTemplate::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta2",
+                "ResourceClaimTemplateList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::DeviceClassList>
+    for k8s_api::resource::v1beta2::DeviceClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::DeviceClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::DeviceClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "DeviceClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::DeviceClassList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta2::DeviceClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta2",
+                "DeviceClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::ResourceSliceList>
+    for k8s_api::resource::v1beta2::ResourceSliceList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::ResourceSliceList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceSliceList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceSliceList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::ResourceSliceList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta2::ResourceSlice::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta2",
+                "ResourceSliceList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // ResourceClaim: v1beta1 <-> v1
 // =============================================================================
 
@@ -430,6 +590,166 @@ impl Convertible<k8s_api::resource::v1::ResourceSlice> for k8s_api::resource::v1
             ),
             metadata: other.metadata.clone(),
             spec: convert_resource_slice_spec_v1beta1_from_v1(&other.spec)?,
+        })
+    }
+}
+
+// =============================================================================
+// List conversions: v1beta1 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::resource::v1::ResourceClaimList>
+    for k8s_api::resource::v1beta1::ResourceClaimList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::ResourceClaimList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceClaimList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceClaimList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::ResourceClaimList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta1::ResourceClaim::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta1",
+                "ResourceClaimList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::ResourceClaimTemplateList>
+    for k8s_api::resource::v1beta1::ResourceClaimTemplateList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::resource::v1::ResourceClaimTemplateList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceClaimTemplateList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceClaimTemplateList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::resource::v1::ResourceClaimTemplateList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta1::ResourceClaimTemplate::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta1",
+                "ResourceClaimTemplateList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::DeviceClassList>
+    for k8s_api::resource::v1beta1::DeviceClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::DeviceClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::DeviceClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "DeviceClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::DeviceClassList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta1::DeviceClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta1",
+                "DeviceClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::ResourceSliceList>
+    for k8s_api::resource::v1beta1::ResourceSliceList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::ResourceSliceList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceSliceList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceSliceList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::ResourceSliceList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1beta1::ResourceSlice::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1beta1",
+                "ResourceSliceList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }
@@ -946,6 +1266,166 @@ impl Convertible<k8s_api::resource::v1::ResourceSlice> for k8s_api::resource::v1
             ),
             metadata: other.metadata.clone(),
             spec: convert_resource_slice_spec_v1alpha3_from_v1(&other.spec)?,
+        })
+    }
+}
+
+// =============================================================================
+// List conversions: v1alpha3 <-> v1
+// =============================================================================
+
+impl Convertible<k8s_api::resource::v1::ResourceClaimList>
+    for k8s_api::resource::v1alpha3::ResourceClaimList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::ResourceClaimList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceClaimList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceClaimList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::ResourceClaimList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1alpha3::ResourceClaim::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1alpha3",
+                "ResourceClaimList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::ResourceClaimTemplateList>
+    for k8s_api::resource::v1alpha3::ResourceClaimTemplateList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::resource::v1::ResourceClaimTemplateList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceClaimTemplateList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceClaimTemplateList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::resource::v1::ResourceClaimTemplateList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1alpha3::ResourceClaimTemplate::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1alpha3",
+                "ResourceClaimTemplateList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::DeviceClassList>
+    for k8s_api::resource::v1alpha3::DeviceClassList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::DeviceClassList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::DeviceClassList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "DeviceClassList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::DeviceClassList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1alpha3::DeviceClass::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1alpha3",
+                "DeviceClassList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+impl Convertible<k8s_api::resource::v1::ResourceSliceList>
+    for k8s_api::resource::v1alpha3::ResourceSliceList
+{
+    fn convert_to(&self) -> Result<k8s_api::resource::v1::ResourceSliceList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::resource::v1::ResourceSliceList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1",
+                "ResourceSliceList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(other: &k8s_api::resource::v1::ResourceSliceList) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::resource::v1alpha3::ResourceSlice::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "resource.k8s.io/v1alpha3",
+                "ResourceSliceList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }

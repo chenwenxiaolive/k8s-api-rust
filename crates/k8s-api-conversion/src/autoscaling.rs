@@ -160,6 +160,52 @@ fn convert_hpa_status_from_v2(
 }
 
 // =============================================================================
+// HorizontalPodAutoscalerList: v1 <-> v2
+// =============================================================================
+
+impl Convertible<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList>
+    for k8s_api::autoscaling::v1::HorizontalPodAutoscalerList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::autoscaling::v2::HorizontalPodAutoscalerList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "autoscaling/v2",
+                "HorizontalPodAutoscalerList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::autoscaling::v2::HorizontalPodAutoscalerList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::autoscaling::v1::HorizontalPodAutoscaler::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "autoscaling/v1",
+                "HorizontalPodAutoscalerList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
+    }
+}
+
+// =============================================================================
 // HorizontalPodAutoscaler: v2beta1 <-> v2
 // =============================================================================
 
@@ -203,6 +249,52 @@ impl Convertible<k8s_api::autoscaling::v2::HorizontalPodAutoscaler>
                 .status
                 .as_ref()
                 .map(|s| convert_hpa_status_v2beta1_from_v2(s)),
+        })
+    }
+}
+
+// =============================================================================
+// HorizontalPodAutoscalerList: v2beta1 <-> v2
+// =============================================================================
+
+impl Convertible<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList>
+    for k8s_api::autoscaling::v2beta1::HorizontalPodAutoscalerList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::autoscaling::v2::HorizontalPodAutoscalerList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "autoscaling/v2",
+                "HorizontalPodAutoscalerList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::autoscaling::v2::HorizontalPodAutoscalerList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::autoscaling::v2beta1::HorizontalPodAutoscaler::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "autoscaling/v2beta1",
+                "HorizontalPodAutoscalerList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
         })
     }
 }
@@ -816,6 +908,52 @@ impl Convertible<k8s_api::autoscaling::v2::HorizontalPodAutoscaler>
             "HorizontalPodAutoscaler",
         );
         Ok(converted)
+    }
+}
+
+// =============================================================================
+// HorizontalPodAutoscalerList: v2beta2 <-> v2
+// =============================================================================
+
+impl Convertible<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList>
+    for k8s_api::autoscaling::v2beta2::HorizontalPodAutoscalerList
+{
+    fn convert_to(
+        &self,
+    ) -> Result<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList, ConversionError> {
+        let items = self
+            .items
+            .iter()
+            .map(|item| item.convert_to())
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(k8s_api::autoscaling::v2::HorizontalPodAutoscalerList {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "autoscaling/v2",
+                "HorizontalPodAutoscalerList",
+            ),
+            metadata: self.metadata.clone(),
+            items,
+        })
+    }
+
+    fn convert_from(
+        other: &k8s_api::autoscaling::v2::HorizontalPodAutoscalerList,
+    ) -> Result<Self, ConversionError> {
+        let items = other
+            .items
+            .iter()
+            .map(|item| k8s_api::autoscaling::v2beta2::HorizontalPodAutoscaler::convert_from(item))
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "autoscaling/v2beta2",
+                "HorizontalPodAutoscalerList",
+            ),
+            metadata: other.metadata.clone(),
+            items,
+        })
     }
 }
 
