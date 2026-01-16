@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::core::v1::ObjectReference;
+
 pub type AddressType = String;
 
 // =============================================================================
@@ -126,26 +128,6 @@ pub struct EndpointPort {
     /// AppProtocol represents the application protocol for this port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub app_protocol: Option<String>,
-}
-
-/// ObjectReference contains enough information to let you inspect or modify the referred object.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ObjectReference {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub kind: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub namespace: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub uid: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub api_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub resource_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub field_path: String,
 }
 
 // AddressType constants

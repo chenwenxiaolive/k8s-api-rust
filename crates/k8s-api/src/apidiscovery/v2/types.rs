@@ -7,6 +7,8 @@
 use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use k8s_api_core::GroupVersionKind;
+
 pub type DiscoveryFreshness = String;
 pub type ResourceScope = String;
 
@@ -99,15 +101,6 @@ pub struct APISubresourceDiscovery {
     /// verbs is a list of supported API operation types.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub verbs: Vec<String>,
-}
-
-/// GroupVersionKind unambiguously identifies a kind.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GroupVersionKind {
-    pub group: String,
-    pub version: String,
-    pub kind: String,
 }
 
 // Resource scope constants

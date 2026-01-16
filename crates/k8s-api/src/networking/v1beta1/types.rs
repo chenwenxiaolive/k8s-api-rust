@@ -9,6 +9,8 @@ use k8s_api_core::IntOrString;
 use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::core::v1::TypedLocalObjectReference;
+
 pub type PathType = String;
 
 // =============================================================================
@@ -297,20 +299,6 @@ pub struct IngressBackend {
     /// resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<TypedLocalObjectReference>,
-}
-
-/// TypedLocalObjectReference contains enough information to let you locate the
-/// typed referenced object inside the same namespace.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TypedLocalObjectReference {
-    /// APIGroup is the group for the resource being referenced.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced.
-    pub kind: String,
-    /// Name is the name of resource being referenced.
-    pub name: String,
 }
 
 // Path type constants

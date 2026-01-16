@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::core::v1::Toleration;
+
 // =============================================================================
 // RuntimeClass
 // =============================================================================
@@ -55,20 +57,4 @@ pub struct Scheduling {
     /// Tolerations are appended to pods running with this RuntimeClass.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tolerations: Vec<Toleration>,
-}
-
-/// Toleration represents a toleration for a pod.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Toleration {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub key: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub value: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub effect: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub toleration_seconds: Option<i64>,
 }

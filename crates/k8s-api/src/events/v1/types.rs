@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::core::v1::{EventSource, ObjectReference};
+
 // =============================================================================
 // Event
 // =============================================================================
@@ -77,34 +79,4 @@ pub struct EventSeries {
     pub count: i32,
     /// LastObservedTime is the time when last Event from the series was seen.
     pub last_observed_time: String,
-}
-
-/// ObjectReference contains enough information to let you inspect or modify the referred object.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ObjectReference {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub kind: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub namespace: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub uid: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub api_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub resource_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub field_path: String,
-}
-
-/// EventSource contains information for an event.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct EventSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub component: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub host: String,
 }

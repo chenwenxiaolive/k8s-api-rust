@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::core::v1::TypedLocalObjectReference;
+
 pub type PolicyType = String;
 pub type PathType = String;
 
@@ -160,16 +162,6 @@ pub struct ServiceBackendPort {
     pub name: String,
     #[serde(default)]
     pub number: i32,
-}
-
-/// TypedLocalObjectReference contains enough information to let you locate the referenced object.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TypedLocalObjectReference {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
 }
 
 // =============================================================================

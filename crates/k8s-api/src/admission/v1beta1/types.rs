@@ -4,6 +4,9 @@ use k8s_apimachinery::apis::meta::v1::TypeMeta;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+pub use crate::authentication::v1::UserInfo;
+pub use k8s_api_core::{GroupVersionKind, GroupVersionResource};
+
 pub type Operation = String;
 pub type PatchType = String;
 
@@ -101,36 +104,4 @@ pub struct AdmissionResponse {
     /// warnings is a list of warning messages to return to the requesting API client.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub warnings: Vec<String>,
-}
-
-/// GroupVersionKind unambiguously identifies a kind.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GroupVersionKind {
-    pub group: String,
-    pub version: String,
-    pub kind: String,
-}
-
-/// GroupVersionResource unambiguously identifies a resource.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GroupVersionResource {
-    pub group: String,
-    pub version: String,
-    pub resource: String,
-}
-
-/// UserInfo holds the information about the user needed to implement the user.Info interface.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UserInfo {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub username: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub uid: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub groups: Vec<String>,
-    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
-    pub extra: HashMap<String, Vec<String>>,
 }

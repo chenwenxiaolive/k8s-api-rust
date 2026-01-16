@@ -192,7 +192,7 @@ k8s-api-rust/
 | authentication | 2 | TokenReview, SelfSubjectReview |
 | authorization | 4 | SubjectAccessReview, SelfSubjectAccessReview, LocalSubjectAccessReview, SelfSubjectRulesReview |
 | storage | 12 | StorageClass, StorageClassList, VolumeAttachment, VolumeAttachmentList, CSIDriver, CSIDriverList, CSINode, CSINodeList, CSIStorageCapacity, CSIStorageCapacityList, VolumeAttributesClass, VolumeAttributesClassList |
-| resource | 8 | ResourceClaim, ResourceClaimList, ResourceClaimTemplate, ResourceClaimTemplateList, DeviceClass, DeviceClassList, ResourceSlice, ResourceSliceList (v1alpha3, v1beta1, v1beta2) |
+| resource | 8 | ResourceClaim, ResourceClaimList, ResourceClaimTemplate, ResourceClaimTemplateList, DeviceClass, DeviceClassList, ResourceSlice, ResourceSliceList (v1beta1, v1beta2) |
 | rbac | 8 | Role, RoleList, RoleBinding, RoleBindingList, ClusterRole, ClusterRoleList, ClusterRoleBinding, ClusterRoleBindingList (v1alpha1, v1beta1) |
 | apps | 11 | Deployment, DeploymentList, StatefulSet, StatefulSetList, DaemonSet, DaemonSetList, ReplicaSet, ReplicaSetList, ControllerRevision, ControllerRevisionList, Scale (v1beta1, v1beta2) |
 | batch | 4 | Job, JobList, CronJob, CronJobList |
@@ -300,8 +300,8 @@ k8s-api-rust/
 - [x] Add `apiregistration/v1` ConditionStatus and APIServiceConditionType enums
 - [x] Implement `apiextensions/v1beta1` module to match Kubernetes v1.34.1
 - [x] Implement `apiregistration/v1beta1` module to match Kubernetes v1.34.1
-- [ ] Reconcile Rust-only types vs Go (policy/v1beta1 PodSecurityPolicy*, batch/v1beta1 Job*, resource/v1alpha3 claim types) and decide keep/remove
-- [ ] Audit duplicated meta types (GroupVersionKind, GroupVersionResource, ObjectReference, UserInfo, EventSource, TypedLocalObjectReference, Toleration) vs apimachinery/core sources
+- [x] Reconcile Rust-only types vs Go (policy/v1beta1 PodSecurityPolicy*, batch/v1beta1 Job*, resource/v1alpha3 claim types) and decide keep/remove
+- [x] Audit duplicated meta types (GroupVersionKind, GroupVersionResource, ObjectReference, UserInfo, EventSource, TypedLocalObjectReference, Toleration) vs apimachinery/core sources
 
 ## Source Reference
 

@@ -5,6 +5,8 @@
 use k8s_apimachinery::apis::meta::v1::{ListMeta, MicroTime, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::core::v1::EventSource;
+
 // =============================================================================
 // Event
 // =============================================================================
@@ -78,14 +80,4 @@ pub struct EventList {
     #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<Event>,
-}
-
-/// EventSource contains information for an event.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct EventSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub component: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub host: String,
 }
