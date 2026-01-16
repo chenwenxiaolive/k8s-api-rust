@@ -294,6 +294,15 @@ k8s-api-rust/
    - Added tests for admission, events, apiregistration, apiextensions, apidiscovery, imagepolicy,
      apiserverinternal, storagemigration, and extensions
 
+### Follow-up Work
+
+- [ ] Add missing `apiextensions/v1` types (ConversionReview/Request/Response, ConditionStatus, JSONSchema* aliases, ResourceScope, ValidationRules)
+- [ ] Add `apiregistration/v1` ConditionStatus and APIServiceConditionType enums
+- [ ] Implement `apiextensions/v1beta1` module to match Kubernetes v1.34.1
+- [ ] Implement `apiregistration/v1beta1` module to match Kubernetes v1.34.1
+- [ ] Reconcile Rust-only types vs Go (policy/v1beta1 PodSecurityPolicy*, batch/v1beta1 Job*, resource/v1alpha3 claim types) and decide keep/remove
+- [ ] Audit duplicated meta types (GroupVersionKind, GroupVersionResource, ObjectReference, UserInfo, EventSource, TypedLocalObjectReference, Toleration) vs apimachinery/core sources
+
 ## Source Reference
 
 This project refactors types from the official Kubernetes codebase:
