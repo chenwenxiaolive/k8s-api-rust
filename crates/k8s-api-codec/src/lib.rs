@@ -841,6 +841,7 @@ fn find_field(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use k8s_api::apps::v1::Deployment;
     use k8s_api::core::v1::Namespace;
     use k8s_apimachinery::apis::meta::v1::ObjectMeta;
 
@@ -864,5 +865,38 @@ mod tests {
         let bytes = encode_protobuf(&message_name, &namespace).unwrap();
         let decoded: Namespace = decode_protobuf(&message_name, &bytes).unwrap();
         assert_eq!(decoded.metadata.name, "codec-test");
+    }
+
+    #[test]
+    fn test_external_codec_json_roundtrip_core() {
+        let namespace = Namespace {
+            metadata: ObjectMeta::named("codec-json"),
+            ..Default::default()
+        };
+        let codec = ExternalVersionCodec::from_api_version("v1", "Namespace").unwrap();
+        let bytes = codec.encode_json(&namespace).unwrap();
+        let decoded: Namespace = codec.decode_json(&bytes).unwrap();
+        assert_eq!(decoded.metadata.name, "codec-json");
+    }
+
+    #[test]
+    fn test_external_codec_protobuf_roundtrip_apps() {
+        let deployment = Deployment {
+            metadata: ObjectMeta::named("codec-deploy"),
+            ..Default::default()
+        };
+        let codec = ExternalVersionCodec::from_api_version("apps/v1", "Deployment").unwrap();
+        let bytes = codec.encode_protobuf(&deployment).unwrap();
+        let decoded: Deployment = codec.decode_protobuf(&bytes).unwrap();
+        assert_eq!(decoded.metadata.name, "codec-deploy");
+    }
+
+    #[test]
+    fn test_external_codec_patch_helpers() {
+        let patch = ExternalVersionCodec::patch_strategic(JsonValue::Object(JsonMap::new()));
+        assert_eq!(
+            patch.content_type(),
+            "application/strategic-merge-patch+json"
+        );
     }
 }
