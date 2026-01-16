@@ -46,9 +46,9 @@ pub const VERB_ALL: &str = "*";
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExemptPriorityLevelConfiguration {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub nominal_concurrency_shares: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lendable_percent: Option<i32>,
 }
 
@@ -68,11 +68,10 @@ pub struct FlowDistinguisherMethod {
 pub struct FlowSchema {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<FlowSchemaSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<FlowSchemaStatus>,
 }
 
@@ -82,19 +81,19 @@ pub struct FlowSchema {
 #[serde(rename_all = "camelCase")]
 pub struct FlowSchemaCondition {
     /// type is the type of the condition.
-    #[serde(rename = "type", default, skip_serializing_if = "String::is_empty")]
+    #[serde(rename = "type", skip_serializing_if = "String::is_empty")]
     pub type_: FlowSchemaConditionType,
     /// status is the status of the condition (True, False, Unknown).
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub status: ConditionStatus,
     /// lastTransitionTime is the last time the condition transitioned from one status to another.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     /// reason is a unique, one-word, CamelCase reason for the condition's last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
     /// message is a human-readable message indicating details about last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -105,7 +104,6 @@ pub struct FlowSchemaCondition {
 pub struct FlowSchemaList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<FlowSchema>,
 }
@@ -118,13 +116,13 @@ pub struct FlowSchemaSpec {
     /// PriorityLevelConfiguration should be used to process requests.
     pub priority_level_configuration: PriorityLevelConfigurationReference,
     /// MatchingPrecedence is used to choose among the FlowSchemas that match a given request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub matching_precedence: Option<i32>,
     /// DistinguisherMethod defines how to compute the flow distinguisher for requests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub distinguisher_method: Option<FlowDistinguisherMethod>,
     /// Rules describes which requests will match this flow schema.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<PolicyRulesWithSubjects>,
 }
 
@@ -133,7 +131,7 @@ pub struct FlowSchemaSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FlowSchemaStatus {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<FlowSchemaCondition>,
 }
 
@@ -152,7 +150,7 @@ pub struct GroupSubject {
 pub struct LimitResponse {
     #[serde(rename = "type")]
     pub type_: LimitResponseType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub queuing: Option<QueuingConfiguration>,
 }
 
@@ -161,13 +159,13 @@ pub struct LimitResponse {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LimitedPriorityLevelConfiguration {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub nominal_concurrency_shares: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit_response: Option<LimitResponse>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lendable_percent: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub borrowing_limit_percent: Option<i32>,
 }
 
@@ -186,11 +184,11 @@ pub struct NonResourcePolicyRule {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PolicyRulesWithSubjects {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub subjects: Vec<Subject>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resource_rules: Vec<ResourcePolicyRule>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub non_resource_rules: Vec<NonResourcePolicyRule>,
 }
 
@@ -201,11 +199,10 @@ pub struct PolicyRulesWithSubjects {
 pub struct PriorityLevelConfiguration {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<PriorityLevelConfigurationSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PriorityLevelConfigurationStatus>,
 }
 
@@ -215,19 +212,19 @@ pub struct PriorityLevelConfiguration {
 #[serde(rename_all = "camelCase")]
 pub struct PriorityLevelConfigurationCondition {
     /// type is the type of the condition.
-    #[serde(rename = "type", default, skip_serializing_if = "String::is_empty")]
+    #[serde(rename = "type", skip_serializing_if = "String::is_empty")]
     pub type_: PriorityLevelConfigurationConditionType,
     /// status is the status of the condition (True, False, Unknown).
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub status: ConditionStatus,
     /// lastTransitionTime is the last time the condition transitioned from one status to another.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     /// reason is a unique, one-word, CamelCase reason for the condition's last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
     /// message is a human-readable message indicating details about last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -238,7 +235,6 @@ pub struct PriorityLevelConfigurationCondition {
 pub struct PriorityLevelConfigurationList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<PriorityLevelConfiguration>,
 }
@@ -258,9 +254,9 @@ pub struct PriorityLevelConfigurationReference {
 pub struct PriorityLevelConfigurationSpec {
     #[serde(rename = "type")]
     pub type_: PriorityLevelEnablement,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limited: Option<LimitedPriorityLevelConfiguration>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub exempt: Option<ExemptPriorityLevelConfiguration>,
 }
 
@@ -269,7 +265,7 @@ pub struct PriorityLevelConfigurationSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PriorityLevelConfigurationStatus {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<PriorityLevelConfigurationCondition>,
 }
 
@@ -278,11 +274,11 @@ pub struct PriorityLevelConfigurationStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct QueuingConfiguration {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub queues: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_size: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub queue_length_limit: Option<i32>,
 }
 
@@ -294,9 +290,9 @@ pub struct ResourcePolicyRule {
     pub verbs: Vec<String>,
     pub api_groups: Vec<String>,
     pub resources: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster_scope: Option<bool>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub namespaces: Vec<String>,
 }
 
@@ -315,11 +311,11 @@ pub struct ServiceAccountSubject {
 #[serde(rename_all = "camelCase")]
 pub struct Subject {
     pub kind: SubjectKind,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<UserSubject>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub group: Option<GroupSubject>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub service_account: Option<ServiceAccountSubject>,
 }
 

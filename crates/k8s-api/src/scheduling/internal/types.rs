@@ -10,18 +10,17 @@ use serde::{Deserialize, Serialize};
 pub struct PriorityClass {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     /// Value represents the integer value of this priority class.
     pub value: i32,
     /// GlobalDefault specifies whether this PriorityClass should be considered as the default priority.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub global_default: Option<bool>,
     /// Description is an arbitrary string that usually provides guidelines on when this priority class should be used.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub description: String,
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub preemption_policy: Option<String>,
 }
 
@@ -32,7 +31,6 @@ pub struct PriorityClass {
 pub struct PriorityClassList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<PriorityClass>,
 }

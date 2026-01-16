@@ -38,11 +38,10 @@ pub const REPLICA_SET_REPLICA_FAILURE: &str = "ReplicaFailure";
 pub struct DaemonSet {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<DaemonSetSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<DaemonSetStatus>,
 }
 
@@ -54,11 +53,11 @@ pub struct DaemonSetCondition {
     #[serde(rename = "type")]
     pub condition_type: DaemonSetConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -69,7 +68,6 @@ pub struct DaemonSetCondition {
 pub struct DaemonSetList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<DaemonSet>,
 }
@@ -79,16 +77,16 @@ pub struct DaemonSetList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DaemonSetSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
     pub template: PodTemplateSpec,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub update_strategy: Option<DaemonSetUpdateStrategy>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub min_ready_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub template_generation: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub revision_history_limit: Option<i32>,
 }
 
@@ -101,17 +99,17 @@ pub struct DaemonSetStatus {
     pub number_misscheduled: i32,
     pub desired_number_scheduled: i32,
     pub number_ready: i32,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_number_scheduled: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub number_available: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub number_unavailable: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub collision_count: Option<i32>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<DaemonSetCondition>,
 }
 
@@ -120,9 +118,9 @@ pub struct DaemonSetStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DaemonSetUpdateStrategy {
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "type")]
     pub strategy_type: DaemonSetUpdateStrategyType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateDaemonSet>,
 }
 
@@ -133,11 +131,10 @@ pub struct DaemonSetUpdateStrategy {
 pub struct Deployment {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<DeploymentSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<DeploymentStatus>,
 }
 
@@ -149,13 +146,13 @@ pub struct DeploymentCondition {
     #[serde(rename = "type")]
     pub condition_type: DeploymentConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_update_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -166,7 +163,6 @@ pub struct DeploymentCondition {
 pub struct DeploymentList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<Deployment>,
 }
@@ -179,7 +175,7 @@ pub struct DeploymentRollback {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     pub name: String,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub updated_annotations: BTreeMap<String, String>,
     pub rollback_to: RollbackConfig,
 }
@@ -189,22 +185,22 @@ pub struct DeploymentRollback {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
     pub template: PodTemplateSpec,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub strategy: Option<DeploymentStrategy>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub min_ready_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub revision_history_limit: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rollback_to: Option<RollbackConfig>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub progress_deadline_seconds: Option<i32>,
 }
 
@@ -213,23 +209,23 @@ pub struct DeploymentSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ready_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub available_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub unavailable_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub terminating_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<DeploymentCondition>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub collision_count: Option<i32>,
 }
 
@@ -238,9 +234,9 @@ pub struct DeploymentStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DeploymentStrategy {
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "type")]
     pub strategy_type: DeploymentStrategyType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rolling_update: Option<RollingUpdateDeployment>,
 }
 
@@ -249,9 +245,9 @@ pub struct DeploymentStrategy {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HTTPIngressPath {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub path_type: Option<PathType>,
     pub backend: IngressBackend,
 }
@@ -270,7 +266,7 @@ pub struct HTTPIngressRuleValue {
 #[serde(rename_all = "camelCase")]
 pub struct IPBlock {
     pub cidr: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub except: Vec<String>,
 }
 
@@ -281,11 +277,10 @@ pub struct IPBlock {
 pub struct Ingress {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<IngressSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<IngressStatus>,
 }
 
@@ -294,11 +289,11 @@ pub struct Ingress {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressBackend {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub service_name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub service_port: Option<IntOrString>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource: Option<TypedLocalObjectReference>,
 }
 
@@ -309,7 +304,6 @@ pub struct IngressBackend {
 pub struct IngressList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<Ingress>,
 }
@@ -319,11 +313,11 @@ pub struct IngressList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressLoadBalancerIngress {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ip: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub hostname: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<IngressPortStatus>,
 }
 
@@ -332,7 +326,7 @@ pub struct IngressLoadBalancerIngress {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressLoadBalancerStatus {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ingress: Vec<IngressLoadBalancerIngress>,
 }
 
@@ -343,7 +337,7 @@ pub struct IngressLoadBalancerStatus {
 pub struct IngressPortStatus {
     pub port: i32,
     pub protocol: Protocol,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 }
 
@@ -352,9 +346,9 @@ pub struct IngressPortStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressRule {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host: String,
-    #[serde(default, flatten)]
+    #[serde(flatten)]
     pub ingress_rule_value: IngressRuleValue,
 }
 
@@ -363,7 +357,7 @@ pub struct IngressRule {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressRuleValue {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub http: Option<HTTPIngressRuleValue>,
 }
 
@@ -372,13 +366,13 @@ pub struct IngressRuleValue {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ingress_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub backend: Option<IngressBackend>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub tls: Vec<IngressTLS>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<IngressRule>,
 }
 
@@ -387,7 +381,7 @@ pub struct IngressSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub load_balancer: Option<IngressLoadBalancerStatus>,
 }
 
@@ -396,9 +390,9 @@ pub struct IngressStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressTLS {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub hosts: Vec<String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub secret_name: String,
 }
 
@@ -409,9 +403,8 @@ pub struct IngressTLS {
 pub struct NetworkPolicy {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<NetworkPolicySpec>,
 }
 
@@ -420,9 +413,9 @@ pub struct NetworkPolicy {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyEgressRule {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<NetworkPolicyPort>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub to: Vec<NetworkPolicyPeer>,
 }
 
@@ -431,9 +424,9 @@ pub struct NetworkPolicyEgressRule {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyIngressRule {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<NetworkPolicyPort>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub from: Vec<NetworkPolicyPeer>,
 }
 
@@ -444,7 +437,6 @@ pub struct NetworkPolicyIngressRule {
 pub struct NetworkPolicyList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<NetworkPolicy>,
 }
@@ -454,11 +446,11 @@ pub struct NetworkPolicyList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyPeer {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pod_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_block: Option<IPBlock>,
 }
 
@@ -467,11 +459,11 @@ pub struct NetworkPolicyPeer {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyPort {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub protocol: Option<Protocol>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub end_port: Option<i32>,
 }
 
@@ -481,11 +473,11 @@ pub struct NetworkPolicyPort {
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicySpec {
     pub pod_selector: LabelSelector,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ingress: Vec<NetworkPolicyIngressRule>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub egress: Vec<NetworkPolicyEgressRule>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub policy_types: Vec<PolicyType>,
 }
 
@@ -496,11 +488,10 @@ pub struct NetworkPolicySpec {
 pub struct ReplicaSet {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ReplicaSetSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ReplicaSetStatus>,
 }
 
@@ -512,11 +503,11 @@ pub struct ReplicaSetCondition {
     #[serde(rename = "type")]
     pub condition_type: ReplicaSetConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -527,7 +518,6 @@ pub struct ReplicaSetCondition {
 pub struct ReplicaSetList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<ReplicaSet>,
 }
@@ -537,13 +527,13 @@ pub struct ReplicaSetList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReplicaSetSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub min_ready_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<PodTemplateSpec>,
 }
 
@@ -553,17 +543,17 @@ pub struct ReplicaSetSpec {
 #[serde(rename_all = "camelCase")]
 pub struct ReplicaSetStatus {
     pub replicas: i32,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fully_labeled_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ready_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub available_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub terminating_replicas: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<ReplicaSetCondition>,
 }
 
@@ -572,7 +562,7 @@ pub struct ReplicaSetStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RollbackConfig {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub revision: Option<i64>,
 }
 
@@ -581,9 +571,9 @@ pub struct RollbackConfig {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RollingUpdateDaemonSet {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_unavailable: Option<IntOrString>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_surge: Option<IntOrString>,
 }
 
@@ -592,9 +582,9 @@ pub struct RollingUpdateDaemonSet {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RollingUpdateDeployment {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_unavailable: Option<IntOrString>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_surge: Option<IntOrString>,
 }
 
@@ -605,11 +595,10 @@ pub struct RollingUpdateDeployment {
 pub struct Scale {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ScaleSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ScaleStatus>,
 }
 
@@ -619,7 +608,6 @@ pub struct Scale {
 #[serde(rename_all = "camelCase")]
 pub struct ScaleSpec {
     /// Desired number of instances for the scaled object.
-    #[serde(default)]
     pub replicas: i32,
 }
 
@@ -631,9 +619,9 @@ pub struct ScaleStatus {
     /// Actual number of observed instances of the scaled object.
     pub replicas: i32,
     /// Selector is a label query over pods that should match the replicas count.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub selector: BTreeMap<String, String>,
     /// TargetSelector is a serialized label selector string.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub target_selector: String,
 }

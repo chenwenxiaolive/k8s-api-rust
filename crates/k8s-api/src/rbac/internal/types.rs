@@ -17,7 +17,7 @@ pub const VERB_ALL: &str = "*";
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AggregationRule {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub cluster_role_selectors: Vec<k8s_apimachinery::apis::meta::v1::LabelSelector>,
 }
 
@@ -28,11 +28,10 @@ pub struct AggregationRule {
 pub struct ClusterRole {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<PolicyRule>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregation_rule: Option<AggregationRule>,
 }
 
@@ -43,9 +42,8 @@ pub struct ClusterRole {
 pub struct ClusterRoleBinding {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub subjects: Vec<Subject>,
     pub role_ref: RoleRef,
 }
@@ -57,7 +55,6 @@ pub struct ClusterRoleBinding {
 pub struct ClusterRoleBindingList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<ClusterRoleBinding>,
 }
@@ -69,7 +66,6 @@ pub struct ClusterRoleBindingList {
 pub struct ClusterRoleList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<ClusterRole>,
 }
@@ -82,16 +78,16 @@ pub struct PolicyRule {
     /// Verbs is a list of Verbs that apply to ALL the ResourceKinds and AttributeRestrictions contained in this rule.
     pub verbs: Vec<String>,
     /// APIGroups is the name of the APIGroup that contains the resources.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub api_groups: Vec<String>,
     /// Resources is a list of resources this rule applies to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resources: Vec<String>,
     /// ResourceNames is an optional white list of names that the rule applies to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resource_names: Vec<String>,
     /// NonResourceURLs is a set of partial urls that a user should have access to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub non_resource_urls: Vec<String>,
 }
 
@@ -102,9 +98,8 @@ pub struct PolicyRule {
 pub struct Role {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<PolicyRule>,
 }
 
@@ -115,9 +110,8 @@ pub struct Role {
 pub struct RoleBinding {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub subjects: Vec<Subject>,
     pub role_ref: RoleRef,
 }
@@ -129,7 +123,6 @@ pub struct RoleBinding {
 pub struct RoleBindingList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<RoleBinding>,
 }
@@ -141,7 +134,6 @@ pub struct RoleBindingList {
 pub struct RoleList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<Role>,
 }
@@ -167,11 +159,11 @@ pub struct Subject {
     /// Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
     pub kind: String,
     /// APIGroup holds the API group of the referenced subject.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub api_group: String,
     /// Name of the object being referenced.
     pub name: String,
     /// Namespace of the referenced object. If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
 }

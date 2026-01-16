@@ -28,38 +28,38 @@ pub struct AdmissionRequest {
     /// Resource is the fully-qualified resource being requested.
     pub resource: GroupVersionResource,
     /// SubResource is the subresource being requested, if any.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub sub_resource: String,
     /// RequestKind is the fully-qualified type of the original API request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_kind: Option<GroupVersionKind>,
     /// RequestResource is the fully-qualified resource of the original API request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_resource: Option<GroupVersionResource>,
     /// RequestSubResource is the name of the subresource of the original API request.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub request_sub_resource: String,
     /// Name is the name of the object as presented in the request.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
     /// Namespace is the namespace associated with the request.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
     /// Operation is the operation being performed.
     pub operation: Operation,
     /// UserInfo is information about the requesting user.
     pub user_info: UserInfo,
     /// Object is the object from the incoming request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub object: Option<serde_json::Value>,
     /// OldObject is the existing object. Only populated for DELETE and UPDATE requests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub old_object: Option<serde_json::Value>,
     /// DryRun indicates that modifications will definitely not be persisted for this request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dry_run: Option<bool>,
     /// Options is the operation option structure of the operation being performed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<serde_json::Value>,
 }
 
@@ -73,19 +73,19 @@ pub struct AdmissionResponse {
     /// Allowed indicates whether or not the admission request was permitted.
     pub allowed: bool,
     /// Result contains extra details into why an admission request was denied.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<Status>,
     /// The patch body. Currently we only support "JSONPatch" which implements RFC 6902.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub patch: Option<String>,
     /// The type of Patch. Currently we only allow "JSONPatch".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub patch_type: Option<PatchType>,
     /// AuditAnnotations is an unstructured key value map set by remote admission controller.
-    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub audit_annotations: HashMap<String, String>,
     /// warnings is a list of warning messages to return to the requesting API client.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub warnings: Vec<String>,
 }
 
@@ -97,9 +97,9 @@ pub struct AdmissionReview {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
     /// Request describes the attributes for the admission request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request: Option<AdmissionRequest>,
     /// Response describes the attributes for the admission response.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub response: Option<AdmissionResponse>,
 }

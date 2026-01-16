@@ -51,10 +51,9 @@ pub const LEGACY_UNKNOWN_SIGNER_NAME: &str = "kubernetes.io/legacy-unknown";
 pub struct CertificateSigningRequest {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     pub spec: CertificateSigningRequestSpec,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<CertificateSigningRequestStatus>,
 }
 
@@ -69,16 +68,16 @@ pub struct CertificateSigningRequestCondition {
     /// Status of the condition.
     pub status: crate::core::v1::ConditionStatus,
     /// Reason indicates a brief reason for the request state.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
     /// Message contains a human readable message with details about the request state.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
     /// LastUpdateTime is the time last update was made to this condition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_update_time: Option<Time>,
     /// LastTransitionTime is the time the condition last transitioned from one status to another.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
 }
 
@@ -89,7 +88,6 @@ pub struct CertificateSigningRequestCondition {
 pub struct CertificateSigningRequestList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<CertificateSigningRequest>,
 }
@@ -104,22 +102,22 @@ pub struct CertificateSigningRequestSpec {
     /// SignerName indicates the requested signer.
     pub signer_name: String,
     /// ExpirationSeconds is the requested duration of validity of the issued certificate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub expiration_seconds: Option<i32>,
     /// Usages specifies a set of key usages requested in the issued certificate.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub usages: Vec<KeyUsage>,
     /// Username contains the name of the user that created the CertificateSigningRequest.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub username: String,
     /// UID contains the uid of the user that created the CertificateSigningRequest.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub uid: String,
     /// Groups contains group membership of the user that created the CertificateSigningRequest.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub groups: Vec<String>,
     /// Extra contains extra attributes of the user that created the CertificateSigningRequest.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub extra: BTreeMap<String, ExtraValue>,
 }
 
@@ -129,10 +127,10 @@ pub struct CertificateSigningRequestSpec {
 #[serde(rename_all = "camelCase")]
 pub struct CertificateSigningRequestStatus {
     /// Conditions applied to the request.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<CertificateSigningRequestCondition>,
     /// Certificate is populated with an issued certificate by the signer after an Approved condition is present.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub certificate: String,
 }
 
@@ -143,7 +141,6 @@ pub struct CertificateSigningRequestStatus {
 pub struct ClusterTrustBundle {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     pub spec: ClusterTrustBundleSpec,
 }
@@ -155,7 +152,6 @@ pub struct ClusterTrustBundle {
 pub struct ClusterTrustBundleList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<ClusterTrustBundle>,
 }
@@ -165,7 +161,7 @@ pub struct ClusterTrustBundleList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClusterTrustBundleSpec {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub signer_name: String,
     pub trust_bundle: String,
 }
@@ -179,12 +175,11 @@ pub struct ClusterTrustBundleSpec {
 pub struct PodCertificateRequest {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     /// Spec contains the details about the certificate being requested.
     pub spec: PodCertificateRequestSpec,
     /// Status contains the issued certificate, and a standard set of conditions.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PodCertificateRequestStatus>,
 }
 
@@ -195,7 +190,6 @@ pub struct PodCertificateRequest {
 pub struct PodCertificateRequestList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     /// Items is a collection of PodCertificateRequest objects.
     pub items: Vec<PodCertificateRequest>,
@@ -221,13 +215,13 @@ pub struct PodCertificateRequestSpec {
     /// NodeUID is the UID of the node the pod is assigned to.
     pub node_uid: String,
     /// MaxExpirationSeconds is the maximum lifetime permitted for the certificate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_expiration_seconds: Option<i32>,
     /// PKIXPublicKey is the PKIX-serialized public key the signer will issue the certificate to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub pkix_public_key: Vec<u8>,
     /// ProofOfPossession proves that the requesting kubelet holds the private key.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub proof_of_possession: Vec<u8>,
 }
 
@@ -237,18 +231,18 @@ pub struct PodCertificateRequestSpec {
 #[serde(rename_all = "camelCase")]
 pub struct PodCertificateRequestStatus {
     /// Conditions applied to the request.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<Condition>,
     /// CertificateChain is populated with an issued certificate by the signer.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub certificate_chain: String,
     /// NotBefore is the time at which the certificate becomes valid.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub not_before: Option<k8s_apimachinery::apis::meta::v1::Time>,
     /// BeginRefreshAt is the time at which the kubelet should begin trying to refresh the certificate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub begin_refresh_at: Option<k8s_apimachinery::apis::meta::v1::Time>,
     /// NotAfter is the time at which the certificate expires.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub not_after: Option<k8s_apimachinery::apis::meta::v1::Time>,
 }

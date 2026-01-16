@@ -11,10 +11,9 @@ use std::collections::BTreeMap;
 pub struct ImageReview {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     pub spec: ImageReviewSpec,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ImageReviewStatus>,
 }
 
@@ -23,7 +22,7 @@ pub struct ImageReview {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ImageReviewContainerSpec {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image: String,
 }
 
@@ -32,11 +31,11 @@ pub struct ImageReviewContainerSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ImageReviewSpec {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub containers: Vec<ImageReviewContainerSpec>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub annotations: BTreeMap<String, String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
 }
 
@@ -46,8 +45,8 @@ pub struct ImageReviewSpec {
 #[serde(rename_all = "camelCase")]
 pub struct ImageReviewStatus {
     pub allowed: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub audit_annotations: BTreeMap<String, String>,
 }

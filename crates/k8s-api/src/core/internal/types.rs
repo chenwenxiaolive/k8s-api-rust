@@ -419,11 +419,11 @@ pub const URI_SCHEME_HTTPS: &str = "HTTPS";
 pub struct AWSElasticBlockStoreVolumeSource {
     #[serde(rename = "volumeID")]
     pub volume_id: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -432,11 +432,11 @@ pub struct AWSElasticBlockStoreVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Affinity {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_affinity: Option<NodeAffinity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pod_affinity: Option<PodAffinity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pod_anti_affinity: Option<PodAntiAffinity>,
 }
 
@@ -446,7 +446,7 @@ pub struct Affinity {
 pub struct AppArmorProfile {
     #[serde(rename = "type")]
     pub profile_type: AppArmorProfileType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub localhost_profile: Option<String>,
 }
 
@@ -462,7 +462,7 @@ pub struct AttachedVolume {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AvoidPods {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub prefer_avoid_pods: Vec<PreferAvoidPodsEntry>,
 }
 
@@ -476,13 +476,13 @@ pub struct AzureDiskVolumeSource {
     pub disk_name: String,
     #[serde(rename = "diskURI")]
     pub disk_uri: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub caching_mode: Option<AzureDataDiskCachingMode>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<AzureDataDiskKind>,
 }
 
@@ -493,9 +493,9 @@ pub struct AzureDiskVolumeSource {
 pub struct AzureFilePersistentVolumeSource {
     pub secret_name: String,
     pub share_name: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_namespace: Option<String>,
 }
 
@@ -508,7 +508,7 @@ pub struct AzureFilePersistentVolumeSource {
 pub struct AzureFileVolumeSource {
     pub secret_name: String,
     pub share_name: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -521,7 +521,6 @@ pub struct Binding {
     pub type_meta: TypeMeta,
 
     /// Standard object's metadata.
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// The target object that you want to bind to the standard object.
@@ -534,21 +533,21 @@ pub struct Binding {
 pub struct CSIPersistentVolumeSource {
     pub driver: String,
     pub volume_handle: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub volume_attributes: BTreeMap<String, String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub controller_publish_secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_stage_secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_publish_secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub controller_expand_secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_expand_secret_ref: Option<SecretReference>,
 }
 
@@ -557,13 +556,13 @@ pub struct CSIPersistentVolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct CSIVolumeSource {
     pub driver: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub volume_attributes: BTreeMap<String, String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_publish_secret_ref: Option<LocalObjectReference>,
 }
 
@@ -571,9 +570,9 @@ pub struct CSIVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Capabilities {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub add: Vec<Capability>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub drop: Vec<Capability>,
 }
 
@@ -583,15 +582,15 @@ pub struct Capabilities {
 #[serde(rename_all = "camelCase")]
 pub struct CephFSPersistentVolumeSource {
     pub monitors: Vec<String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub user: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub secret_file: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -603,15 +602,15 @@ pub struct CephFSPersistentVolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct CephFSVolumeSource {
     pub monitors: Vec<String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub user: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub secret_file: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<LocalObjectReference>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -622,11 +621,11 @@ pub struct CephFSVolumeSource {
 pub struct CinderPersistentVolumeSource {
     #[serde(rename = "volumeID")]
     pub volume_id: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<SecretReference>,
 }
 
@@ -639,11 +638,11 @@ pub struct CinderPersistentVolumeSource {
 pub struct CinderVolumeSource {
     #[serde(rename = "volumeID")]
     pub volume_id: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<LocalObjectReference>,
 }
 
@@ -651,7 +650,7 @@ pub struct CinderVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClientIPConfig {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -659,13 +658,13 @@ pub struct ClientIPConfig {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClusterTrustBundleProjection {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub signer_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     pub path: String,
 }
@@ -681,10 +680,10 @@ pub struct ComponentCondition {
     /// Status of the condition.
     pub status: ConditionStatus,
     /// Message about the condition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
     /// Condition error code.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub error: String,
 }
 
@@ -696,11 +695,10 @@ pub struct ComponentStatus {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// List of component conditions observed.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<ComponentCondition>,
 }
 
@@ -711,7 +709,6 @@ pub struct ComponentStatus {
 pub struct ComponentStatusList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<ComponentStatus>,
 }
@@ -724,19 +721,18 @@ pub struct ConfigMap {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// Immutable, if set to true, ensures that data stored cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub immutable: Option<bool>,
 
     /// Data contains the configuration data.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub data: BTreeMap<String, String>,
 
     /// BinaryData contains the binary data.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub binary_data: BTreeMap<String, Vec<u8>>,
 }
 
@@ -744,9 +740,9 @@ pub struct ConfigMap {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ConfigMapEnvSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -755,12 +751,12 @@ pub struct ConfigMapEnvSource {
 #[serde(rename_all = "camelCase")]
 pub struct ConfigMapKeySelector {
     /// Name of the referent.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
     /// The key to select.
     pub key: String,
     /// Specify whether the ConfigMap or its key must be defined.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -772,7 +768,6 @@ pub struct ConfigMapList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<ConfigMap>,
@@ -784,11 +779,11 @@ pub struct ConfigMapList {
 pub struct ConfigMapNodeConfigSource {
     pub namespace: String,
     pub name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub uid: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub resource_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub kubelet_config_key: String,
 }
 
@@ -796,11 +791,11 @@ pub struct ConfigMapNodeConfigSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ConfigMapProjection {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<KeyToPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -808,13 +803,13 @@ pub struct ConfigMapProjection {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ConfigMapVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<KeyToPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -827,99 +822,99 @@ pub struct Container {
     pub name: String,
 
     /// Container image name.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image: String,
 
     /// Entrypoint array.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub command: Vec<String>,
 
     /// Arguments to the entrypoint.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub args: Vec<String>,
 
     /// Container's working directory.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub working_dir: String,
 
     /// List of ports to expose from the container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<ContainerPort>,
 
     /// List of sources to populate environment variables.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub env_from: Vec<EnvFromSource>,
 
     /// List of environment variables to set.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub env: Vec<EnvVar>,
 
     /// Compute Resources required by this container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resources: Option<ResourceRequirements>,
 
     /// Resources resize policy for the container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resize_policy: Vec<ContainerResizePolicy>,
 
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub restart_policy: Option<ContainerRestartPolicy>,
 
     /// Represents a list of rules to be checked to determine if the container should be restarted.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub restart_policy_rules: Vec<ContainerRestartRule>,
 
     /// Pod volumes to mount into the container's filesystem.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volume_mounts: Vec<VolumeMount>,
 
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volume_devices: Vec<VolumeDevice>,
 
     /// Periodic probe of container liveness.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub liveness_probe: Option<Probe>,
 
     /// Periodic probe of container service readiness.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub readiness_probe: Option<Probe>,
 
     /// StartupProbe indicates that the Pod has successfully initialized.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub startup_probe: Option<Probe>,
 
     /// Lifecycle callbacks for container lifecycle events.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<Lifecycle>,
 
     /// Message describing the current termination message path.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub termination_message_path: String,
 
     /// Policy for the termination message.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub termination_message_policy: TerminationMessagePolicy,
 
     /// Image pull policy.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image_pull_policy: PullPolicy,
 
     /// SecurityContext holds security configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub security_context: Option<SecurityContext>,
 
     /// Whether this container should allocate a buffer for stdin.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdin: bool,
 
     /// Whether the container runtime should close the stdin channel.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdin_once: bool,
 
     /// Whether this container should allocate a TTY.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub tty: bool,
 }
 
@@ -936,9 +931,9 @@ pub struct ContainerExtendedResourceRequest {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContainerImage {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub names: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub size_bytes: Option<i64>,
 }
 
@@ -948,22 +943,22 @@ pub struct ContainerImage {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerPort {
     /// Name for this port.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
 
     /// Number of port to expose on the host.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub host_port: Option<i32>,
 
     /// Number of port to expose on the pod's IP address.
     pub container_port: i32,
 
     /// Protocol for port. Must be UDP, TCP, or SCTP.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub protocol: Protocol,
 
     /// What host IP to bind the external port to.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host_i_p: String,
 }
 
@@ -979,9 +974,9 @@ pub struct ContainerResizePolicy {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContainerRestartRule {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub action: ContainerRestartRuleAction,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub exit_codes: Option<ContainerRestartRuleOnExitCodes>,
 }
 
@@ -989,9 +984,9 @@ pub struct ContainerRestartRule {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContainerRestartRuleOnExitCodes {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub operator: ContainerRestartRuleOnExitCodesOperator,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub values: Vec<i32>,
 }
 
@@ -1001,15 +996,15 @@ pub struct ContainerRestartRuleOnExitCodes {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerState {
     /// Details about a waiting container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub waiting: Option<ContainerStateWaiting>,
 
     /// Details about a running container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub running: Option<ContainerStateRunning>,
 
     /// Details about a terminated container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub terminated: Option<ContainerStateTerminated>,
 }
 
@@ -1017,7 +1012,7 @@ pub struct ContainerState {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContainerStateRunning {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub started_at: Option<Time>,
 }
 
@@ -1026,17 +1021,17 @@ pub struct ContainerStateRunning {
 #[serde(rename_all = "camelCase")]
 pub struct ContainerStateTerminated {
     pub exit_code: i32,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub signal: Option<i32>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub started_at: Option<Time>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub finished_at: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub container_i_d: String,
 }
 
@@ -1044,9 +1039,9 @@ pub struct ContainerStateTerminated {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContainerStateWaiting {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -1059,59 +1054,57 @@ pub struct ContainerStatus {
     pub name: String,
 
     /// Details about the container's current condition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<ContainerState>,
 
     /// Details about the container's last termination condition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_state: Option<ContainerState>,
 
     /// Specifies whether the container has passed its readiness probe.
-    #[serde(default)]
     pub ready: bool,
 
     /// The number of times the container has been restarted.
-    #[serde(default)]
     pub restart_count: i32,
 
     /// The image the container is running.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image: String,
 
     /// ImageID of the container's image.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image_i_d: String,
 
     /// Container's ID in the format '<type>://<container_id>'.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub container_i_d: String,
 
     /// Specifies whether the container has passed its startup probe.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub started: Option<bool>,
 
     /// AllocatedResources represents the compute resources allocated for this container.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub allocated_resources: BTreeMap<ResourceName, Quantity>,
 
     /// Resources represents the compute resource requests and limits enacted on the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resources: Option<ResourceRequirements>,
 
     /// Status of volume mounts.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volume_mounts: Vec<VolumeMountStatus>,
 
     /// User represents user identity information for the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<ContainerUser>,
 
     /// AllocatedResourcesStatus represents the status of various resources allocated for this container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub allocated_resources_status: Vec<ResourceStatus>,
 
     /// StopSignal reports the effective stop signal for this container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_signal: Option<Signal>,
 }
 
@@ -1119,7 +1112,7 @@ pub struct ContainerStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContainerUser {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub linux: Option<LinuxContainerUser>,
 }
 
@@ -1134,7 +1127,7 @@ pub struct DaemonEndpoint {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DownwardAPIProjection {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<DownwardAPIVolumeFile>,
 }
 
@@ -1143,11 +1136,11 @@ pub struct DownwardAPIProjection {
 #[serde(rename_all = "camelCase")]
 pub struct DownwardAPIVolumeFile {
     pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub field_ref: Option<ObjectFieldSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_field_ref: Option<ResourceFieldSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
 }
 
@@ -1155,9 +1148,9 @@ pub struct DownwardAPIVolumeFile {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DownwardAPIVolumeSource {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<DownwardAPIVolumeFile>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_mode: Option<i32>,
 }
 
@@ -1165,9 +1158,9 @@ pub struct DownwardAPIVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EmptyDirVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub medium: StorageMedium,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub size_limit: Option<Quantity>,
 }
 
@@ -1179,11 +1172,11 @@ pub struct EmptyDirVolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct EndpointAddress {
     pub ip: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub hostname: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub target_ref: Option<ObjectReference>,
 }
 
@@ -1194,12 +1187,12 @@ pub struct EndpointAddress {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EndpointPort {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
     pub port: i32,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub protocol: Protocol,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub app_protocol: Option<String>,
 }
 
@@ -1210,11 +1203,11 @@ pub struct EndpointPort {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EndpointSubset {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub addresses: Vec<EndpointAddress>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub not_ready_addresses: Vec<EndpointAddress>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<EndpointPort>,
 }
 
@@ -1227,9 +1220,8 @@ pub struct EndpointSubset {
 pub struct Endpoints {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub subsets: Vec<EndpointSubset>,
 }
 
@@ -1240,7 +1232,6 @@ pub struct Endpoints {
 pub struct EndpointsList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<Endpoints>,
 }
@@ -1251,15 +1242,15 @@ pub struct EndpointsList {
 #[serde(rename_all = "camelCase")]
 pub struct EnvFromSource {
     /// An optional identifier to prepend to each key in the ConfigMap.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub prefix: String,
 
     /// The ConfigMap to select from.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config_map_ref: Option<ConfigMapEnvSource>,
 
     /// The Secret to select from.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<SecretEnvSource>,
 }
 
@@ -1272,11 +1263,11 @@ pub struct EnvVar {
     pub name: String,
 
     /// Value of the environment variable.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub value: String,
 
     /// Source for the environment variable's value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value_from: Option<EnvVarSource>,
 }
 
@@ -1286,23 +1277,23 @@ pub struct EnvVar {
 #[serde(rename_all = "camelCase")]
 pub struct EnvVarSource {
     /// Selects a field of the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub field_ref: Option<ObjectFieldSelector>,
 
     /// Selects a resource of the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_field_ref: Option<ResourceFieldSelector>,
 
     /// Selects a key of a ConfigMap.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config_map_key_ref: Option<ConfigMapKeySelector>,
 
     /// Selects a key of a secret.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_key_ref: Option<SecretKeySelector>,
 
     /// Selects a key of the env file.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_key_ref: Option<FileKeySelector>,
 }
 
@@ -1315,103 +1306,103 @@ pub struct EphemeralContainer {
     pub name: String,
 
     /// Container image name.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image: String,
 
     /// Entrypoint array.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub command: Vec<String>,
 
     /// Arguments to the entrypoint.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub args: Vec<String>,
 
     /// Container's working directory.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub working_dir: String,
 
     /// List of ports to expose from the container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<ContainerPort>,
 
     /// List of sources to populate environment variables.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub env_from: Vec<EnvFromSource>,
 
     /// List of environment variables to set.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub env: Vec<EnvVar>,
 
     /// Compute Resources required by this container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resources: Option<ResourceRequirements>,
 
     /// Resources resize policy for the container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resize_policy: Vec<ContainerResizePolicy>,
 
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub restart_policy: Option<ContainerRestartPolicy>,
 
     /// Represents a list of rules to be checked to determine if the container should be restarted.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub restart_policy_rules: Vec<ContainerRestartRule>,
 
     /// Pod volumes to mount into the container's filesystem.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volume_mounts: Vec<VolumeMount>,
 
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volume_devices: Vec<VolumeDevice>,
 
     /// Periodic probe of container liveness.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub liveness_probe: Option<Probe>,
 
     /// Periodic probe of container service readiness.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub readiness_probe: Option<Probe>,
 
     /// StartupProbe indicates that the Pod has successfully initialized.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub startup_probe: Option<Probe>,
 
     /// Lifecycle callbacks for container lifecycle events.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<Lifecycle>,
 
     /// Message describing the current termination message path.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub termination_message_path: String,
 
     /// Policy for the termination message.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub termination_message_policy: TerminationMessagePolicy,
 
     /// Image pull policy.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub image_pull_policy: PullPolicy,
 
     /// SecurityContext holds security configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub security_context: Option<SecurityContext>,
 
     /// Whether this container should allocate a buffer for stdin.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdin: bool,
 
     /// Whether the container runtime should close the stdin channel.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdin_once: bool,
 
     /// Whether this container should allocate a TTY.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub tty: bool,
 
     /// Target container name for this ephemeral container.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub target_container_name: String,
 }
 
@@ -1420,7 +1411,7 @@ pub struct EphemeralContainer {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EphemeralVolumeSource {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_claim_template: Option<PersistentVolumeClaimTemplate>,
 }
 
@@ -1433,63 +1424,62 @@ pub struct Event {
     pub type_meta: TypeMeta,
 
     /// Standard object's metadata.
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// The object that this event is about.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub involved_object: Option<ObjectReference>,
 
     /// This should be a short, machine understandable string.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
 
     /// A human-readable description of the status of this operation.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 
     /// The component reporting this event.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<EventSource>,
 
     /// The time at which the event was first recorded.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub first_timestamp: Option<Time>,
 
     /// The time at which the most recent occurrence of this event was recorded.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_timestamp: Option<Time>,
 
     /// The number of times this event has occurred.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<i32>,
 
     /// Type of this event (Normal, Warning).
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "type")]
     pub event_type: String,
 
     /// Time when this Event was first observed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub event_time: Option<Time>,
 
     /// Data about the Event series this event represents.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub series: Option<EventSeries>,
 
     /// What action was taken/failed regarding the Regarding object.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub action: String,
 
     /// Optional secondary object for more complex actions.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub related: Option<ObjectReference>,
 
     /// Name of the controller that emitted this Event.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reporting_controller: String,
 
     /// ID of the controller instance.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reporting_instance: String,
 }
 
@@ -1500,7 +1490,6 @@ pub struct Event {
 pub struct EventList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<Event>,
 }
@@ -1511,10 +1500,9 @@ pub struct EventList {
 #[serde(rename_all = "camelCase")]
 pub struct EventSeries {
     /// Number of occurrences in this series up to the last heartbeat time.
-    #[serde(default)]
     pub count: i32,
     /// Time of the last occurrence observed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_observed_time: Option<Time>,
 }
 
@@ -1524,10 +1512,10 @@ pub struct EventSeries {
 #[serde(rename_all = "camelCase")]
 pub struct EventSource {
     /// Component from which the event is generated.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub component: String,
     /// Node name on which the event is generated.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host: String,
 }
 
@@ -1535,7 +1523,7 @@ pub struct EventSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExecAction {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub command: Vec<String>,
 }
 
@@ -1544,15 +1532,15 @@ pub struct ExecAction {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FCVolumeSource {
-    #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "targetWWNs")]
+    #[serde(skip_serializing_if = "Vec::is_empty", rename = "targetWWNs")]
     pub target_wwns: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub wwids: Vec<String>,
 }
 
@@ -1563,7 +1551,7 @@ pub struct FileKeySelector {
     pub volume_name: String,
     pub path: String,
     pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -1573,13 +1561,13 @@ pub struct FileKeySelector {
 #[serde(rename_all = "camelCase")]
 pub struct FlexPersistentVolumeSource {
     pub driver: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub options: BTreeMap<String, String>,
 }
 
@@ -1591,13 +1579,13 @@ pub struct FlexPersistentVolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct FlexVolumeSource {
     pub driver: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<LocalObjectReference>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub options: BTreeMap<String, String>,
 }
 
@@ -1608,9 +1596,9 @@ pub struct FlexVolumeSource {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FlockerVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub dataset_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "datasetUUID")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "datasetUUID")]
     pub dataset_uuid: String,
 }
 
@@ -1622,11 +1610,11 @@ pub struct FlockerVolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct GCEPersistentDiskVolumeSource {
     pub pd_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub partition: Option<i32>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -1635,7 +1623,7 @@ pub struct GCEPersistentDiskVolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct GRPCAction {
     pub port: i32,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
@@ -1647,9 +1635,9 @@ pub struct GRPCAction {
 #[serde(rename_all = "camelCase")]
 pub struct GitRepoVolumeSource {
     pub repository: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub revision: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub directory: String,
 }
 
@@ -1660,9 +1648,9 @@ pub struct GitRepoVolumeSource {
 pub struct GlusterfsPersistentVolumeSource {
     pub endpoints: String,
     pub path: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoints_namespace: Option<String>,
 }
 
@@ -1675,7 +1663,7 @@ pub struct GlusterfsPersistentVolumeSource {
 pub struct GlusterfsVolumeSource {
     pub endpoints: String,
     pub path: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -1683,14 +1671,14 @@ pub struct GlusterfsVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HTTPGetAction {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
     pub port: IntOrString,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub scheme: URIScheme,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub http_headers: Vec<HTTPHeader>,
 }
 
@@ -1707,9 +1695,9 @@ pub struct HTTPHeader {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HostAlias {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ip: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub hostnames: Vec<String>,
 }
 
@@ -1719,7 +1707,7 @@ pub struct HostAlias {
 #[serde(rename_all = "camelCase")]
 pub struct HostIP {
     /// IP is the IP address assigned to the host.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ip: String,
 }
 
@@ -1728,7 +1716,7 @@ pub struct HostIP {
 #[serde(rename_all = "camelCase")]
 pub struct HostPathVolumeSource {
     pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none", rename = "type")]
     pub host_path_type: Option<HostPathType>,
 }
 
@@ -1740,21 +1728,21 @@ pub struct ISCSIPersistentVolumeSource {
     pub target_portal: String,
     pub iqn: String,
     pub lun: i32,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub iscsi_interface: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub portals: Vec<String>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub chap_auth_discovery: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub chap_auth_session: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub initiator_name: Option<String>,
 }
 
@@ -1766,21 +1754,21 @@ pub struct ISCSIVolumeSource {
     pub target_portal: String,
     pub iqn: String,
     pub lun: i32,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub iscsi_interface: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub portals: Vec<String>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub chap_auth_discovery: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub chap_auth_session: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<LocalObjectReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub initiator_name: Option<String>,
 }
 
@@ -1789,9 +1777,9 @@ pub struct ISCSIVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ImageVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reference: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub pull_policy: PullPolicy,
 }
 
@@ -1801,7 +1789,7 @@ pub struct ImageVolumeSource {
 pub struct KeyToPath {
     pub key: String,
     pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
 }
 
@@ -1809,11 +1797,11 @@ pub struct KeyToPath {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Lifecycle {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub post_start: Option<LifecycleHandler>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pre_stop: Option<LifecycleHandler>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_signal: Option<Signal>,
 }
 
@@ -1821,13 +1809,13 @@ pub struct Lifecycle {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LifecycleHandler {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub exec: Option<ExecAction>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub http_get: Option<HTTPGetAction>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tcp_socket: Option<TCPSocketAction>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sleep: Option<SleepAction>,
 }
 
@@ -1838,9 +1826,8 @@ pub struct LifecycleHandler {
 pub struct LimitRange {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<LimitRangeSpec>,
 }
 
@@ -1851,15 +1838,10 @@ pub struct LimitRange {
 pub struct LimitRangeItem {
     #[serde(rename = "type")]
     pub limit_type: LimitType,
-    #[serde(default)]
     pub max: HashMap<ResourceName, Quantity>,
-    #[serde(default)]
     pub min: HashMap<ResourceName, Quantity>,
-    #[serde(default)]
     pub default: HashMap<ResourceName, Quantity>,
-    #[serde(default)]
     pub default_request: HashMap<ResourceName, Quantity>,
-    #[serde(default)]
     pub max_limit_request_ratio: HashMap<ResourceName, Quantity>,
 }
 
@@ -1870,7 +1852,6 @@ pub struct LimitRangeItem {
 pub struct LimitRangeList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<LimitRange>,
 }
@@ -1889,7 +1870,7 @@ pub struct LimitRangeSpec {
 pub struct LinuxContainerUser {
     pub uid: i64,
     pub gid: i64,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub supplemental_groups: Vec<i64>,
 }
 
@@ -1899,7 +1880,6 @@ pub struct LinuxContainerUser {
 pub struct List {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<serde_json::Value>,
 }
@@ -1908,13 +1888,13 @@ pub struct List {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LoadBalancerIngress {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ip: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub hostname: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_mode: Option<LoadBalancerIPMode>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<PortStatus>,
 }
 
@@ -1922,7 +1902,7 @@ pub struct LoadBalancerIngress {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LoadBalancerStatus {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ingress: Vec<LoadBalancerIngress>,
 }
 
@@ -1931,7 +1911,7 @@ pub struct LoadBalancerStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LocalObjectReference {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
 }
 
@@ -1940,7 +1920,7 @@ pub struct LocalObjectReference {
 #[serde(rename_all = "camelCase")]
 pub struct LocalVolumeSource {
     pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fs_type: Option<String>,
 }
 
@@ -1948,7 +1928,7 @@ pub struct LocalVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ModifyVolumeStatus {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub target_volume_attributes_class_name: String,
     pub status: PersistentVolumeClaimModifyVolumeStatus,
 }
@@ -1959,7 +1939,7 @@ pub struct ModifyVolumeStatus {
 pub struct NFSVolumeSource {
     pub server: String,
     pub path: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -1971,13 +1951,12 @@ pub struct Namespace {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<NamespaceSpec>,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<NamespaceStatus>,
 }
 
@@ -1988,11 +1967,11 @@ pub struct NamespaceCondition {
     #[serde(rename = "type")]
     pub condition_type: NamespaceConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -2004,7 +1983,6 @@ pub struct NamespaceList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<Namespace>,
@@ -2014,7 +1992,7 @@ pub struct NamespaceList {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NamespaceSpec {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub finalizers: Vec<FinalizerName>,
 }
 
@@ -2022,9 +2000,9 @@ pub struct NamespaceSpec {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NamespaceStatus {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub phase: NamespacePhase,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<NamespaceCondition>,
 }
 
@@ -2036,13 +2014,12 @@ pub struct Node {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<NodeSpec>,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<NodeStatus>,
 }
 
@@ -2059,9 +2036,9 @@ pub struct NodeAddress {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeAffinity {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub required_during_scheduling_ignored_during_execution: Option<NodeSelector>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub preferred_during_scheduling_ignored_during_execution: Vec<PreferredSchedulingTerm>,
 }
 
@@ -2072,13 +2049,13 @@ pub struct NodeCondition {
     #[serde(rename = "type")]
     pub condition_type: NodeConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_heartbeat_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -2086,7 +2063,7 @@ pub struct NodeCondition {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeConfigSource {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config_map: Option<ConfigMapNodeConfigSource>,
 }
 
@@ -2094,13 +2071,13 @@ pub struct NodeConfigSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeConfigStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub assigned: Option<NodeConfigSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<NodeConfigSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_known_good: Option<NodeConfigSource>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub error: String,
 }
 
@@ -2108,7 +2085,7 @@ pub struct NodeConfigStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeDaemonEndpoints {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub kubelet_endpoint: Option<DaemonEndpoint>,
 }
 
@@ -2116,7 +2093,7 @@ pub struct NodeDaemonEndpoints {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeFeatures {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub supplemental_groups_policy: Option<bool>,
 }
 
@@ -2128,7 +2105,6 @@ pub struct NodeList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<Node>,
@@ -2140,7 +2116,7 @@ pub struct NodeList {
 pub struct NodeProxyOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
 }
 
@@ -2148,9 +2124,9 @@ pub struct NodeProxyOptions {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeRuntimeHandler {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<NodeRuntimeHandlerFeatures>,
 }
 
@@ -2158,9 +2134,9 @@ pub struct NodeRuntimeHandler {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeRuntimeHandlerFeatures {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recursive_read_only_mounts: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_namespaces: Option<bool>,
 }
 
@@ -2177,7 +2153,7 @@ pub struct NodeSelector {
 pub struct NodeSelectorRequirement {
     pub key: String,
     pub operator: NodeSelectorOperator,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub values: Vec<String>,
 }
 
@@ -2185,9 +2161,9 @@ pub struct NodeSelectorRequirement {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeSelectorTerm {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_expressions: Vec<NodeSelectorRequirement>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_fields: Vec<NodeSelectorRequirement>,
 }
 
@@ -2195,19 +2171,19 @@ pub struct NodeSelectorTerm {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeSpec {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub pod_c_i_d_r: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub pod_c_i_d_rs: Vec<String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub provider_i_d: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub unschedulable: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub taints: Vec<Taint>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config_source: Option<NodeConfigSource>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub external_i_d: String,
 }
 
@@ -2215,31 +2191,31 @@ pub struct NodeSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeStatus {
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub capacity: BTreeMap<ResourceName, Quantity>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub allocatable: BTreeMap<ResourceName, Quantity>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub phase: NodePhase,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<NodeCondition>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub addresses: Vec<NodeAddress>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub daemon_endpoints: Option<NodeDaemonEndpoints>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_info: Option<NodeSystemInfo>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub images: Vec<ContainerImage>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volumes_in_use: Vec<UniqueVolumeName>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volumes_attached: Vec<AttachedVolume>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config: Option<NodeConfigStatus>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub runtime_handlers: Vec<NodeRuntimeHandler>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<NodeFeatures>,
 }
 
@@ -2247,7 +2223,7 @@ pub struct NodeStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeSwapStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i64>,
 }
 
@@ -2265,7 +2241,7 @@ pub struct NodeSystemInfo {
     pub kube_proxy_version: String,
     pub operating_system: String,
     pub architecture: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub swap: Option<NodeSwapStatus>,
 }
 
@@ -2273,7 +2249,7 @@ pub struct NodeSystemInfo {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ObjectFieldSelector {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub api_version: String,
     pub field_path: String,
 }
@@ -2283,19 +2259,19 @@ pub struct ObjectFieldSelector {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ObjectReference {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub kind: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub uid: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub api_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub resource_version: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub field_path: String,
 }
 
@@ -2307,13 +2283,12 @@ pub struct PersistentVolume {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<PersistentVolumeSpec>,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PersistentVolumeStatus>,
 }
 
@@ -2325,13 +2300,12 @@ pub struct PersistentVolumeClaim {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<PersistentVolumeClaimSpec>,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PersistentVolumeClaimStatus>,
 }
 
@@ -2342,13 +2316,13 @@ pub struct PersistentVolumeClaimCondition {
     #[serde(rename = "type")]
     pub condition_type: PersistentVolumeClaimConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_probe_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -2360,7 +2334,6 @@ pub struct PersistentVolumeClaimList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<PersistentVolumeClaim>,
@@ -2370,23 +2343,23 @@ pub struct PersistentVolumeClaimList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeClaimSpec {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub access_modes: Vec<PersistentVolumeAccessMode>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resources: Option<VolumeResourceRequirements>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_mode: Option<PersistentVolumeMode>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data_source: Option<TypedLocalObjectReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data_source_ref: Option<TypedObjectReference>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_attributes_class_name: Option<String>,
 }
 
@@ -2394,21 +2367,21 @@ pub struct PersistentVolumeClaimSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeClaimStatus {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub phase: PersistentVolumeClaimPhase,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub access_modes: Vec<PersistentVolumeAccessMode>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub capacity: BTreeMap<ResourceName, Quantity>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<PersistentVolumeClaimCondition>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub allocated_resources: BTreeMap<ResourceName, Quantity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub allocated_resource_statuses: Option<BTreeMap<ResourceName, ClaimResourceStatus>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub current_volume_attributes_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub modify_volume_status: Option<ModifyVolumeStatus>,
 }
 
@@ -2417,7 +2390,6 @@ pub struct PersistentVolumeClaimStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeClaimTemplate {
-    #[serde(default)]
     pub metadata: ObjectMeta,
     pub spec: PersistentVolumeClaimSpec,
 }
@@ -2427,7 +2399,7 @@ pub struct PersistentVolumeClaimTemplate {
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeClaimVolumeSource {
     pub claim_name: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -2439,7 +2411,6 @@ pub struct PersistentVolumeList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<PersistentVolume>,
@@ -2449,49 +2420,49 @@ pub struct PersistentVolumeList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeSource {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gce_persistent_disk: Option<GCEPersistentDiskVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub aws_elastic_block_store: Option<AWSElasticBlockStoreVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub host_path: Option<HostPathVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<GlusterfsPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub nfs: Option<NFSVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rbd: Option<RBDPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<ISCSIPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cinder: Option<CinderPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<CephFSPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fc: Option<FCVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub flocker: Option<FlockerVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub flex_volume: Option<FlexPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub azure_file: Option<AzureFilePersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub vsphere_volume: Option<VsphereVirtualDiskVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<QuobyteVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub azure_disk: Option<AzureDiskVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub photon_persistent_disk: Option<PhotonPersistentDiskVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub portworx_volume: Option<PortworxVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scale_io: Option<ScaleIOPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub local: Option<LocalVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub storageos: Option<StorageOSPersistentVolumeSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub csi: Option<CSIPersistentVolumeSource>,
 }
 
@@ -2499,25 +2470,25 @@ pub struct PersistentVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeSpec {
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub capacity: ResourceList,
     #[serde(flatten)]
     pub persistent_volume_source: PersistentVolumeSource,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub access_modes: Vec<PersistentVolumeAccessMode>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub claim_ref: Option<ObjectReference>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub persistent_volume_reclaim_policy: PersistentVolumeReclaimPolicy,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub storage_class_name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub mount_options: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_mode: Option<PersistentVolumeMode>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_affinity: Option<VolumeNodeAffinity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_attributes_class_name: Option<String>,
 }
 
@@ -2525,13 +2496,13 @@ pub struct PersistentVolumeSpec {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PersistentVolumeStatus {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub phase: PersistentVolumePhase,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_phase_transition_time: Option<Time>,
 }
 
@@ -2544,7 +2515,7 @@ pub struct PersistentVolumeStatus {
 pub struct PhotonPersistentDiskVolumeSource {
     #[serde(rename = "pdID")]
     pub pd_id: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
 }
 
@@ -2557,15 +2528,14 @@ pub struct Pod {
     pub type_meta: TypeMeta,
 
     /// Standard object's metadata.
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// Specification of the desired behavior of the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<PodSpec>,
 
     /// Most recently observed status of the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PodStatus>,
 }
 
@@ -2573,9 +2543,9 @@ pub struct Pod {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodAffinity {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub required_during_scheduling_ignored_during_execution: Vec<PodAffinityTerm>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub preferred_during_scheduling_ignored_during_execution: Vec<WeightedPodAffinityTerm>,
 }
 
@@ -2583,16 +2553,16 @@ pub struct PodAffinity {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodAffinityTerm {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub namespaces: Vec<String>,
     pub topology_key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_label_keys: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub mismatch_label_keys: Vec<String>,
 }
 
@@ -2600,9 +2570,9 @@ pub struct PodAffinityTerm {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodAntiAffinity {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub required_during_scheduling_ignored_during_execution: Vec<PodAffinityTerm>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub preferred_during_scheduling_ignored_during_execution: Vec<WeightedPodAffinityTerm>,
 }
 
@@ -2612,15 +2582,15 @@ pub struct PodAntiAffinity {
 pub struct PodAttachOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdin: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdout: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stderr: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub tty: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub container: String,
 }
 
@@ -2628,17 +2598,17 @@ pub struct PodAttachOptions {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodCertificateProjection {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub signer_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub key_type: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_expiration_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub credential_bundle_path: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub key_path: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub certificate_chain_path: String,
 }
 
@@ -2655,19 +2625,19 @@ pub struct PodCondition {
     pub status: ConditionStatus,
 
     /// Last time we probed the condition.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_probe_time: Option<Time>,
 
     /// Last time the condition transitioned.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
 
     /// Unique, one-word, CamelCase reason for the condition's last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
 
     /// Human-readable message indicating details about last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -2675,11 +2645,11 @@ pub struct PodCondition {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodDNSConfig {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub nameservers: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub searches: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub options: Vec<PodDNSConfigOption>,
 }
 
@@ -2687,9 +2657,9 @@ pub struct PodDNSConfig {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodDNSConfigOption {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
@@ -2699,15 +2669,15 @@ pub struct PodDNSConfigOption {
 pub struct PodExecOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdin: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stdout: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub stderr: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub tty: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub container: String,
     pub command: Vec<String>,
 }
@@ -2726,7 +2696,7 @@ pub struct PodExtendedResourceClaimStatus {
 #[serde(rename_all = "camelCase")]
 pub struct PodIP {
     /// IP is the IP address assigned to the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ip: String,
 }
 
@@ -2738,7 +2708,6 @@ pub struct PodList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<Pod>,
@@ -2750,25 +2719,25 @@ pub struct PodList {
 pub struct PodLogOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub container: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub follow: bool,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub previous: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub since_seconds: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub since_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub timestamps: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tail_lines: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit_bytes: Option<i64>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub insecure_skip_tls_verify_backend: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub stream: Option<String>,
 }
 
@@ -2785,7 +2754,7 @@ pub struct PodOS {
 pub struct PodPortForwardOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<i32>,
 }
 
@@ -2795,7 +2764,7 @@ pub struct PodPortForwardOptions {
 pub struct PodProxyOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
 }
 
@@ -2811,9 +2780,9 @@ pub struct PodReadinessGate {
 #[serde(rename_all = "camelCase")]
 pub struct PodResourceClaim {
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_claim_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -2822,7 +2791,7 @@ pub struct PodResourceClaim {
 #[serde(rename_all = "camelCase")]
 pub struct PodResourceClaimStatus {
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_claim_name: Option<String>,
 }
 
@@ -2837,31 +2806,31 @@ pub struct PodSchedulingGate {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodSecurityContext {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub se_linux_options: Option<SELinuxOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub windows_options: Option<WindowsSecurityContextOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_user: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_non_root: Option<bool>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub supplemental_groups: Vec<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fs_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub sysctls: Vec<Sysctl>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fs_group_change_policy: Option<PodFSGroupChangePolicy>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub seccomp_profile: Option<SeccompProfile>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub app_armor_profile: Option<AppArmorProfile>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub se_linux_change_policy: Option<PodSELinuxChangePolicy>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub supplemental_groups_policy: Option<SupplementalGroupsPolicy>,
 }
 
@@ -2869,7 +2838,7 @@ pub struct PodSecurityContext {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PodSignature {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pod_controller: Option<k8s_apimachinery::apis::meta::v1::OwnerReference>,
 }
 
@@ -2879,167 +2848,166 @@ pub struct PodSignature {
 #[serde(rename_all = "camelCase")]
 pub struct PodSpec {
     /// List of containers belonging to the pod.
-    #[serde(default)]
     pub containers: Vec<Container>,
 
     /// List of initialization containers belonging to the pod.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub init_containers: Vec<Container>,
 
     /// List of ephemeral containers run in this pod.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ephemeral_containers: Vec<EphemeralContainer>,
 
     /// List of volumes that can be mounted by containers.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub volumes: Vec<Volume>,
 
     /// Restart policy for all containers. One of Always, OnFailure, Never.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub restart_policy: RestartPolicy,
 
     /// Optional duration in seconds for graceful termination.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_grace_period_seconds: Option<i64>,
 
     /// Optional duration in seconds the pod may be active before termination.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub active_deadline_seconds: Option<i64>,
 
     /// Set DNS policy for the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub dns_policy: DNSPolicy,
 
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub node_selector: BTreeMap<String, String>,
 
     /// ServiceAccountName is the name of the ServiceAccount to use.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub service_account_name: String,
 
     /// Deprecated: Use ServiceAccountName instead.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub service_account: String,
 
     /// AutomountServiceAccountToken indicates whether to mount the service account token.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub automount_service_account_token: Option<bool>,
 
     /// NodeName is a request to schedule this pod onto a specific node.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub node_name: String,
 
     /// Host networking requested for this pod.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub host_network: bool,
 
     /// Use the host's pid namespace.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub host_p_i_d: bool,
 
     /// Use the host's ipc namespace.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub host_i_p_c: bool,
 
     /// Share a single process namespace between all containers in a pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub share_process_namespace: Option<bool>,
 
     /// SecurityContext holds pod-level security attributes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub security_context: Option<PodSecurityContext>,
 
     /// ImagePullSecrets is a list of references to secrets for pulling images.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub image_pull_secrets: Vec<LocalObjectReference>,
 
     /// Hostname for the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub hostname: String,
 
     /// Subdomain for the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub subdomain: String,
 
     /// Affinity scheduling rules for the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub affinity: Option<Affinity>,
 
     /// SchedulerName is the name of the scheduler.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub scheduler_name: String,
 
     /// Tolerations are attached to the pod.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub tolerations: Vec<Toleration>,
 
     /// HostAliases is an optional list of hosts and IPs.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub host_aliases: Vec<HostAlias>,
 
     /// PriorityClassName is the pod's priority class.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub priority_class_name: String,
 
     /// Priority value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
 
     /// DNS config for the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dns_config: Option<PodDNSConfig>,
 
     /// ReadinessGates specifies additional readiness gates.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub readiness_gates: Vec<PodReadinessGate>,
 
     /// RuntimeClassName refers to a RuntimeClass object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub runtime_class_name: Option<String>,
 
     /// EnableServiceLinks indicates whether service information should be injected.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_service_links: Option<bool>,
 
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub preemption_policy: Option<PreemptionPolicy>,
 
     /// Overhead represents the resource overhead.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub overhead: BTreeMap<ResourceName, Quantity>,
 
     /// TopologySpreadConstraints describes how pods should spread across topology domains.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub topology_spread_constraints: Vec<TopologySpreadConstraint>,
 
     /// If true the pod's hostname will be configured as the pod's FQDN.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
+    #[serde(skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
 
     /// OS specifies the target OS for the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub os: Option<PodOS>,
 
     /// Use the host's user namespace.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub host_users: Option<bool>,
 
     /// SchedulingGates is a list of values that block pod scheduling.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub scheduling_gates: Vec<PodSchedulingGate>,
 
     /// ResourceClaims defines which ResourceClaims must be allocated.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resource_claims: Vec<PodResourceClaim>,
 
     /// Resources is the total amount of CPU and Memory resources required by all containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resources: Option<ResourceRequirements>,
 
     /// HostnameOverride specifies an explicit override for the pod's hostname.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub hostname_override: Option<String>,
 }
 
@@ -3049,75 +3017,75 @@ pub struct PodSpec {
 #[serde(rename_all = "camelCase")]
 pub struct PodStatus {
     /// If set, this represents the .metadata.generation that the pod status was set based upon.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
 
     /// Current condition of the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub phase: PodPhase,
 
     /// Current service state of pod conditions.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<PodCondition>,
 
     /// A human readable message indicating details about the status.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 
     /// A brief CamelCase message indicating details about the status.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
 
     /// nominatedNodeName is set only when this pod preempts other pods.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub nominated_node_name: String,
 
     /// IP address of the host to which the pod is assigned.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host_i_p: String,
 
     /// IP addresses allocated to the host.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub host_i_ps: Vec<HostIP>,
 
     /// IP address allocated to the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub pod_i_p: String,
 
     /// podIPs holds the IP addresses allocated to the pod.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub pod_i_ps: Vec<PodIP>,
 
     /// RFC 3339 date and time at which the object was acknowledged by the Kubelet.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub start_time: Option<Time>,
 
     /// Status of init containers.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub init_container_statuses: Vec<ContainerStatus>,
 
     /// Status of containers.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub container_statuses: Vec<ContainerStatus>,
 
     /// Status of ephemeral containers.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ephemeral_container_statuses: Vec<ContainerStatus>,
 
     /// The Quality of Service (QOS) classification assigned to the pod.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub qos_class: PodQOSClass,
 
     /// Status of resources resize desired for pod's containers.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub resize: PodResizeStatus,
 
     /// Status of resource claims.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resource_claim_statuses: Vec<PodResourceClaimStatus>,
 
     /// Status of extended resource claim backed by DRA.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub extended_resource_claim_status: Option<PodExtendedResourceClaimStatus>,
 }
 
@@ -3127,9 +3095,8 @@ pub struct PodStatus {
 pub struct PodStatusResult {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PodStatus>,
 }
 
@@ -3141,10 +3108,9 @@ pub struct PodTemplate {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<PodTemplateSpec>,
 }
 
@@ -3156,7 +3122,6 @@ pub struct PodTemplateList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<PodTemplate>,
@@ -3168,11 +3133,10 @@ pub struct PodTemplateList {
 #[serde(rename_all = "camelCase")]
 pub struct PodTemplateSpec {
     /// Standard object's metadata.
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// Specification of the desired behavior of the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<PodSpec>,
 }
 
@@ -3182,7 +3146,7 @@ pub struct PodTemplateSpec {
 pub struct PortStatus {
     pub port: i32,
     pub protocol: Protocol,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 }
 
@@ -3195,9 +3159,9 @@ pub struct PortStatus {
 pub struct PortworxVolumeSource {
     #[serde(rename = "volumeID")]
     pub volume_id: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -3205,7 +3169,7 @@ pub struct PortworxVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Preconditions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub uid: Option<k8s_apimachinery::types::UID>,
 }
 
@@ -3214,11 +3178,11 @@ pub struct Preconditions {
 #[serde(rename_all = "camelCase")]
 pub struct PreferAvoidPodsEntry {
     pub pod_signature: PodSignature,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eviction_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -3236,17 +3200,17 @@ pub struct PreferredSchedulingTerm {
 pub struct Probe {
     #[serde(flatten)]
     pub probe_handler: ProbeHandler,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub period_seconds: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub success_threshold: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_threshold: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub termination_grace_period_seconds: Option<i64>,
 }
 
@@ -3254,13 +3218,13 @@ pub struct Probe {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ProbeHandler {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub exec: Option<ExecAction>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub http_get: Option<HTTPGetAction>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tcp_socket: Option<TCPSocketAction>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub grpc: Option<GRPCAction>,
 }
 
@@ -3268,9 +3232,9 @@ pub struct ProbeHandler {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ProjectedVolumeSource {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub sources: Vec<VolumeProjection>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_mode: Option<i32>,
 }
 
@@ -3283,13 +3247,13 @@ pub struct ProjectedVolumeSource {
 pub struct QuobyteVolumeSource {
     pub registry: String,
     pub volume: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub user: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub group: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub tenant: String,
 }
 
@@ -3300,17 +3264,17 @@ pub struct QuobyteVolumeSource {
 pub struct RBDPersistentVolumeSource {
     pub monitors: Vec<String>,
     pub image: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub pool: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub user: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub keyring: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<SecretReference>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -3323,17 +3287,17 @@ pub struct RBDPersistentVolumeSource {
 pub struct RBDVolumeSource {
     pub monitors: Vec<String>,
     pub image: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub pool: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub user: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub keyring: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<LocalObjectReference>,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -3343,7 +3307,6 @@ pub struct RBDVolumeSource {
 pub struct RangeAllocation {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     pub range: String,
     pub data: Vec<u8>,
@@ -3356,11 +3319,10 @@ pub struct RangeAllocation {
 pub struct ReplicationController {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ReplicationControllerSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ReplicationControllerStatus>,
 }
 
@@ -3372,11 +3334,11 @@ pub struct ReplicationControllerCondition {
     #[serde(rename = "type")]
     pub condition_type: ReplicationControllerConditionType,
     pub status: ConditionStatus,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -3387,7 +3349,6 @@ pub struct ReplicationControllerCondition {
 pub struct ReplicationControllerList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<ReplicationController>,
 }
@@ -3397,13 +3358,11 @@ pub struct ReplicationControllerList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReplicationControllerSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(default)]
     pub selector: HashMap<String, String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<PodTemplateSpec>,
-    #[serde(default)]
     pub min_ready_seconds: i32,
 }
 
@@ -3413,15 +3372,11 @@ pub struct ReplicationControllerSpec {
 #[serde(rename_all = "camelCase")]
 pub struct ReplicationControllerStatus {
     pub replicas: i32,
-    #[serde(default)]
     pub fully_labeled_replicas: i32,
-    #[serde(default)]
     pub ready_replicas: i32,
-    #[serde(default)]
     pub available_replicas: i32,
-    #[serde(default)]
     pub observed_generation: i64,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<ReplicationControllerCondition>,
 }
 
@@ -3430,7 +3385,7 @@ pub struct ReplicationControllerStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceClaim {
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
 }
 
@@ -3438,10 +3393,10 @@ pub struct ResourceClaim {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResourceFieldSelector {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub container_name: String,
     pub resource: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub divisor: Option<Quantity>,
 }
 
@@ -3450,7 +3405,7 @@ pub struct ResourceFieldSelector {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceHealth {
     pub resource_i_d: ResourceID,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub health: ResourceHealthStatus,
 }
 
@@ -3461,11 +3416,10 @@ pub struct ResourceHealth {
 pub struct ResourceQuota {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ResourceQuotaSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ResourceQuotaStatus>,
 }
 
@@ -3476,7 +3430,6 @@ pub struct ResourceQuota {
 pub struct ResourceQuotaList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<ResourceQuota>,
 }
@@ -3486,11 +3439,10 @@ pub struct ResourceQuotaList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResourceQuotaSpec {
-    #[serde(default)]
     pub hard: HashMap<ResourceName, Quantity>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub scopes: Vec<ResourceQuotaScope>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scope_selector: Option<ScopeSelector>,
 }
 
@@ -3499,9 +3451,7 @@ pub struct ResourceQuotaSpec {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResourceQuotaStatus {
-    #[serde(default)]
     pub hard: HashMap<ResourceName, Quantity>,
-    #[serde(default)]
     pub used: HashMap<ResourceName, Quantity>,
 }
 
@@ -3511,15 +3461,15 @@ pub struct ResourceQuotaStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceRequirements {
     /// Limits describes the maximum amount of compute resources allowed.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub limits: BTreeMap<ResourceName, Quantity>,
 
     /// Requests describes the minimum amount of compute resources required.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub requests: BTreeMap<ResourceName, Quantity>,
 
     /// Claims lists the names of resources that are used by this container.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub claims: Vec<ResourceClaim>,
 }
 
@@ -3528,7 +3478,7 @@ pub struct ResourceRequirements {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceStatus {
     pub name: ResourceName,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resources: Vec<ResourceHealth>,
 }
 
@@ -3536,13 +3486,13 @@ pub struct ResourceStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SELinuxOptions {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub user: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub role: String,
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "type")]
     pub se_type: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub level: String,
 }
 
@@ -3554,19 +3504,19 @@ pub struct ScaleIOPersistentVolumeSource {
     pub gateway: String,
     pub system: String,
     pub secret_ref: SecretReference,
-    #[serde(default, skip_serializing_if = "is_false", rename = "sslEnabled")]
+    #[serde(skip_serializing_if = "is_false", rename = "sslEnabled")]
     pub ssl_enabled: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub protection_domain: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub storage_pool: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub storage_mode: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -3580,19 +3530,19 @@ pub struct ScaleIOVolumeSource {
     pub gateway: String,
     pub system: String,
     pub secret_ref: LocalObjectReference,
-    #[serde(default, skip_serializing_if = "is_false", rename = "sslEnabled")]
+    #[serde(skip_serializing_if = "is_false", rename = "sslEnabled")]
     pub ssl_enabled: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub protection_domain: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub storage_pool: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub storage_mode: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 }
 
@@ -3601,7 +3551,7 @@ pub struct ScaleIOVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ScopeSelector {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_expressions: Vec<ScopedResourceSelectorRequirement>,
 }
 
@@ -3612,7 +3562,7 @@ pub struct ScopeSelector {
 pub struct ScopedResourceSelectorRequirement {
     pub scope_name: ResourceQuotaScope,
     pub operator: ScopeSelectorOperator,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub values: Vec<String>,
 }
 
@@ -3622,7 +3572,7 @@ pub struct ScopedResourceSelectorRequirement {
 pub struct SeccompProfile {
     #[serde(rename = "type")]
     pub profile_type: SeccompProfileType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub localhost_profile: Option<String>,
 }
 
@@ -3634,23 +3584,22 @@ pub struct Secret {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
     /// Immutable, if set to true, ensures that data stored cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub immutable: Option<bool>,
 
     /// Data contains the secret data.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub data: BTreeMap<String, Vec<u8>>,
 
     /// stringData allows specifying non-binary secret data in string form.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub string_data: BTreeMap<String, String>,
 
     /// Used to facilitate programmatic handling of secret data.
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "type")]
     pub secret_type: SecretType,
 }
 
@@ -3658,9 +3607,9 @@ pub struct Secret {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SecretEnvSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -3669,12 +3618,12 @@ pub struct SecretEnvSource {
 #[serde(rename_all = "camelCase")]
 pub struct SecretKeySelector {
     /// Name of the referent.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
     /// The key of the secret to select from.
     pub key: String,
     /// Specify whether the Secret or its key must be defined.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -3686,7 +3635,6 @@ pub struct SecretList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<Secret>,
@@ -3696,11 +3644,11 @@ pub struct SecretList {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SecretProjection {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<KeyToPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -3708,9 +3656,9 @@ pub struct SecretProjection {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SecretReference {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
 }
 
@@ -3718,13 +3666,13 @@ pub struct SecretReference {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SecretVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub secret_name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub items: Vec<KeyToPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
@@ -3732,29 +3680,29 @@ pub struct SecretVolumeSource {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SecurityContext {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<Capabilities>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub se_linux_options: Option<SELinuxOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub windows_options: Option<WindowsSecurityContextOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_user: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_non_root: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_privilege_escalation: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub proc_mount: Option<ProcMountType>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub seccomp_profile: Option<SeccompProfile>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub app_armor_profile: Option<AppArmorProfile>,
 }
 
@@ -3764,7 +3712,7 @@ pub struct SecurityContext {
 pub struct SerializedReference {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<ObjectReference>,
 }
 
@@ -3776,13 +3724,12 @@ pub struct Service {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ServiceSpec>,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ServiceStatus>,
 }
 
@@ -3794,16 +3741,15 @@ pub struct ServiceAccount {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: ObjectMeta,
 
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub secrets: Vec<ObjectReference>,
 
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub image_pull_secrets: Vec<LocalObjectReference>,
 
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub automount_service_account_token: Option<bool>,
 }
 
@@ -3815,7 +3761,6 @@ pub struct ServiceAccountList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<ServiceAccount>,
@@ -3826,9 +3771,9 @@ pub struct ServiceAccountList {
 #[serde(rename_all = "camelCase")]
 pub struct ServiceAccountTokenProjection {
     pub path: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub audience: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub expiration_seconds: Option<i64>,
 }
 
@@ -3840,7 +3785,6 @@ pub struct ServiceList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
 
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
 
     pub items: Vec<Service>,
@@ -3852,26 +3796,26 @@ pub struct ServiceList {
 #[serde(rename_all = "camelCase")]
 pub struct ServicePort {
     /// The name of this port within the service.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
 
     /// The IP protocol for this port.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub protocol: Protocol,
 
     /// The application protocol for this port.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub app_protocol: Option<String>,
 
     /// The port that will be exposed by this service.
     pub port: i32,
 
     /// Number or name of the port to access on the pods targeted by the service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub target_port: Option<IntOrString>,
 
     /// The port on each node on which this service is exposed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_port: Option<i32>,
 }
 
@@ -3881,7 +3825,7 @@ pub struct ServicePort {
 pub struct ServiceProxyOptions {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
 }
 
@@ -3891,83 +3835,83 @@ pub struct ServiceProxyOptions {
 #[serde(rename_all = "camelCase")]
 pub struct ServiceSpec {
     /// The list of ports that are exposed by this service.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<ServicePort>,
 
     /// Route service traffic to pods with label keys and values matching this selector.
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub selector: BTreeMap<String, String>,
 
     /// clusterIP is the IP address of the service.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub cluster_i_p: String,
 
     /// ClusterIPs is a list of IP addresses assigned to this service.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub cluster_i_ps: Vec<String>,
 
     /// type determines how the Service is exposed.
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "type")]
     pub service_type: ServiceType,
 
     /// externalIPs is a list of IP addresses for which nodes in the cluster will accept traffic.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub external_i_ps: Vec<String>,
 
     /// sessionAffinity determines the session affinity configuration.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub session_affinity: ServiceAffinity,
 
     /// Only applies to Service Type: LoadBalancer.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub load_balancer_i_p: String,
 
     /// loadBalancerSourceRanges is a list of IP CIDR ranges.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub load_balancer_source_ranges: Vec<String>,
 
     /// externalName is the external reference that discovery mechanisms will return.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub external_name: String,
 
     /// externalTrafficPolicy describes how nodes distribute service traffic.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub external_traffic_policy: ServiceExternalTrafficPolicy,
 
     /// healthCheckNodePort specifies the healthcheck nodePort for the service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub health_check_node_port: Option<i32>,
 
     /// publishNotReadyAddresses indicates that any agent should publish addresses.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub publish_not_ready_addresses: bool,
 
     /// sessionAffinityConfig contains the configurations of session affinity.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub session_affinity_config: Option<SessionAffinityConfig>,
 
     /// IPFamilies is a list of IP families.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ip_families: Vec<IPFamily>,
 
     /// IPFamilyPolicy represents the dual-stack-ness requested.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_family_policy: Option<IPFamilyPolicy>,
 
     /// allocateLoadBalancerNodePorts defines if NodePorts will be allocated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub allocate_load_balancer_node_ports: Option<bool>,
 
     /// loadBalancerClass is the class of the load balancer implementation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub load_balancer_class: Option<String>,
 
     /// internalTrafficPolicy describes how nodes distribute service traffic.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub internal_traffic_policy: Option<ServiceInternalTrafficPolicy>,
 
     /// TrafficDistribution offers a way to express preferences for how traffic is distributed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub traffic_distribution: Option<String>,
 }
 
@@ -3977,11 +3921,11 @@ pub struct ServiceSpec {
 #[serde(rename_all = "camelCase")]
 pub struct ServiceStatus {
     /// LoadBalancer contains the current status of the load-balancer.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub load_balancer: Option<LoadBalancerStatus>,
 
     /// Current service state.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<k8s_apimachinery::Condition>,
 }
 
@@ -3989,7 +3933,7 @@ pub struct ServiceStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SessionAffinityConfig {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub client_i_p: Option<ClientIPConfig>,
 }
 
@@ -4005,15 +3949,15 @@ pub struct SleepAction {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StorageOSPersistentVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_namespace: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<ObjectReference>,
 }
 
@@ -4024,15 +3968,15 @@ pub struct StorageOSPersistentVolumeSource {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StorageOSVolumeSource {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub volume_namespace: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_ref: Option<LocalObjectReference>,
 }
 
@@ -4049,7 +3993,7 @@ pub struct Sysctl {
 #[serde(rename_all = "camelCase")]
 pub struct TCPSocketAction {
     pub port: IntOrString,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host: String,
 }
 
@@ -4059,10 +4003,10 @@ pub struct TCPSocketAction {
 #[serde(rename_all = "camelCase")]
 pub struct Taint {
     pub key: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub value: String,
     pub effect: TaintEffect,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub time_added: Option<Time>,
 }
 
@@ -4071,15 +4015,15 @@ pub struct Taint {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Toleration {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub key: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub operator: TolerationOperator,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub value: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub effect: TaintEffect,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub toleration_seconds: Option<i64>,
 }
 
@@ -4088,7 +4032,7 @@ pub struct Toleration {
 #[serde(rename_all = "camelCase")]
 pub struct TopologySelectorLabelRequirement {
     pub key: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub values: Vec<String>,
 }
 
@@ -4096,7 +4040,7 @@ pub struct TopologySelectorLabelRequirement {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TopologySelectorTerm {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_label_expressions: Vec<TopologySelectorLabelRequirement>,
 }
 
@@ -4107,15 +4051,15 @@ pub struct TopologySpreadConstraint {
     pub max_skew: i32,
     pub topology_key: String,
     pub when_unsatisfiable: UnsatisfiableConstraintAction,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub min_domains: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_affinity_policy: Option<NodeInclusionPolicy>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub node_taints_policy: Option<NodeInclusionPolicy>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_label_keys: Vec<String>,
 }
 
@@ -4123,7 +4067,7 @@ pub struct TopologySpreadConstraint {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedLocalObjectReference {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
@@ -4133,11 +4077,11 @@ pub struct TypedLocalObjectReference {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedObjectReference {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
@@ -4174,23 +4118,23 @@ pub struct VolumeMount {
     pub mount_path: String,
 
     /// Mounted read-only if true.
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
 
     /// Path within the volume from which the container's volume should be mounted.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub sub_path: String,
 
     /// mountPropagation determines how mounts are propagated from the host.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mount_propagation: Option<MountPropagationMode>,
 
     /// Expanded path within the volume from which the container's volume should be mounted.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub sub_path_expr: String,
 
     /// RecursiveReadOnly specifies whether read-only mounts should be handled recursively.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recursive_read_only: Option<RecursiveReadOnlyMode>,
 }
 
@@ -4201,9 +4145,9 @@ pub struct VolumeMount {
 pub struct VolumeMountStatus {
     pub name: String,
     pub mount_path: String,
-    #[serde(default, skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false")]
     pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recursive_read_only: Option<RecursiveReadOnlyMode>,
 }
 
@@ -4211,7 +4155,7 @@ pub struct VolumeMountStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VolumeNodeAffinity {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<NodeSelector>,
 }
 
@@ -4219,17 +4163,17 @@ pub struct VolumeNodeAffinity {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VolumeProjection {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret: Option<SecretProjection>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config_map: Option<ConfigMapProjection>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub downward_a_p_i: Option<DownwardAPIProjection>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub service_account_token: Option<ServiceAccountTokenProjection>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster_trust_bundle: Option<ClusterTrustBundleProjection>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pod_certificate: Option<PodCertificateProjection>,
 }
 
@@ -4237,9 +4181,9 @@ pub struct VolumeProjection {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VolumeResourceRequirements {
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub limits: BTreeMap<ResourceName, Quantity>,
-    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
     pub requests: BTreeMap<ResourceName, Quantity>,
 }
 
@@ -4249,123 +4193,123 @@ pub struct VolumeResourceRequirements {
 #[serde(rename_all = "camelCase")]
 pub struct VolumeSource {
     /// HostPath represents a pre-existing file or directory on the host machine.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub host_path: Option<HostPathVolumeSource>,
 
     /// EmptyDir represents a temporary directory that shares a pod's lifetime.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub empty_dir: Option<EmptyDirVolumeSource>,
 
     /// Secret represents a secret that should populate this volume.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub secret: Option<SecretVolumeSource>,
 
     /// ConfigMap represents a configMap that should populate this volume.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub config_map: Option<ConfigMapVolumeSource>,
 
     /// PersistentVolumeClaim represents a reference to a PersistentVolumeClaim.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_volume_claim: Option<PersistentVolumeClaimVolumeSource>,
 
     /// NFS represents an NFS mount on the host that shares a pod's lifetime.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub nfs: Option<NFSVolumeSource>,
 
     /// Projected items for all in one resources secrets, configmaps, and downward API.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub projected: Option<ProjectedVolumeSource>,
 
     /// DownwardAPI represents downward API about the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub downward_a_p_i: Option<DownwardAPIVolumeSource>,
 
     /// CSI represents ephemeral storage handled by CSI drivers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub csi: Option<CSIVolumeSource>,
 
     /// GCEPersistentDisk represents a GCE Disk resource (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gce_persistent_disk: Option<GCEPersistentDiskVolumeSource>,
 
     /// AWSElasticBlockStore represents an AWS Disk resource (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub aws_elastic_block_store: Option<AWSElasticBlockStoreVolumeSource>,
 
     /// GitRepo represents a git repository at a particular revision (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub git_repo: Option<GitRepoVolumeSource>,
 
     /// ISCSI represents an ISCSI Disk resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<ISCSIVolumeSource>,
 
     /// Glusterfs represents a Glusterfs mount (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<GlusterfsVolumeSource>,
 
     /// RBD represents a Rados Block Device mount (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rbd: Option<RBDVolumeSource>,
 
     /// FlexVolume represents a generic volume resource (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub flex_volume: Option<FlexVolumeSource>,
 
     /// Cinder represents a cinder volume (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cinder: Option<CinderVolumeSource>,
 
     /// CephFS represents a Ceph FS mount (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<CephFSVolumeSource>,
 
     /// Flocker represents a Flocker volume (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub flocker: Option<FlockerVolumeSource>,
 
     /// FC represents a Fibre Channel resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fc: Option<FCVolumeSource>,
 
     /// AzureFile represents an Azure File Service mount (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub azure_file: Option<AzureFileVolumeSource>,
 
     /// VsphereVolume represents a vSphere volume (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub vsphere_volume: Option<VsphereVirtualDiskVolumeSource>,
 
     /// Quobyte represents a Quobyte mount (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<QuobyteVolumeSource>,
 
     /// AzureDisk represents an Azure Data Disk mount (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub azure_disk: Option<AzureDiskVolumeSource>,
 
     /// PhotonPersistentDisk represents a PhotonController persistent disk (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub photon_persistent_disk: Option<PhotonPersistentDiskVolumeSource>,
 
     /// PortworxVolume represents a Portworx volume (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub portworx_volume: Option<PortworxVolumeSource>,
 
     /// ScaleIO represents a ScaleIO persistent volume (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scale_io: Option<ScaleIOVolumeSource>,
 
     /// StorageOS represents a StorageOS volume (deprecated).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub storageos: Option<StorageOSVolumeSource>,
 
     /// Ephemeral represents a volume that is handled by a cluster storage driver.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<EphemeralVolumeSource>,
 
     /// Image represents an OCI object pulled and mounted on the kubelet's host machine.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub image: Option<ImageVolumeSource>,
 }
 
@@ -4377,11 +4321,11 @@ pub struct VolumeSource {
 #[serde(rename_all = "camelCase")]
 pub struct VsphereVirtualDiskVolumeSource {
     pub volume_path: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub fs_type: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub storage_policy_name: String,
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "storagePolicyID")]
+    #[serde(skip_serializing_if = "String::is_empty", rename = "storagePolicyID")]
     pub storage_policy_id: String,
 }
 
@@ -4397,12 +4341,12 @@ pub struct WeightedPodAffinityTerm {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WindowsSecurityContextOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_as_user_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub host_process: Option<bool>,
 }

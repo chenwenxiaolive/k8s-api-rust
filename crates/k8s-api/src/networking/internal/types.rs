@@ -23,9 +23,9 @@ pub const SERVICE_CIDR_REASON_TERMINATING: &str = "Terminating";
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HTTPIngressPath {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub path_type: Option<PathType>,
     pub backend: IngressBackend,
 }
@@ -45,9 +45,8 @@ pub struct HTTPIngressRuleValue {
 pub struct IPAddress {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<IPAddressSpec>,
 }
 
@@ -58,7 +57,6 @@ pub struct IPAddress {
 pub struct IPAddressList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<IPAddress>,
 }
@@ -68,7 +66,7 @@ pub struct IPAddressList {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IPAddressSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parent_ref: Option<ParentReference>,
 }
 
@@ -78,7 +76,7 @@ pub struct IPAddressSpec {
 #[serde(rename_all = "camelCase")]
 pub struct IPBlock {
     pub cidr: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub except: Vec<String>,
 }
 
@@ -89,11 +87,10 @@ pub struct IPBlock {
 pub struct Ingress {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<IngressSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<IngressStatus>,
 }
 
@@ -102,9 +99,9 @@ pub struct Ingress {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressBackend {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub service: Option<IngressServiceBackend>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource: Option<TypedLocalObjectReference>,
 }
 
@@ -115,9 +112,8 @@ pub struct IngressBackend {
 pub struct IngressClass {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<IngressClassSpec>,
 }
 
@@ -128,7 +124,6 @@ pub struct IngressClass {
 pub struct IngressClassList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<IngressClass>,
 }
@@ -138,13 +133,13 @@ pub struct IngressClassList {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressClassParametersReference {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub api_group: Option<String>,
     pub kind: String,
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
@@ -153,9 +148,9 @@ pub struct IngressClassParametersReference {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressClassSpec {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub controller: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parameters: Option<IngressClassParametersReference>,
 }
 
@@ -166,7 +161,6 @@ pub struct IngressClassSpec {
 pub struct IngressList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<Ingress>,
 }
@@ -176,11 +170,11 @@ pub struct IngressList {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressLoadBalancerIngress {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ip: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub hostname: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<IngressPortStatus>,
 }
 
@@ -189,7 +183,7 @@ pub struct IngressLoadBalancerIngress {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressLoadBalancerStatus {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ingress: Vec<IngressLoadBalancerIngress>,
 }
 
@@ -200,7 +194,7 @@ pub struct IngressLoadBalancerStatus {
 pub struct IngressPortStatus {
     pub port: i32,
     pub protocol: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 }
 
@@ -209,7 +203,7 @@ pub struct IngressPortStatus {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressRule {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub host: String,
     #[serde(flatten)]
     pub ingress_rule_value: IngressRuleValue,
@@ -220,7 +214,7 @@ pub struct IngressRule {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressRuleValue {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub http: Option<HTTPIngressRuleValue>,
 }
 
@@ -230,7 +224,7 @@ pub struct IngressRuleValue {
 #[serde(rename_all = "camelCase")]
 pub struct IngressServiceBackend {
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub port: Option<ServiceBackendPort>,
 }
 
@@ -239,13 +233,13 @@ pub struct IngressServiceBackend {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ingress_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_backend: Option<IngressBackend>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub tls: Vec<IngressTLS>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<IngressRule>,
 }
 
@@ -254,7 +248,7 @@ pub struct IngressSpec {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub load_balancer: Option<IngressLoadBalancerStatus>,
 }
 
@@ -263,9 +257,9 @@ pub struct IngressStatus {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IngressTLS {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub hosts: Vec<String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub secret_name: String,
 }
 
@@ -276,9 +270,8 @@ pub struct IngressTLS {
 pub struct NetworkPolicy {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<NetworkPolicySpec>,
 }
 
@@ -287,9 +280,9 @@ pub struct NetworkPolicy {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyEgressRule {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<NetworkPolicyPort>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub to: Vec<NetworkPolicyPeer>,
 }
 
@@ -298,9 +291,9 @@ pub struct NetworkPolicyEgressRule {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyIngressRule {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ports: Vec<NetworkPolicyPort>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub from: Vec<NetworkPolicyPeer>,
 }
 
@@ -311,7 +304,6 @@ pub struct NetworkPolicyIngressRule {
 pub struct NetworkPolicyList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<NetworkPolicy>,
 }
@@ -321,11 +313,11 @@ pub struct NetworkPolicyList {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyPeer {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pod_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace_selector: Option<LabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_block: Option<IPBlock>,
 }
 
@@ -334,11 +326,11 @@ pub struct NetworkPolicyPeer {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicyPort {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub protocol: Option<crate::core::v1::Protocol>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub port: Option<serde_json::Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub end_port: Option<i32>,
 }
 
@@ -348,11 +340,11 @@ pub struct NetworkPolicyPort {
 #[serde(rename_all = "camelCase")]
 pub struct NetworkPolicySpec {
     pub pod_selector: LabelSelector,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ingress: Vec<NetworkPolicyIngressRule>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub egress: Vec<NetworkPolicyEgressRule>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub policy_types: Vec<PolicyType>,
 }
 
@@ -361,13 +353,13 @@ pub struct NetworkPolicySpec {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ParentReference {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub group: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub resource: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
 }
 
@@ -376,9 +368,8 @@ pub struct ParentReference {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServiceBackendPort {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
-    #[serde(default)]
     pub number: i32,
 }
 
@@ -389,11 +380,10 @@ pub struct ServiceBackendPort {
 pub struct ServiceCIDR {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ServiceCIDRSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ServiceCIDRStatus>,
 }
 
@@ -404,7 +394,6 @@ pub struct ServiceCIDR {
 pub struct ServiceCIDRList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<ServiceCIDR>,
 }
@@ -414,7 +403,7 @@ pub struct ServiceCIDRList {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServiceCIDRSpec {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub cidrs: Vec<String>,
 }
 
@@ -423,6 +412,6 @@ pub struct ServiceCIDRSpec {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServiceCIDRStatus {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<Condition>,
 }

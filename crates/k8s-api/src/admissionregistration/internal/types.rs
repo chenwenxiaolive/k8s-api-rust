@@ -46,7 +46,7 @@ pub const VALIDATION_ACTION_WARN: &str = "Warn";
 #[serde(rename_all = "camelCase")]
 pub struct ApplyConfiguration {
     /// Expression evaluates to an apply configuration.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub expression: String,
 }
 
@@ -78,7 +78,7 @@ pub struct ExpressionWarning {
 #[serde(rename_all = "camelCase")]
 pub struct JSONPatch {
     /// Expression evaluates to a JSON patch array.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub expression: String,
 }
 
@@ -99,19 +99,19 @@ pub struct MatchCondition {
 #[serde(rename_all = "camelCase")]
 pub struct MatchResources {
     /// NamespaceSelector decides whether to run the policy based on namespace labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace_selector: Option<LabelSelector>,
     /// ObjectSelector decides whether to run the policy based on object labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub object_selector: Option<LabelSelector>,
     /// ResourceRules describes what operations on what resources/subresources the policy matches.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resource_rules: Vec<NamedRuleWithOperations>,
     /// ExcludeResourceRules describes what operations on what resources/subresources the policy should not care about.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub exclude_resource_rules: Vec<NamedRuleWithOperations>,
     /// MatchPolicy defines how the MatchResources list is used to match incoming requests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_policy: Option<MatchPolicyType>,
 }
 
@@ -122,9 +122,8 @@ pub struct MatchResources {
 pub struct MutatingAdmissionPolicy {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<MutatingAdmissionPolicySpec>,
 }
 
@@ -135,9 +134,8 @@ pub struct MutatingAdmissionPolicy {
 pub struct MutatingAdmissionPolicyBinding {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<MutatingAdmissionPolicyBindingSpec>,
 }
 
@@ -148,7 +146,6 @@ pub struct MutatingAdmissionPolicyBinding {
 pub struct MutatingAdmissionPolicyBindingList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<MutatingAdmissionPolicyBinding>,
 }
@@ -159,13 +156,13 @@ pub struct MutatingAdmissionPolicyBindingList {
 #[serde(rename_all = "camelCase")]
 pub struct MutatingAdmissionPolicyBindingSpec {
     /// PolicyName references a MutatingAdmissionPolicy name.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub policy_name: String,
     /// ParamRef specifies the parameter resource used to configure the admission control policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub param_ref: Option<ParamRef>,
     /// MatchResources limits what resources match this binding.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_resources: Option<MatchResources>,
 }
 
@@ -176,7 +173,6 @@ pub struct MutatingAdmissionPolicyBindingSpec {
 pub struct MutatingAdmissionPolicyList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<MutatingAdmissionPolicy>,
 }
@@ -187,25 +183,25 @@ pub struct MutatingAdmissionPolicyList {
 #[serde(rename_all = "camelCase")]
 pub struct MutatingAdmissionPolicySpec {
     /// ParamKind specifies the kind of resources used to parameterize this policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub param_kind: Option<ParamKind>,
     /// MatchConstraints specifies what resources this policy is designed to validate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_constraints: Option<MatchResources>,
     /// Variables contain definitions of variables that can be used in composition of other expressions.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub variables: Vec<Variable>,
     /// Mutations contain operations to perform on matching objects.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub mutations: Vec<Mutation>,
     /// FailurePolicy defines how to handle failures for the admission policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_policy: Option<FailurePolicyType>,
     /// MatchConditions is a list of conditions that must be met for a request to be validated.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_conditions: Vec<MatchCondition>,
     /// ReinvocationPolicy indicates whether mutations may be called multiple times.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reinvocation_policy: ReinvocationPolicyType,
 }
 
@@ -219,32 +215,32 @@ pub struct MutatingWebhook {
     /// ClientConfig defines how to communicate with the hook.
     pub client_config: WebhookClientConfig,
     /// Rules describes what operations on what resources/subresources the webhook cares about.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<RuleWithOperations>,
     /// FailurePolicy defines how unrecognized errors from the admission endpoint are handled.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_policy: Option<FailurePolicyType>,
     /// MatchPolicy defines how the "rules" list is used to match incoming requests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_policy: Option<MatchPolicyType>,
     /// NamespaceSelector decides whether to run the webhook on an object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace_selector: Option<LabelSelector>,
     /// ObjectSelector decides whether to run the webhook based on if the object has matching labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub object_selector: Option<LabelSelector>,
     /// SideEffects states whether this webhook has side effects.
     pub side_effects: SideEffectClass,
     /// TimeoutSeconds specifies the timeout for this webhook.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout_seconds: Option<i32>,
     /// AdmissionReviewVersions is an ordered list of preferred AdmissionReview versions.
     pub admission_review_versions: Vec<String>,
     /// ReinvocationPolicy indicates whether this webhook should be called multiple times.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reinvocation_policy: Option<ReinvocationPolicyType>,
     /// MatchConditions is a list of conditions that must be met for a request to be sent to this webhook.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_conditions: Vec<MatchCondition>,
 }
 
@@ -255,10 +251,9 @@ pub struct MutatingWebhook {
 pub struct MutatingWebhookConfiguration {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     /// Webhooks is a list of webhooks and the affected resources and operations.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub webhooks: Vec<MutatingWebhook>,
 }
 
@@ -269,7 +264,6 @@ pub struct MutatingWebhookConfiguration {
 pub struct MutatingWebhookConfigurationList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<MutatingWebhookConfiguration>,
 }
@@ -282,10 +276,10 @@ pub struct Mutation {
     /// PatchType indicates the patch strategy used.
     pub patch_type: PatchType,
     /// ApplyConfiguration defines the desired configuration values of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub apply_configuration: Option<ApplyConfiguration>,
     /// JSONPatch defines a JSON patch operation to perform a mutation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub json_patch: Option<JSONPatch>,
 }
 
@@ -295,7 +289,7 @@ pub struct Mutation {
 #[serde(rename_all = "camelCase")]
 pub struct NamedRuleWithOperations {
     /// ResourceNames is an optional white list of names that the rule applies to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resource_names: Vec<String>,
     /// RuleWithOperations is a tuple of Operations and Resources.
     #[serde(flatten)]
@@ -319,16 +313,16 @@ pub struct ParamKind {
 #[serde(rename_all = "camelCase")]
 pub struct ParamRef {
     /// Name is the name of the resource being referenced.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub name: String,
     /// Namespace is the namespace of the referenced resource.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub namespace: String,
     /// Selector can be used to match multiple param objects based on their labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
     /// ParameterNotFoundAction controls the behavior when no params are matched.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parameter_not_found_action: Option<ParameterNotFoundActionType>,
 }
 
@@ -338,16 +332,16 @@ pub struct ParamRef {
 #[serde(rename_all = "camelCase")]
 pub struct Rule {
     /// APIGroups is the API groups the resources belong to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub api_groups: Vec<String>,
     /// APIVersions is the API versions the resources belong to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub api_versions: Vec<String>,
     /// Resources is a list of resources this rule applies to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resources: Vec<String>,
     /// Scope specifies the scope of this rule.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scope: Option<ScopeType>,
 }
 
@@ -357,19 +351,19 @@ pub struct Rule {
 #[serde(rename_all = "camelCase")]
 pub struct RuleWithOperations {
     /// Operations is the operations the admission hook cares about.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub operations: Vec<OperationType>,
     /// APIGroups is the API groups the resources belong to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub api_groups: Vec<String>,
     /// APIVersions is the API versions the resources belong to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub api_versions: Vec<String>,
     /// Resources is a list of resources this rule applies to.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resources: Vec<String>,
     /// Scope specifies the scope of this rule.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scope: Option<ScopeType>,
 }
 
@@ -383,10 +377,10 @@ pub struct ServiceReference {
     /// Name is the name of the service.
     pub name: String,
     /// Path is an optional URL path which will be sent in any request to this service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Port is an optional service port which will be used when communicating with this service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }
 
@@ -396,7 +390,7 @@ pub struct ServiceReference {
 #[serde(rename_all = "camelCase")]
 pub struct TypeChecking {
     /// The type checking warnings for each expression.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub expression_warnings: Vec<ExpressionWarning>,
 }
 
@@ -407,11 +401,10 @@ pub struct TypeChecking {
 pub struct ValidatingAdmissionPolicy {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ValidatingAdmissionPolicySpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ValidatingAdmissionPolicyStatus>,
 }
 
@@ -422,9 +415,8 @@ pub struct ValidatingAdmissionPolicy {
 pub struct ValidatingAdmissionPolicyBinding {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ValidatingAdmissionPolicyBindingSpec>,
 }
 
@@ -435,7 +427,6 @@ pub struct ValidatingAdmissionPolicyBinding {
 pub struct ValidatingAdmissionPolicyBindingList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<ValidatingAdmissionPolicyBinding>,
 }
@@ -448,13 +439,13 @@ pub struct ValidatingAdmissionPolicyBindingSpec {
     /// PolicyName references a ValidatingAdmissionPolicy name.
     pub policy_name: String,
     /// ParamRef specifies the parameter resource used to configure the admission control policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub param_ref: Option<ParamRef>,
     /// MatchResources declares what resources match this binding.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_resources: Option<MatchResources>,
     /// ValidationActions declares how validations are enforced.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub validation_actions: Vec<ValidationAction>,
 }
 
@@ -465,7 +456,6 @@ pub struct ValidatingAdmissionPolicyBindingSpec {
 pub struct ValidatingAdmissionPolicyList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<ValidatingAdmissionPolicy>,
 }
@@ -476,25 +466,25 @@ pub struct ValidatingAdmissionPolicyList {
 #[serde(rename_all = "camelCase")]
 pub struct ValidatingAdmissionPolicySpec {
     /// ParamKind specifies the kind of resources used to parameterize this policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub param_kind: Option<ParamKind>,
     /// MatchConstraints specifies what resources this policy is designed to validate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_constraints: Option<MatchResources>,
     /// Validations contain CEL expressions which is used to apply the validation.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub validations: Vec<Validation>,
     /// FailurePolicy defines how to handle failures for the admission policy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_policy: Option<FailurePolicyType>,
     /// AuditAnnotations contains CEL expressions for audit annotations.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub audit_annotations: Vec<AuditAnnotation>,
     /// MatchConditions is a list of conditions that must be met for a request to be validated.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_conditions: Vec<MatchCondition>,
     /// Variables contain definitions of variables that can be used in composition of other expressions.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub variables: Vec<Variable>,
 }
 
@@ -504,13 +494,13 @@ pub struct ValidatingAdmissionPolicySpec {
 #[serde(rename_all = "camelCase")]
 pub struct ValidatingAdmissionPolicyStatus {
     /// The generation observed by the controller.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
     /// The results of type checking for each expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_checking: Option<TypeChecking>,
     /// The conditions represent the latest available observations of a policy's current state.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<Condition>,
 }
 
@@ -524,29 +514,29 @@ pub struct ValidatingWebhook {
     /// ClientConfig defines how to communicate with the hook.
     pub client_config: WebhookClientConfig,
     /// Rules describes what operations on what resources/subresources the webhook cares about.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub rules: Vec<RuleWithOperations>,
     /// FailurePolicy defines how unrecognized errors from the admission endpoint are handled.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_policy: Option<FailurePolicyType>,
     /// MatchPolicy defines how the "rules" list is used to match incoming requests.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub match_policy: Option<MatchPolicyType>,
     /// NamespaceSelector decides whether to run the webhook on an object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub namespace_selector: Option<LabelSelector>,
     /// ObjectSelector decides whether to run the webhook based on if the object has matching labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub object_selector: Option<LabelSelector>,
     /// SideEffects states whether this webhook has side effects.
     pub side_effects: SideEffectClass,
     /// TimeoutSeconds specifies the timeout for this webhook.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout_seconds: Option<i32>,
     /// AdmissionReviewVersions is an ordered list of preferred AdmissionReview versions.
     pub admission_review_versions: Vec<String>,
     /// MatchConditions is a list of conditions that must be met for a request to be sent to this webhook.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub match_conditions: Vec<MatchCondition>,
 }
 
@@ -557,10 +547,9 @@ pub struct ValidatingWebhook {
 pub struct ValidatingWebhookConfiguration {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     /// Webhooks is a list of webhooks and the affected resources and operations.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub webhooks: Vec<ValidatingWebhook>,
 }
 
@@ -571,7 +560,6 @@ pub struct ValidatingWebhookConfiguration {
 pub struct ValidatingWebhookConfigurationList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<ValidatingWebhookConfiguration>,
 }
@@ -584,13 +572,13 @@ pub struct Validation {
     /// Expression represents the expression which will be evaluated by CEL.
     pub expression: String,
     /// Message represents the message displayed when validation fails.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
     /// Reason represents a machine-readable description of why this validation failed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     /// MessageExpression declares a CEL expression that evaluates to the validation failure message.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message_expression: String,
 }
 
@@ -611,12 +599,12 @@ pub struct Variable {
 #[serde(rename_all = "camelCase")]
 pub struct WebhookClientConfig {
     /// URL gives the location of the webhook.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     /// Service is a reference to the service for this webhook.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub service: Option<ServiceReference>,
     /// CABundle is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub ca_bundle: String,
 }

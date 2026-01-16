@@ -61,7 +61,7 @@ pub struct CrossVersionObjectReference {
     /// Name of the referent.
     pub name: String,
     /// API version of the referent.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub api_version: String,
 }
 
@@ -103,16 +103,16 @@ pub struct HPAScalingPolicy {
 #[serde(rename_all = "camelCase")]
 pub struct HPAScalingRules {
     /// StabilizationWindowSeconds is the number of seconds for which past recommendations should be considered.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub stabilization_window_seconds: Option<i32>,
     /// SelectPolicy is used to specify which policy should be used.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub select_policy: Option<ScalingPolicySelect>,
     /// Policies is a list of potential scaling polices which can be used during scaling.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub policies: Vec<HPAScalingPolicy>,
     /// Tolerance is the tolerance on the ratio between the current and desired metric value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tolerance: Option<Quantity>,
 }
 
@@ -123,11 +123,10 @@ pub struct HPAScalingRules {
 pub struct HorizontalPodAutoscaler {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<HorizontalPodAutoscalerSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<HorizontalPodAutoscalerStatus>,
 }
 
@@ -137,10 +136,10 @@ pub struct HorizontalPodAutoscaler {
 #[serde(rename_all = "camelCase")]
 pub struct HorizontalPodAutoscalerBehavior {
     /// ScaleUp is scaling policy for scaling Up.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scale_up: Option<HPAScalingRules>,
     /// ScaleDown is scaling policy for scaling Down.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scale_down: Option<HPAScalingRules>,
 }
 
@@ -155,13 +154,13 @@ pub struct HorizontalPodAutoscalerCondition {
     /// Status is the status of the condition (True, False, Unknown).
     pub status: crate::core::v1::ConditionStatus,
     /// LastTransitionTime is the last time the condition transitioned from one status to another.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_transition_time: Option<Time>,
     /// Reason is the reason for the condition's last transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub reason: String,
     /// Message is a human-readable explanation containing details about the transition.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub message: String,
 }
 
@@ -172,7 +171,6 @@ pub struct HorizontalPodAutoscalerCondition {
 pub struct HorizontalPodAutoscalerList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ListMeta,
     pub items: Vec<HorizontalPodAutoscaler>,
 }
@@ -185,15 +183,15 @@ pub struct HorizontalPodAutoscalerSpec {
     /// ScaleTargetRef points to the target resource to scale.
     pub scale_target_ref: CrossVersionObjectReference,
     /// MinReplicas is the lower limit for the number of replicas.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub min_replicas: Option<i32>,
     /// MaxReplicas is the upper limit for the number of replicas.
     pub max_replicas: i32,
     /// Metrics contains the specifications for which to use to calculate the desired replica count.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub metrics: Vec<MetricSpec>,
     /// Behavior configures the scaling behavior of the target.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub behavior: Option<HorizontalPodAutoscalerBehavior>,
 }
 
@@ -203,21 +201,20 @@ pub struct HorizontalPodAutoscalerSpec {
 #[serde(rename_all = "camelCase")]
 pub struct HorizontalPodAutoscalerStatus {
     /// ObservedGeneration is the most recent generation observed by this autoscaler.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
     /// LastScaleTime is the last time the HorizontalPodAutoscaler scaled the number of pods.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_scale_time: Option<Time>,
     /// CurrentReplicas is current number of replicas of pods managed by this autoscaler.
-    #[serde(default)]
     pub current_replicas: i32,
     /// DesiredReplicas is the desired number of replicas of pods managed by this autoscaler.
     pub desired_replicas: i32,
     /// CurrentMetrics is the last read state of the metrics used by this autoscaler.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub current_metrics: Vec<MetricStatus>,
     /// Conditions is the set of conditions required for this autoscaler to scale its target.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<HorizontalPodAutoscalerCondition>,
 }
 
@@ -229,7 +226,7 @@ pub struct MetricIdentifier {
     /// Name is the name of the given metric.
     pub name: String,
     /// Selector is the string-encoded form of a standard kubernetes label selector.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
 }
 
@@ -242,19 +239,19 @@ pub struct MetricSpec {
     #[serde(rename = "type")]
     pub type_: MetricSourceType,
     /// Object refers to a metric describing a single kubernetes object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub object: Option<ObjectMetricSource>,
     /// Pods refers to a metric describing each pod in the current scale target.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pods: Option<PodsMetricSource>,
     /// Resource refers to a resource metric known to Kubernetes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource: Option<ResourceMetricSource>,
     /// ContainerResource refers to a resource metric known to Kubernetes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub container_resource: Option<ContainerResourceMetricSource>,
     /// External refers to a global metric that is not associated with any Kubernetes object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub external: Option<ExternalMetricSource>,
 }
 
@@ -267,19 +264,19 @@ pub struct MetricStatus {
     #[serde(rename = "type")]
     pub type_: MetricSourceType,
     /// Object refers to a metric describing a single kubernetes object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub object: Option<ObjectMetricStatus>,
     /// Pods refers to a metric describing each pod in the current scale target.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pods: Option<PodsMetricStatus>,
     /// Resource refers to a resource metric known to Kubernetes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource: Option<ResourceMetricStatus>,
     /// ContainerResource refers to a resource metric known to Kubernetes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub container_resource: Option<ContainerResourceMetricStatus>,
     /// External refers to a global metric that is not associated with any Kubernetes object.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub external: Option<ExternalMetricStatus>,
 }
 
@@ -292,13 +289,13 @@ pub struct MetricTarget {
     #[serde(rename = "type")]
     pub type_: MetricTargetType,
     /// Value is the target value of the metric (as a quantity).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Quantity>,
     /// AverageValue is the target value of the average of the metric across all relevant pods.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub average_value: Option<Quantity>,
     /// AverageUtilization is the target value of the average of the resource metric across all relevant pods.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub average_utilization: Option<i32>,
 }
 
@@ -308,13 +305,13 @@ pub struct MetricTarget {
 #[serde(rename_all = "camelCase")]
 pub struct MetricValueStatus {
     /// Value is the current value of the metric (as a quantity).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Quantity>,
     /// AverageValue is the current value of the average of the metric across all relevant pods.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub average_value: Option<Quantity>,
     /// AverageUtilization is the current value of the average of the resource metric across all relevant pods.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub average_utilization: Option<i32>,
 }
 
@@ -383,11 +380,10 @@ pub struct ResourceMetricStatus {
 pub struct Scale {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ScaleSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ScaleStatus>,
 }
 
@@ -397,7 +393,6 @@ pub struct Scale {
 #[serde(rename_all = "camelCase")]
 pub struct ScaleSpec {
     /// Desired number of instances for the scaled object.
-    #[serde(default)]
     pub replicas: i32,
 }
 
@@ -409,6 +404,6 @@ pub struct ScaleStatus {
     /// Actual number of observed instances of the scaled object.
     pub replicas: i32,
     /// Label query over pods that should match the replicas count.
-    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub selector: String,
 }

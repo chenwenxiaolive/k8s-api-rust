@@ -15,10 +15,9 @@ pub const UNHEALTHY_POD_EVICTION_POLICY_IF_HEALTHY_BUDGET: &str = "IfHealthyBudg
 pub struct Eviction {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
     /// DeleteOptions may be provided.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub delete_options: Option<serde_json::Value>,
 }
 
@@ -29,11 +28,10 @@ pub struct Eviction {
 pub struct PodDisruptionBudget {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: ObjectMeta,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<PodDisruptionBudgetSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PodDisruptionBudgetStatus>,
 }
 
@@ -44,7 +42,6 @@ pub struct PodDisruptionBudget {
 pub struct PodDisruptionBudgetList {
     #[serde(flatten)]
     pub type_meta: TypeMeta,
-    #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<PodDisruptionBudget>,
 }
@@ -55,16 +52,16 @@ pub struct PodDisruptionBudgetList {
 #[serde(rename_all = "camelCase")]
 pub struct PodDisruptionBudgetSpec {
     /// MinAvailable is an eviction is allowed if at least "minAvailable" pods selected by "selector" will still be available after the eviction.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub min_available: Option<serde_json::Value>,
     /// MaxUnavailable is an eviction is allowed if at most "maxUnavailable" pods selected by "selector" are unavailable after the eviction.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_unavailable: Option<serde_json::Value>,
     /// Selector is a label query over a set of resources.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub selector: Option<LabelSelector>,
     /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods should be considered for eviction.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub unhealthy_pod_eviction_policy: Option<UnhealthyPodEvictionPolicyType>,
 }
 
@@ -74,10 +71,10 @@ pub struct PodDisruptionBudgetSpec {
 #[serde(rename_all = "camelCase")]
 pub struct PodDisruptionBudgetStatus {
     /// ObservedGeneration is the most recent generation observed for this PodDisruptionBudget.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub observed_generation: Option<i64>,
     /// DisruptedPods contains information about pods whose eviction was processed by the API server.
-    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    #[serde(skip_serializing_if = "std::collections::BTreeMap::is_empty")]
     pub disrupted_pods: std::collections::BTreeMap<String, String>,
     /// DisruptionsAllowed is the number of pod disruptions that are currently allowed.
     pub disruptions_allowed: i32,
@@ -88,6 +85,6 @@ pub struct PodDisruptionBudgetStatus {
     /// ExpectedPods is total number of pods counted by this disruption budget.
     pub expected_pods: i32,
     /// Conditions contain conditions for PDB.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<Condition>,
 }

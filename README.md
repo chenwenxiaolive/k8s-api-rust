@@ -174,6 +174,34 @@ k8s-api-rust/
 
 **Total Tests: 323 (all passing)**
 
+## Refactor Goals (v1.34.1)
+
+### Model Definitions
+
+- External versions support JSON + Protobuf codecs: **Done** (`crates/k8s-api-codec/src/lib.rs`)
+- External versions support strategic-merge-patch: **Done** (`crates/k8s-api-codec/src/lib.rs`)
+- External logic considers JSON/Protobuf/strategic-merge-patch together: **Partial**
+  - Status: codecs + patch types exist; external API modules do not yet expose a single, version-scoped entry point that ties all three together.
+
+### Defaults
+
+- Only external versions have defaults: **Done**
+  - Status: internal types no longer include `#[serde(default)]` attributes.
+
+### Version Conversion
+
+- Bidirectional conversion between internal and external versions: **Done**
+- Conversion implemented in external version modules and every external version supports internal <-> external: **Done**
+
+### Validation
+
+- Only internal versions require validation: **Done**
+  - Status: `k8s-api-validation` exposes internal wrappers that validate internal types via external validators.
+
+### Next Plan
+
+1. Add a version-scoped external API helper that explicitly handles JSON/Protobuf encoding/decoding plus strategic-merge-patch content types.
+
 ### API Types Coverage (k8s-api)
 
 | Module | Types | Status |
