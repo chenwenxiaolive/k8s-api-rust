@@ -899,4 +899,35 @@ mod tests {
             "application/strategic-merge-patch+json"
         );
     }
+
+    fn assert_reserved_protobuf_field(message_name: &str, reserved_number: u32) {
+        let desc = DESCRIPTORS
+            .get_message_by_name(message_name)
+            .expect("protobuf message descriptor");
+        let used = desc
+            .fields()
+            .any(|field| field.number() == reserved_number);
+        assert!(
+            !used,
+            "protobuf field {} is reserved in {}",
+            reserved_number,
+            message_name
+        );
+    }
+
+    #[test]
+    fn test_networkpolicy_reserved_field_number_networking_v1() {
+        assert_reserved_protobuf_field(
+            "k8s.io.api.networking.v1.NetworkPolicy",
+            3,
+        );
+    }
+
+    #[test]
+    fn test_networkpolicy_reserved_field_number_extensions_v1beta1() {
+        assert_reserved_protobuf_field(
+            "k8s.io.api.extensions.v1beta1.NetworkPolicy",
+            3,
+        );
+    }
 }
