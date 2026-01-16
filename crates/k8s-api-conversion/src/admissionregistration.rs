@@ -753,7 +753,7 @@ impl Convertible<k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolic
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
 
     #[test]
     fn test_validating_admission_policy_v1alpha1_to_v1() {
@@ -777,5 +777,33 @@ mod tests {
         let v1beta1: k8s_api::admissionregistration::v1beta1::MutatingAdmissionPolicy =
             v1alpha1.convert_to().unwrap();
         assert_eq!(v1beta1.metadata.name, "alpha-mutation");
+    }
+
+    #[test]
+    fn test_validating_admission_policy_list_roundtrip() {
+        let list = k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyList {
+            metadata: ListMeta {
+                resource_version: "10".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicy {
+                metadata: ObjectMeta::named("policy"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::admissionregistration::v1::ValidatingAdmissionPolicyList =
+            list.convert_to().unwrap();
+        assert_eq!(v1_list.items.len(), 1);
+        assert_eq!(v1_list.items[0].metadata.name, "policy");
+        assert_eq!(v1_list.metadata.resource_version, "10");
+
+        let roundtrip: k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyList =
+            k8s_api::admissionregistration::v1alpha1::ValidatingAdmissionPolicyList::convert_from(
+                &v1_list,
+            )
+            .unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

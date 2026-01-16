@@ -410,3 +410,49 @@ impl Convertible<k8s_api::flowcontrol::v1::PriorityLevelConfigurationList>
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
+
+    #[test]
+    fn test_flow_schema_list_roundtrip() {
+        let list = k8s_api::flowcontrol::v1beta3::FlowSchemaList {
+            metadata: ListMeta {
+                resource_version: "1".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::flowcontrol::v1beta3::FlowSchema {
+                metadata: ObjectMeta::named("flow"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::flowcontrol::v1::FlowSchemaList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "1");
+        assert_eq!(v1_list.items[0].metadata.name, "flow");
+
+        let roundtrip: k8s_api::flowcontrol::v1beta3::FlowSchemaList =
+            k8s_api::flowcontrol::v1beta3::FlowSchemaList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
+    }
+
+    #[test]
+    fn test_priority_level_list_empty() {
+        let list = k8s_api::flowcontrol::v1beta3::PriorityLevelConfigurationList {
+            metadata: ListMeta {
+                continue_token: "next".to_string(),
+                ..Default::default()
+            },
+            items: Vec::new(),
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::flowcontrol::v1::PriorityLevelConfigurationList =
+            list.convert_to().unwrap();
+        assert_eq!(v1_list.items.len(), 0);
+        assert_eq!(v1_list.metadata.continue_token, "next");
+    }
+}

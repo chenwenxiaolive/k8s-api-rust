@@ -228,7 +228,7 @@ fn convert_event_source_from_v1(
 mod tests {
     use super::*;
     use chrono::TimeZone;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
 
     fn test_datetime() -> DateTime<Utc> {
         Utc.with_ymd_and_hms(2024, 1, 15, 10, 30, 0).unwrap()
@@ -394,5 +394,28 @@ mod tests {
         assert_eq!(v1_event.regarding.as_ref().unwrap().kind, "Deployment");
         assert!(v1_event.related.is_some());
         assert_eq!(v1_event.related.as_ref().unwrap().kind, "ReplicaSet");
+    }
+
+    #[test]
+    fn test_event_list_roundtrip() {
+        let list = k8s_api::events::v1beta1::EventList {
+            metadata: ListMeta {
+                resource_version: "8".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::events::v1beta1::Event {
+                metadata: ObjectMeta::named("event"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::events::v1::EventList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "8");
+        assert_eq!(v1_list.items[0].metadata.name, "event");
+
+        let roundtrip: k8s_api::events::v1beta1::EventList =
+            k8s_api::events::v1beta1::EventList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

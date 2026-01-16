@@ -960,7 +960,7 @@ impl Convertible<k8s_api::autoscaling::v2::HorizontalPodAutoscalerList>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
 
     #[test]
     fn test_hpa_v1_to_v2_conversion() {
@@ -1275,5 +1275,30 @@ mod tests {
             converted_back.type_meta.api_version,
             "autoscaling/v2beta2"
         );
+    }
+
+    #[test]
+    fn test_hpa_list_roundtrip_v2beta2() {
+        let list = k8s_api::autoscaling::v2beta2::HorizontalPodAutoscalerList {
+            metadata: ListMeta {
+                resource_version: "2".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::autoscaling::v2beta2::HorizontalPodAutoscaler {
+                metadata: ObjectMeta::named("hpa-list"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v2_list: k8s_api::autoscaling::v2::HorizontalPodAutoscalerList =
+            list.convert_to().unwrap();
+        assert_eq!(v2_list.metadata.resource_version, "2");
+        assert_eq!(v2_list.items[0].metadata.name, "hpa-list");
+
+        let roundtrip: k8s_api::autoscaling::v2beta2::HorizontalPodAutoscalerList =
+            k8s_api::autoscaling::v2beta2::HorizontalPodAutoscalerList::convert_from(&v2_list)
+                .unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

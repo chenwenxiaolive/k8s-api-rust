@@ -724,7 +724,7 @@ impl Convertible<k8s_api::rbac::v1::ClusterRoleBindingList>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
 
     #[test]
     fn test_role_v1beta1_to_v1() {
@@ -974,5 +974,28 @@ mod tests {
         let v1: k8s_api::rbac::v1::Role = v1alpha1.convert_to().unwrap();
         assert_eq!(v1.metadata.name, "alpha-role");
         assert_eq!(v1.rules[0].resources, vec!["pods".to_string()]);
+    }
+
+    #[test]
+    fn test_role_list_roundtrip() {
+        let list = k8s_api::rbac::v1beta1::RoleList {
+            metadata: ListMeta {
+                resource_version: "7".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::rbac::v1beta1::Role {
+                metadata: ObjectMeta::named("role-list"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::rbac::v1::RoleList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "7");
+        assert_eq!(v1_list.items[0].metadata.name, "role-list");
+
+        let roundtrip: k8s_api::rbac::v1beta1::RoleList =
+            k8s_api::rbac::v1beta1::RoleList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

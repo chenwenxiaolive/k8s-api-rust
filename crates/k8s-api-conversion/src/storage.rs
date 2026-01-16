@@ -1028,7 +1028,7 @@ impl Convertible<k8s_api::storage::v1::VolumeAttributesClassList>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
     use std::collections::HashMap;
 
     #[test]
@@ -1363,5 +1363,29 @@ mod tests {
         assert_eq!(back.metadata.name, "alpha-class");
         assert_eq!(back.driver_name, "csi.alpha.com");
         assert_eq!(back.parameters.get("mode"), Some(&"fast".to_string()));
+    }
+
+    #[test]
+    fn test_storage_class_list_roundtrip() {
+        let list = k8s_api::storage::v1beta1::StorageClassList {
+            metadata: ListMeta {
+                resource_version: "3".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::storage::v1beta1::StorageClass {
+                metadata: ObjectMeta::named("sc-list"),
+                provisioner: "csi.example.com".to_string(),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::storage::v1::StorageClassList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "3");
+        assert_eq!(v1_list.items[0].metadata.name, "sc-list");
+
+        let roundtrip: k8s_api::storage::v1beta1::StorageClassList =
+            k8s_api::storage::v1beta1::StorageClassList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

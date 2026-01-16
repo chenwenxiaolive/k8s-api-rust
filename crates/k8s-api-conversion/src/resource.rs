@@ -1503,7 +1503,7 @@ fn convert_device_v1alpha3_from_v1(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
     use std::collections::BTreeMap;
 
     #[test]
@@ -1661,5 +1661,28 @@ mod tests {
         assert_eq!(device.name, "dev1");
         assert!(device.attributes.contains_key("vendor"));
         assert_eq!(v1_slice.spec.node_name, Some("node-b".to_string()));
+    }
+
+    #[test]
+    fn test_resource_claim_list_roundtrip() {
+        let list = k8s_api::resource::v1beta1::ResourceClaimList {
+            metadata: ListMeta {
+                resource_version: "4".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::resource::v1beta1::ResourceClaim {
+                metadata: ObjectMeta::named("claim-list"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::resource::v1::ResourceClaimList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "4");
+        assert_eq!(v1_list.items[0].metadata.name, "claim-list");
+
+        let roundtrip: k8s_api::resource::v1beta1::ResourceClaimList =
+            k8s_api::resource::v1beta1::ResourceClaimList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

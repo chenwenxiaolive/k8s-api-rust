@@ -245,7 +245,7 @@ fn convert_hints_from_v1(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
 
     #[test]
     fn test_endpoint_slice_v1beta1_to_v1() {
@@ -421,5 +421,31 @@ mod tests {
         assert_eq!(target_ref.kind, "Pod");
         assert_eq!(target_ref.name, "my-pod");
         assert_eq!(target_ref.uid, "abc-123");
+    }
+
+    #[test]
+    fn test_endpoint_slice_list_roundtrip() {
+        let list = k8s_api::discovery::v1beta1::EndpointSliceList {
+            metadata: ListMeta {
+                resource_version: "4".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::discovery::v1beta1::EndpointSlice {
+                metadata: ObjectMeta::named("slice"),
+                address_type: "IPv4".to_string(),
+                endpoints: Vec::new(),
+                ports: Vec::new(),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::discovery::v1::EndpointSliceList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "4");
+        assert_eq!(v1_list.items[0].metadata.name, "slice");
+
+        let roundtrip: k8s_api::discovery::v1beta1::EndpointSliceList =
+            k8s_api::discovery::v1beta1::EndpointSliceList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

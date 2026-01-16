@@ -130,3 +130,28 @@ impl Convertible<k8s_api::authorization::v1::SelfSubjectRulesReview>
         Ok(converted)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_self_subject_access_review_roundtrip() {
+        let v1beta1 = k8s_api::authorization::v1beta1::SelfSubjectAccessReview {
+            spec: k8s_api::authorization::v1beta1::SelfSubjectAccessReviewSpec {
+                resource_attributes: None,
+                non_resource_attributes: None,
+            },
+            ..Default::default()
+        };
+
+        let v1: k8s_api::authorization::v1::SelfSubjectAccessReview =
+            v1beta1.convert_to().unwrap();
+        assert!(v1.spec.resource_attributes.is_none());
+        assert!(v1.spec.non_resource_attributes.is_none());
+
+        let roundtrip: k8s_api::authorization::v1beta1::SelfSubjectAccessReview =
+            k8s_api::authorization::v1beta1::SelfSubjectAccessReview::convert_from(&v1).unwrap();
+        assert!(roundtrip.spec.resource_attributes.is_none());
+    }
+}

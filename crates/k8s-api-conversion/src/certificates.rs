@@ -265,7 +265,7 @@ impl Convertible<k8s_api::certificates::v1beta1::ClusterTrustBundleList>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
 
     #[test]
     fn test_cluster_trust_bundle_alpha_to_beta() {
@@ -282,5 +282,35 @@ mod tests {
             alpha.convert_to().unwrap();
         assert_eq!(beta.metadata.name, "trust-bundle");
         assert_eq!(beta.spec.signer_name, "example.com/signer");
+    }
+
+    #[test]
+    fn test_csr_list_roundtrip() {
+        let list = k8s_api::certificates::v1beta1::CertificateSigningRequestList {
+            metadata: ListMeta {
+                resource_version: "3".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::certificates::v1beta1::CertificateSigningRequest {
+                metadata: ObjectMeta::named("csr"),
+                spec: k8s_api::certificates::v1beta1::CertificateSigningRequestSpec {
+                    request: "csr".to_string(),
+                    signer_name: Some("example.com/signer".to_string()),
+                    ..Default::default()
+                },
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::certificates::v1::CertificateSigningRequestList =
+            list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "3");
+        assert_eq!(v1_list.items[0].metadata.name, "csr");
+
+        let roundtrip: k8s_api::certificates::v1beta1::CertificateSigningRequestList =
+            k8s_api::certificates::v1beta1::CertificateSigningRequestList::convert_from(&v1_list)
+                .unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

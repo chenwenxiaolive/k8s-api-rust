@@ -211,7 +211,7 @@ impl Convertible<k8s_api::policy::v1::Eviction> for k8s_api::policy::v1beta1::Ev
 #[cfg(test)]
 mod tests {
     use super::*;
-    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
     use std::collections::BTreeMap;
 
     #[test]
@@ -296,5 +296,28 @@ mod tests {
         let converted_back: k8s_api::policy::v1beta1::Eviction =
             k8s_api::policy::v1beta1::Eviction::convert_from(&v1_eviction).unwrap();
         assert_eq!(converted_back.metadata.name, "test-pod");
+    }
+
+    #[test]
+    fn test_pdb_list_roundtrip() {
+        let list = k8s_api::policy::v1beta1::PodDisruptionBudgetList {
+            metadata: ListMeta {
+                resource_version: "12".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::policy::v1beta1::PodDisruptionBudget {
+                metadata: ObjectMeta::named("pdb-list"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::policy::v1::PodDisruptionBudgetList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "12");
+        assert_eq!(v1_list.items[0].metadata.name, "pdb-list");
+
+        let roundtrip: k8s_api::policy::v1beta1::PodDisruptionBudgetList =
+            k8s_api::policy::v1beta1::PodDisruptionBudgetList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
     }
 }

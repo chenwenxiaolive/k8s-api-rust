@@ -116,3 +116,32 @@ impl Convertible<k8s_api::node::v1::RuntimeClassList> for k8s_api::node::v1alpha
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
+
+    #[test]
+    fn test_runtime_class_list_roundtrip() {
+        let list = k8s_api::node::v1beta1::RuntimeClassList {
+            metadata: ListMeta {
+                resource_version: "6".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::node::v1beta1::RuntimeClass {
+                metadata: ObjectMeta::named("runc"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::node::v1::RuntimeClassList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "6");
+        assert_eq!(v1_list.items[0].metadata.name, "runc");
+
+        let roundtrip: k8s_api::node::v1beta1::RuntimeClassList =
+            k8s_api::node::v1beta1::RuntimeClassList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
+    }
+}

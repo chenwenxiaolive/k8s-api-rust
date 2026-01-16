@@ -361,4 +361,29 @@ mod tests {
             "Forbid"
         );
     }
+
+    #[test]
+    fn test_job_list_roundtrip() {
+        use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
+
+        let list = k8s_api::batch::v1beta1::JobList {
+            metadata: ListMeta {
+                resource_version: "11".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::batch::v1beta1::Job {
+                metadata: ObjectMeta::named("job-list"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::batch::v1::JobList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "11");
+        assert_eq!(v1_list.items[0].metadata.name, "job-list");
+
+        let roundtrip: k8s_api::batch::v1beta1::JobList =
+            k8s_api::batch::v1beta1::JobList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
+    }
 }

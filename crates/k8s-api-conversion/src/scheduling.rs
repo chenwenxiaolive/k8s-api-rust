@@ -140,3 +140,33 @@ impl Convertible<k8s_api::scheduling::v1::PriorityClassList>
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
+
+    #[test]
+    fn test_priority_class_list_roundtrip() {
+        let list = k8s_api::scheduling::v1beta1::PriorityClassList {
+            metadata: ListMeta {
+                resource_version: "9".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::scheduling::v1beta1::PriorityClass {
+                metadata: ObjectMeta::named("pc"),
+                value: 1000,
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::scheduling::v1::PriorityClassList = list.convert_to().unwrap();
+        assert_eq!(v1_list.metadata.resource_version, "9");
+        assert_eq!(v1_list.items[0].metadata.name, "pc");
+
+        let roundtrip: k8s_api::scheduling::v1beta1::PriorityClassList =
+            k8s_api::scheduling::v1beta1::PriorityClassList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items.len(), 1);
+    }
+}

@@ -33,3 +33,22 @@ impl Convertible<k8s_api::admission::v1::AdmissionReview>
         Ok(converted)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_admission_review_empty_roundtrip() {
+        let v1beta1 = k8s_api::admission::v1beta1::AdmissionReview::default();
+        let v1: k8s_api::admission::v1::AdmissionReview = v1beta1.convert_to().unwrap();
+
+        assert!(v1.request.is_none());
+        assert!(v1.response.is_none());
+        assert_eq!(v1.type_meta.api_version, "admission.k8s.io/v1");
+
+        let roundtrip: k8s_api::admission::v1beta1::AdmissionReview =
+            k8s_api::admission::v1beta1::AdmissionReview::convert_from(&v1).unwrap();
+        assert!(roundtrip.request.is_none());
+    }
+}

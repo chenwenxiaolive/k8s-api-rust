@@ -1442,4 +1442,29 @@ mod tests {
             k8s_api::apps::v1beta1::Scale::convert_from(&v1beta2_scale).unwrap();
         assert_eq!(roundtrip.spec.as_ref().unwrap().replicas, Some(3));
     }
+
+    #[test]
+    fn test_daemonset_list_roundtrip() {
+        use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta};
+
+        let list = k8s_api::apps::v1beta2::DaemonSetList {
+            metadata: ListMeta {
+                continue_token: "next".to_string(),
+                ..Default::default()
+            },
+            items: vec![k8s_api::apps::v1beta2::DaemonSet {
+                metadata: ObjectMeta::named("ds"),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+
+        let v1_list: k8s_api::apps::v1::DaemonSetList = list.convert_to().unwrap();
+        assert_eq!(v1_list.items.len(), 1);
+        assert_eq!(v1_list.metadata.continue_token, "next");
+
+        let roundtrip: k8s_api::apps::v1beta2::DaemonSetList =
+            k8s_api::apps::v1beta2::DaemonSetList::convert_from(&v1_list).unwrap();
+        assert_eq!(roundtrip.items[0].metadata.name, "ds");
+    }
 }

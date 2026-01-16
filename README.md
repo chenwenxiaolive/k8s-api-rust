@@ -144,7 +144,7 @@ k8s-api-rust/
 
 ## Current Status
 
-**Total Tests: 300 (all passing)**
+**Total Tests: 323 (all passing)**
 
 ### API Types Coverage (k8s-api)
 
@@ -298,7 +298,7 @@ k8s-api-rust/
 
 This project refactors types from the official Kubernetes codebase:
 - Source: `kubernetes/staging/src/k8s.io/api/`
-- Version: Based on latest Kubernetes release
+- Version: Kubernetes v1.34.1 only (no other versions targeted)
 - Total API groups: 27
 - Total code volume: ~18,000+ lines of Go code
 

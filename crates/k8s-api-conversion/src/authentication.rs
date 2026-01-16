@@ -87,3 +87,39 @@ impl Convertible<k8s_api::authentication::v1::SelfSubjectReview>
         Ok(converted)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_token_review_roundtrip() {
+        let v1beta1 = k8s_api::authentication::v1beta1::TokenReview {
+            spec: k8s_api::authentication::v1beta1::TokenReviewSpec {
+                token: "token".to_string(),
+                audiences: vec!["aud".to_string()],
+            },
+            ..Default::default()
+        };
+
+        let v1: k8s_api::authentication::v1::TokenReview = v1beta1.convert_to().unwrap();
+        assert_eq!(v1.spec.token, "token");
+        assert_eq!(v1.spec.audiences, vec!["aud".to_string()]);
+
+        let roundtrip: k8s_api::authentication::v1beta1::TokenReview =
+            k8s_api::authentication::v1beta1::TokenReview::convert_from(&v1).unwrap();
+        assert_eq!(roundtrip.spec.token, "token");
+    }
+
+    #[test]
+    fn test_self_subject_review_alpha_roundtrip() {
+        let v1alpha1 = k8s_api::authentication::v1alpha1::SelfSubjectReview::default();
+
+        let v1: k8s_api::authentication::v1::SelfSubjectReview = v1alpha1.convert_to().unwrap();
+        assert_eq!(v1.type_meta.api_version, "authentication.k8s.io/v1");
+
+        let roundtrip: k8s_api::authentication::v1alpha1::SelfSubjectReview =
+            k8s_api::authentication::v1alpha1::SelfSubjectReview::convert_from(&v1).unwrap();
+        assert!(roundtrip.status.is_none());
+    }
+}
