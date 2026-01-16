@@ -33,7 +33,7 @@ Notes:
 | discovery | 4 | 0 | 1 | 2 | 1 | conversion, defaults, validation |
 | extensions | 3 | 1 | 1 | 1 | 0 | validation |
 | flowcontrol | 9 | 0 | 3 | 5 | 1 | conversion, validation |
-| networking | 5 | 1 | 1 | 2 | 1 | conversion, validation |
+| networking | 5 | 1 | 1 | 2 | 1 | conversion, defaults, validation |
 | node | 2 | 0 | 1 | 0 | 1 | conversion, validation |
 | policy | 3 | 0 | 2 | 0 | 1 | conversion, validation |
 | rbac | 3 | 0 | 1 | 0 | 1 | api, conversion, validation |
@@ -108,8 +108,8 @@ Notes:
 - pkg/apis/flowcontrol/v1beta3/defaults_test.go [flowcontrol] (defaults) -> missing
 - pkg/apis/flowcontrol/validation/validation_test.go [flowcontrol] (validation) -> rust_validation
 - pkg/apis/networking/v1beta1/conversion_test.go [networking] (conversion) -> rust_conversion
-- pkg/apis/networking/v1/defaults_test.go [networking] (defaults) -> missing
-- pkg/apis/networking/v1beta1/defaults_test.go [networking] (defaults) -> missing
+- pkg/apis/networking/v1/defaults_test.go [networking] (defaults) -> rust_defaults
+- pkg/apis/networking/v1beta1/defaults_test.go [networking] (defaults) -> rust_defaults
 - staging/src/k8s.io/api/networking/v1/types_test.go [networking] (types) -> covered by k8s-api-codec tests
 - pkg/apis/networking/validation/validation_test.go [networking] (validation) -> rust_validation
 - pkg/apis/node/v1alpha1/conversion_test.go [node] (conversion) -> rust_conversion
