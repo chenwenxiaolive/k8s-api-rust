@@ -1,8 +1,9 @@
 //! Internal type definitions for discovery.
 
-use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta};
-use serde::{Deserialize, Serialize};
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use serde::{Deserialize, Serialize};
+
+pub use crate::core::internal::ObjectReference;
 
 pub type AddressType = String;
 

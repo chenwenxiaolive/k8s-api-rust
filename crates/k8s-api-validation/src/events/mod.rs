@@ -94,6 +94,15 @@ pub mod v1beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::events::internal as api;
+
+    pub fn validate_event(event: &api::Event) -> ValidationResult {
+        crate::internal::validate_with(event, "event", super::v1::validate_event)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1 as validation_v1;

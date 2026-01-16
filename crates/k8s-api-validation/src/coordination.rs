@@ -32,6 +32,15 @@ pub fn validate_lease(lease: &Lease) -> ValidationResult {
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::coordination::internal as api;
+
+    pub fn validate_lease(lease: &api::Lease) -> ValidationResult {
+        crate::internal::validate_with(lease, "lease", super::validate_lease)
+    }
+}
+
 /// Validates LeaseSpec.
 fn validate_lease_spec(spec: &LeaseSpec, field: &str) -> ValidationResult {
     let mut errors = Vec::new();

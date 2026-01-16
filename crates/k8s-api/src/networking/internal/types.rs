@@ -1,9 +1,9 @@
 //! Internal type definitions for networking.
 
-use k8s_api_core::IntOrString;
-use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta, LabelSelector};
 use serde::{Deserialize, Serialize};
-use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ListMeta, ObjectMeta, TypeMeta};
+
+pub use crate::core::internal::TypedLocalObjectReference;
 
 pub type PathType = String;
 pub type PolicyType = String;

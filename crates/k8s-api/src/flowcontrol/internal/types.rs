@@ -1,8 +1,7 @@
 //! Internal type definitions for flowcontrol.
 
-use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, Time, TypeMeta};
-use serde::{Deserialize, Serialize};
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, Time, TypeMeta};
+use serde::{Deserialize, Serialize};
 
 pub type ConditionStatus = String;
 pub type FlowDistinguisherMethodType = String;

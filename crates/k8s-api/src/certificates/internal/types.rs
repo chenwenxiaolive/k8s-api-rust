@@ -1,10 +1,8 @@
 //! Internal type definitions for certificates.
 
-use k8s_apimachinery::apis::meta::v1::{Condition, ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{Condition, ObjectMeta, TypeMeta, Time};
 use serde::{Deserialize, Serialize};
-use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use std::collections::BTreeMap;
-use k8s_apimachinery::apis::meta::v1::{ObjectMeta, Time, TypeMeta};
 
 pub type ExtraValue = Vec<String>;
 pub type KeyUsage = String;
@@ -42,6 +40,7 @@ pub const KEY_USAGE_SMIME: &str = "s/mime";
 pub const KEY_USAGE_TIMESTAMPING: &str = "timestamping";
 pub const KUBELET_SERVING_SIGNER_NAME: &str = "kubernetes.io/kubelet-serving";
 pub const KUBE_APISERVER_CLIENT_KUBELET_SIGNER_NAME: &str =
+    "kubernetes.io/kube-apiserver-client-kubelet";
 pub const KUBE_APISERVER_CLIENT_SIGNER_NAME: &str = "kubernetes.io/kube-apiserver-client";
 pub const LEGACY_UNKNOWN_SIGNER_NAME: &str = "kubernetes.io/legacy-unknown";
 

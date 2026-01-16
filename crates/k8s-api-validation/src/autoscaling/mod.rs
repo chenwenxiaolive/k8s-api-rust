@@ -236,6 +236,30 @@ pub fn validate_metric_spec(metric: &MetricSpec, field: &str) -> ValidationResul
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::autoscaling::internal as api;
+
+    pub fn validate_hpa(hpa: &api::HorizontalPodAutoscaler) -> ValidationResult {
+        crate::internal::validate_with(hpa, "horizontalPodAutoscaler", super::validate_hpa)
+    }
+
+    pub fn validate_hpa_spec(
+        spec: &api::HorizontalPodAutoscalerSpec,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field, |external_spec| {
+            super::validate_hpa_spec(external_spec, field)
+        })
+    }
+
+    pub fn validate_metric_spec(metric: &api::MetricSpec, field: &str) -> ValidationResult {
+        crate::internal::validate_with(metric, field, |external_metric| {
+            super::validate_metric_spec(external_metric, field)
+        })
+    }
+}
+
 /// Validates a ResourceMetricSource.
 fn validate_resource_metric_source(source: &ResourceMetricSource, field: &str) -> ValidationResult {
     let mut errors = Vec::new();

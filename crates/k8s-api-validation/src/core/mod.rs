@@ -588,6 +588,49 @@ pub fn validate_secret(secret: &Secret) -> ValidationResult {
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::core::internal as api;
+
+    pub fn validate_pod(pod: &api::Pod) -> ValidationResult {
+        crate::internal::validate_with(pod, "pod", super::validate_pod)
+    }
+
+    pub fn validate_pod_spec(spec: &api::PodSpec, field_path: &str) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_pod_spec(external_spec, field_path)
+        })
+    }
+
+    pub fn validate_container(container: &api::Container, field_path: &str) -> ValidationResult {
+        crate::internal::validate_with(container, field_path, |external_container| {
+            super::validate_container(external_container, field_path)
+        })
+    }
+
+    pub fn validate_namespace(namespace: &api::Namespace) -> ValidationResult {
+        crate::internal::validate_with(namespace, "namespace", super::validate_namespace)
+    }
+
+    pub fn validate_service(service: &api::Service) -> ValidationResult {
+        crate::internal::validate_with(service, "service", super::validate_service)
+    }
+
+    pub fn validate_service_spec(spec: &api::ServiceSpec, field_path: &str) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_service_spec(external_spec, field_path)
+        })
+    }
+
+    pub fn validate_configmap(configmap: &api::ConfigMap) -> ValidationResult {
+        crate::internal::validate_with(configmap, "configMap", super::validate_configmap)
+    }
+
+    pub fn validate_secret(secret: &api::Secret) -> ValidationResult {
+        crate::internal::validate_with(secret, "secret", super::validate_secret)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

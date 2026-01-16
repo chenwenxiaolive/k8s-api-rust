@@ -1,8 +1,9 @@
 //! Internal type definitions for events.
 
-use k8s_apimachinery::apis::meta::v1::{ListMeta, MicroTime, ObjectMeta, Time, TypeMeta};
-use serde::{Deserialize, Serialize};
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use serde::{Deserialize, Serialize};
+
+pub use crate::core::internal::{EventSource, ObjectReference};
 
 
 /// Event is a report of an event somewhere in the cluster.

@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use k8s_api_core::GroupVersionKind;
+
 pub type DiscoveryFreshness = String;
 pub type ResourceScope = String;
 

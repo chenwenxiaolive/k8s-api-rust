@@ -80,6 +80,19 @@ pub mod v1alpha1 {
 // Tests
 // =============================================================================
 
+pub mod internal {
+    use super::*;
+    use k8s_api::scheduling::internal as api;
+
+    pub fn validate_priority_class(priority_class: &api::PriorityClass) -> ValidationResult {
+        crate::internal::validate_with(
+            priority_class,
+            "priorityClass",
+            super::v1::validate_priority_class,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

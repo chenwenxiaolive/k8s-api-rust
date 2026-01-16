@@ -63,6 +63,21 @@ pub fn validate_certificate_signing_request(csr: &CertificateSigningRequest) -> 
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::certificates::internal as api;
+
+    pub fn validate_certificate_signing_request(
+        csr: &api::CertificateSigningRequest,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            csr,
+            "certificateSigningRequest",
+            super::validate_certificate_signing_request,
+        )
+    }
+}
+
 /// Validates CertificateSigningRequestSpec.
 fn validate_csr_spec(spec: &CertificateSigningRequestSpec, field: &str) -> ValidationResult {
     let mut errors = Vec::new();

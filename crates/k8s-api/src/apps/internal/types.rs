@@ -1,9 +1,8 @@
 //! Internal type definitions for apps.
 
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta};
 use serde::{Deserialize, Serialize};
 use crate::core::v1::PodTemplateSpec;
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta};
 use std::collections::BTreeMap;
 
 pub type DaemonSetConditionType = String;

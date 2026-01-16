@@ -284,6 +284,29 @@ pub mod v2beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::apidiscovery::internal as api;
+
+    pub fn validate_api_group_discovery(group: &api::APIGroupDiscovery) -> ValidationResult {
+        crate::internal::validate_with(
+            group,
+            "apiGroupDiscovery",
+            super::v2::validate_api_group_discovery,
+        )
+    }
+
+    pub fn validate_api_group_discovery_list(
+        list: &api::APIGroupDiscoveryList,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            list,
+            "apiGroupDiscoveryList",
+            super::v2::validate_api_group_discovery_list,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v2 as validation_v2;

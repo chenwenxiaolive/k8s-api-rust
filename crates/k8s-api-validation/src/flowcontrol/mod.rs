@@ -1280,6 +1280,25 @@ pub mod v1beta3 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::flowcontrol::internal as api;
+
+    pub fn validate_flow_schema(schema: &api::FlowSchema) -> ValidationResult {
+        crate::internal::validate_with(schema, "flowSchema", super::v1::validate_flow_schema)
+    }
+
+    pub fn validate_priority_level_configuration(
+        configuration: &api::PriorityLevelConfiguration,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            configuration,
+            "priorityLevelConfiguration",
+            super::v1::validate_priority_level_configuration,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1beta3 as validation_v1beta3;

@@ -336,6 +336,59 @@ pub fn validate_role_ref(role_ref: &RoleRef, field: &str, valid_kinds: &[&str]) 
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::rbac::internal as api;
+
+    pub fn validate_role(role: &api::Role) -> ValidationResult {
+        crate::internal::validate_with(role, "role", super::validate_role)
+    }
+
+    pub fn validate_cluster_role(cluster_role: &api::ClusterRole) -> ValidationResult {
+        crate::internal::validate_with(
+            cluster_role,
+            "clusterRole",
+            super::validate_cluster_role,
+        )
+    }
+
+    pub fn validate_role_binding(binding: &api::RoleBinding) -> ValidationResult {
+        crate::internal::validate_with(binding, "roleBinding", super::validate_role_binding)
+    }
+
+    pub fn validate_cluster_role_binding(
+        binding: &api::ClusterRoleBinding,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            binding,
+            "clusterRoleBinding",
+            super::validate_cluster_role_binding,
+        )
+    }
+
+    pub fn validate_policy_rule(rule: &api::PolicyRule, field: &str) -> ValidationResult {
+        crate::internal::validate_with(rule, field, |external_rule| {
+            super::validate_policy_rule(external_rule, field)
+        })
+    }
+
+    pub fn validate_subject(subject: &api::Subject, field: &str) -> ValidationResult {
+        crate::internal::validate_with(subject, field, |external_subject| {
+            super::validate_subject(external_subject, field)
+        })
+    }
+
+    pub fn validate_role_ref(
+        role_ref: &api::RoleRef,
+        field: &str,
+        valid_kinds: &[&str],
+    ) -> ValidationResult {
+        crate::internal::validate_with(role_ref, field, |external_ref| {
+            super::validate_role_ref(external_ref, field, valid_kinds)
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

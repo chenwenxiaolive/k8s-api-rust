@@ -171,6 +171,28 @@ pub fn validate_eviction(eviction: &Eviction) -> ValidationResult {
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::policy::internal as api;
+
+    pub fn validate_pdb(pdb: &api::PodDisruptionBudget) -> ValidationResult {
+        crate::internal::validate_with(pdb, "podDisruptionBudget", super::validate_pdb)
+    }
+
+    pub fn validate_pdb_spec(
+        spec: &api::PodDisruptionBudgetSpec,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field, |external_spec| {
+            super::validate_pdb_spec(external_spec, field)
+        })
+    }
+
+    pub fn validate_eviction(eviction: &api::Eviction) -> ValidationResult {
+        crate::internal::validate_with(eviction, "eviction", super::validate_eviction)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

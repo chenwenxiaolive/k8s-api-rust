@@ -63,6 +63,15 @@ pub fn validate_runtime_class(rc: &RuntimeClass) -> ValidationResult {
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::node::internal as api;
+
+    pub fn validate_runtime_class(rc: &api::RuntimeClass) -> ValidationResult {
+        crate::internal::validate_with(rc, "runtimeClass", super::validate_runtime_class)
+    }
+}
+
 /// Validates Overhead.
 fn validate_overhead(overhead: &Overhead, field: &str) -> ValidationResult {
     let mut errors = Vec::new();

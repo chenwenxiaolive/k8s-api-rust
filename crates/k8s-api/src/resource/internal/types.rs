@@ -1,8 +1,7 @@
 //! Internal type definitions for resource.
 
-use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, Time, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta, Condition};
 use serde::{Deserialize, Serialize};
-use k8s_apimachinery::apis::meta::v1::{Condition, ListMeta, ObjectMeta, TypeMeta};
 use std::collections::BTreeMap;
 
 pub type AllocationConfigSource = String;

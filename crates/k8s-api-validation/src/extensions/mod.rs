@@ -39,6 +39,15 @@ pub mod v1beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::extensions::internal as api;
+
+    pub fn validate_ingress(ingress: &api::Ingress) -> ValidationResult {
+        crate::internal::validate_with(ingress, "ingress", super::v1beta1::validate_ingress)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1beta1 as validation_v1beta1;

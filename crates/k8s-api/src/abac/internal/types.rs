@@ -1,6 +1,6 @@
 //! Internal type definitions for abac.
 
-use k8s_apimachinery::apis::meta::v1::TypeMeta;
+use k8s_apimachinery::apis::meta::v1::{TypeMeta};
 use serde::{Deserialize, Serialize};
 
 
@@ -40,4 +40,8 @@ pub struct PolicySpec {
     /// NonResourcePath matches non-resource request paths.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub non_resource_path: String,
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }

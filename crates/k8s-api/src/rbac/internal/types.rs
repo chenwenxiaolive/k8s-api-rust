@@ -1,8 +1,7 @@
 //! Internal type definitions for rbac.
 
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, TypeMeta};
-use serde::{Deserialize, Serialize};
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use serde::{Deserialize, Serialize};
 
 pub const API_GROUP_ALL: &str = "*";
 pub const AUTO_UPDATE_ANNOTATION_KEY: &str = "rbac.authorization.k8s.io/autoupdate";

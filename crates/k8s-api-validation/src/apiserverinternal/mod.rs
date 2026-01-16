@@ -39,6 +39,19 @@ pub mod v1alpha1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::apiserverinternal::internal as api;
+
+    pub fn validate_storage_version(version: &api::StorageVersion) -> ValidationResult {
+        crate::internal::validate_with(
+            version,
+            "storageVersion",
+            super::v1alpha1::validate_storage_version,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1alpha1 as validation_v1alpha1;

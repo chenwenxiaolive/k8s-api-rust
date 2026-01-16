@@ -1474,6 +1474,45 @@ pub mod v1beta2 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::resource::internal as api;
+
+    pub fn validate_resource_claim(claim: &api::ResourceClaim) -> ValidationResult {
+        crate::internal::validate_with(
+            claim,
+            "resourceClaim",
+            super::v1beta2::validate_resource_claim,
+        )
+    }
+
+    pub fn validate_device_class(class: &api::DeviceClass) -> ValidationResult {
+        crate::internal::validate_with(
+            class,
+            "deviceClass",
+            super::v1beta2::validate_device_class,
+        )
+    }
+
+    pub fn validate_resource_claim_template(
+        template: &api::ResourceClaimTemplate,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            template,
+            "resourceClaimTemplate",
+            super::v1beta2::validate_resource_claim_template,
+        )
+    }
+
+    pub fn validate_resource_slice(slice: &api::ResourceSlice) -> ValidationResult {
+        crate::internal::validate_with(
+            slice,
+            "resourceSlice",
+            super::v1beta2::validate_resource_slice,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::resource::{v1beta1 as validation_v1beta1, v1beta2 as validation_v1beta2};

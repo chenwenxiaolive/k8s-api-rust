@@ -272,6 +272,19 @@ pub mod v1beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::admission::internal as api;
+
+    pub fn validate_admission_review(review: &api::AdmissionReview) -> ValidationResult {
+        crate::internal::validate_with(
+            review,
+            "admissionReview",
+            super::v1::validate_admission_review,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1 as validation_v1;

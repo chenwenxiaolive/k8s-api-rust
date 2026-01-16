@@ -2,7 +2,8 @@
 
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
-use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, TypeMeta};
+
+pub use crate::core::internal::Toleration;
 
 
 /// Overhead structure represents the resource overhead associated with running a pod.

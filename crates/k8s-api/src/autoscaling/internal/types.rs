@@ -1,9 +1,8 @@
 //! Internal type definitions for autoscaling.
 
 use k8s_api_core::resource::Quantity;
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta, ListMeta};
 use serde::{Deserialize, Serialize};
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time, TypeMeta};
 
 pub type HPAScalingPolicyType = String;
 pub type HorizontalPodAutoscalerConditionType = String;

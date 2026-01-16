@@ -285,6 +285,34 @@ pub fn validate_cronjob_spec(spec: &CronJobSpec, field_path: &str) -> Validation
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::batch::internal as api;
+
+    pub fn validate_job(job: &api::Job) -> ValidationResult {
+        crate::internal::validate_with(job, "job", super::validate_job)
+    }
+
+    pub fn validate_job_spec(spec: &api::JobSpec, field_path: &str) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_job_spec(external_spec, field_path)
+        })
+    }
+
+    pub fn validate_cronjob(cronjob: &api::CronJob) -> ValidationResult {
+        crate::internal::validate_with(cronjob, "cronJob", super::validate_cronjob)
+    }
+
+    pub fn validate_cronjob_spec(
+        spec: &api::CronJobSpec,
+        field_path: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_cronjob_spec(external_spec, field_path)
+        })
+    }
+}
+
 fn validate_job_template_spec(
     template: &k8s_api::batch::v1::JobTemplateSpec,
     field_path: &str,

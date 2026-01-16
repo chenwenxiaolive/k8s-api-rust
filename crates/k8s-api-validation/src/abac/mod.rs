@@ -52,6 +52,15 @@ pub mod v1beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::abac::internal as api;
+
+    pub fn validate_policy(policy: &api::Policy) -> ValidationResult {
+        crate::internal::validate_with(policy, "policy", super::v1beta1::validate_policy)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v0 as validation_v0;

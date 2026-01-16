@@ -87,6 +87,31 @@ pub mod v1alpha1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::authentication::internal as api;
+
+    pub fn validate_token_review(review: &api::TokenReview) -> ValidationResult {
+        crate::internal::validate_with(review, "tokenReview", super::v1::validate_token_review)
+    }
+
+    pub fn validate_token_request(request: &api::TokenRequest) -> ValidationResult {
+        crate::internal::validate_with(
+            request,
+            "tokenRequest",
+            super::v1::validate_token_request,
+        )
+    }
+
+    pub fn validate_self_subject_review(review: &api::SelfSubjectReview) -> ValidationResult {
+        crate::internal::validate_with(
+            review,
+            "selfSubjectReview",
+            super::v1::validate_self_subject_review,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1 as validation_v1;

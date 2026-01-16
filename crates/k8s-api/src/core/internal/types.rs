@@ -5,6 +5,10 @@ use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
+fn is_false(b: &bool) -> bool {
+    !*b
+}
+
 pub type AppArmorProfileType = String;
 pub type AzureDataDiskCachingMode = String;
 pub type AzureDataDiskKind = String;

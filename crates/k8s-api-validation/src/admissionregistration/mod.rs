@@ -748,6 +748,51 @@ pub mod v1beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::admissionregistration::internal as api;
+
+    pub fn validate_mutating_webhook_configuration(
+        config: &api::MutatingWebhookConfiguration,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            config,
+            "mutatingWebhookConfiguration",
+            super::v1::validate_mutating_webhook_configuration,
+        )
+    }
+
+    pub fn validate_validating_webhook_configuration(
+        config: &api::ValidatingWebhookConfiguration,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            config,
+            "validatingWebhookConfiguration",
+            super::v1::validate_validating_webhook_configuration,
+        )
+    }
+
+    pub fn validate_validating_admission_policy(
+        policy: &api::ValidatingAdmissionPolicy,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            policy,
+            "validatingAdmissionPolicy",
+            super::v1beta1::validate_validating_admission_policy,
+        )
+    }
+
+    pub fn validate_validating_admission_policy_binding(
+        binding: &api::ValidatingAdmissionPolicyBinding,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            binding,
+            "validatingAdmissionPolicyBinding",
+            super::v1beta1::validate_validating_admission_policy_binding,
+        )
+    }
+}
+
 pub mod v1alpha1 {
     use super::*;
     use k8s_api::admissionregistration::v1alpha1 as api;

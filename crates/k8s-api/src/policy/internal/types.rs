@@ -1,8 +1,7 @@
 //! Internal type definitions for policy.
 
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, TypeMeta, Condition};
 use serde::{Deserialize, Serialize};
-use k8s_apimachinery::apis::meta::v1::{Condition, LabelSelector, ObjectMeta, TypeMeta};
 
 pub type UnhealthyPodEvictionPolicyType = String;
 

@@ -32,6 +32,15 @@ pub mod v1alpha1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::imagepolicy::internal as api;
+
+    pub fn validate_image_review(review: &api::ImageReview) -> ValidationResult {
+        crate::internal::validate_with(review, "imageReview", super::v1alpha1::validate_image_review)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1alpha1 as validation_v1alpha1;

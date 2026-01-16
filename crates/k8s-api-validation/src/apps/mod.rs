@@ -369,6 +369,60 @@ pub fn validate_replicaset_spec(spec: &ReplicaSetSpec, field_path: &str) -> Vali
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::apps::internal as api;
+
+    pub fn validate_deployment(deployment: &api::Deployment) -> ValidationResult {
+        crate::internal::validate_with(deployment, "deployment", super::validate_deployment)
+    }
+
+    pub fn validate_deployment_spec(spec: &api::DeploymentSpec, field_path: &str) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_deployment_spec(external_spec, field_path)
+        })
+    }
+
+    pub fn validate_statefulset(statefulset: &api::StatefulSet) -> ValidationResult {
+        crate::internal::validate_with(statefulset, "statefulSet", super::validate_statefulset)
+    }
+
+    pub fn validate_statefulset_spec(
+        spec: &api::StatefulSetSpec,
+        field_path: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_statefulset_spec(external_spec, field_path)
+        })
+    }
+
+    pub fn validate_daemonset(daemonset: &api::DaemonSet) -> ValidationResult {
+        crate::internal::validate_with(daemonset, "daemonSet", super::validate_daemonset)
+    }
+
+    pub fn validate_daemonset_spec(
+        spec: &api::DaemonSetSpec,
+        field_path: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_daemonset_spec(external_spec, field_path)
+        })
+    }
+
+    pub fn validate_replicaset(replicaset: &api::ReplicaSet) -> ValidationResult {
+        crate::internal::validate_with(replicaset, "replicaSet", super::validate_replicaset)
+    }
+
+    pub fn validate_replicaset_spec(
+        spec: &api::ReplicaSetSpec,
+        field_path: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field_path, |external_spec| {
+            super::validate_replicaset_spec(external_spec, field_path)
+        })
+    }
+}
+
 // =============================================================================
 // PodTemplateSpec Validation (shared)
 // =============================================================================

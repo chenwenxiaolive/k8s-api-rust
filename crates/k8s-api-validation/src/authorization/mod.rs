@@ -270,6 +270,49 @@ pub mod v1beta1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::authorization::internal as api;
+
+    pub fn validate_subject_access_review(review: &api::SubjectAccessReview) -> ValidationResult {
+        crate::internal::validate_with(
+            review,
+            "subjectAccessReview",
+            super::v1::validate_subject_access_review,
+        )
+    }
+
+    pub fn validate_self_subject_access_review(
+        review: &api::SelfSubjectAccessReview,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            review,
+            "selfSubjectAccessReview",
+            super::v1::validate_self_subject_access_review,
+        )
+    }
+
+    pub fn validate_local_subject_access_review(
+        review: &api::LocalSubjectAccessReview,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            review,
+            "localSubjectAccessReview",
+            super::v1::validate_local_subject_access_review,
+        )
+    }
+
+    pub fn validate_self_subject_rules_review(
+        review: &api::SelfSubjectRulesReview,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            review,
+            "selfSubjectRulesReview",
+            super::v1::validate_self_subject_rules_review,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1 as validation_v1;

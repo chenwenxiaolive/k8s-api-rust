@@ -330,6 +330,74 @@ pub fn validate_csi_storage_capacity(capacity: &CSIStorageCapacity) -> Validatio
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::storage::internal as api;
+
+    pub fn validate_storage_class(sc: &api::StorageClass) -> ValidationResult {
+        crate::internal::validate_with(sc, "storageClass", super::validate_storage_class)
+    }
+
+    pub fn validate_volume_attachment(va: &api::VolumeAttachment) -> ValidationResult {
+        crate::internal::validate_with(
+            va,
+            "volumeAttachment",
+            super::validate_volume_attachment,
+        )
+    }
+
+    pub fn validate_volume_attachment_spec(
+        spec: &api::VolumeAttachmentSpec,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field, |external_spec| {
+            super::validate_volume_attachment_spec(external_spec, field)
+        })
+    }
+
+    pub fn validate_volume_attachment_source(
+        source: &api::VolumeAttachmentSource,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(source, field, |external_source| {
+            super::validate_volume_attachment_source(external_source, field)
+        })
+    }
+
+    pub fn validate_csi_driver(driver: &api::CSIDriver) -> ValidationResult {
+        crate::internal::validate_with(driver, "csiDriver", super::validate_csi_driver)
+    }
+
+    pub fn validate_csi_driver_spec(spec: &api::CSIDriverSpec, field: &str) -> ValidationResult {
+        crate::internal::validate_with(spec, field, |external_spec| {
+            super::validate_csi_driver_spec(external_spec, field)
+        })
+    }
+
+    pub fn validate_csi_node(node: &api::CSINode) -> ValidationResult {
+        crate::internal::validate_with(node, "csiNode", super::validate_csi_node)
+    }
+
+    pub fn validate_csi_node_driver(
+        driver: &api::CSINodeDriver,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(driver, field, |external_driver| {
+            super::validate_csi_node_driver(external_driver, field)
+        })
+    }
+
+    pub fn validate_csi_storage_capacity(
+        capacity: &api::CSIStorageCapacity,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            capacity,
+            "csiStorageCapacity",
+            super::validate_csi_storage_capacity,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

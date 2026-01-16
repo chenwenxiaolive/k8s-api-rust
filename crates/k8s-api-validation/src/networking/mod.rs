@@ -356,6 +356,63 @@ pub fn validate_network_policy_spec(spec: &NetworkPolicySpec, field: &str) -> Va
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::networking::internal as api;
+
+    pub fn validate_ingress(ingress: &api::Ingress) -> ValidationResult {
+        crate::internal::validate_with(ingress, "ingress", super::validate_ingress)
+    }
+
+    pub fn validate_ingress_spec(spec: &api::IngressSpec, field: &str) -> ValidationResult {
+        crate::internal::validate_with(spec, field, |external_spec| {
+            super::validate_ingress_spec(external_spec, field)
+        })
+    }
+
+    pub fn validate_ingress_rule(rule: &api::IngressRule, field: &str) -> ValidationResult {
+        crate::internal::validate_with(rule, field, |external_rule| {
+            super::validate_ingress_rule(external_rule, field)
+        })
+    }
+
+    pub fn validate_http_ingress_path(path: &api::HTTPIngressPath, field: &str) -> ValidationResult {
+        crate::internal::validate_with(path, field, |external_path| {
+            super::validate_http_ingress_path(external_path, field)
+        })
+    }
+
+    pub fn validate_ingress_backend(
+        backend: &api::IngressBackend,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(backend, field, |external_backend| {
+            super::validate_ingress_backend(external_backend, field)
+        })
+    }
+
+    pub fn validate_ingress_class(ingress_class: &api::IngressClass) -> ValidationResult {
+        crate::internal::validate_with(
+            ingress_class,
+            "ingressClass",
+            super::validate_ingress_class,
+        )
+    }
+
+    pub fn validate_network_policy(policy: &api::NetworkPolicy) -> ValidationResult {
+        crate::internal::validate_with(policy, "networkPolicy", super::validate_network_policy)
+    }
+
+    pub fn validate_network_policy_spec(
+        spec: &api::NetworkPolicySpec,
+        field: &str,
+    ) -> ValidationResult {
+        crate::internal::validate_with(spec, field, |external_spec| {
+            super::validate_network_policy_spec(external_spec, field)
+        })
+    }
+}
+
 /// Validates a NetworkPolicyIngressRule.
 fn validate_network_policy_ingress_rule(
     rule: &NetworkPolicyIngressRule,

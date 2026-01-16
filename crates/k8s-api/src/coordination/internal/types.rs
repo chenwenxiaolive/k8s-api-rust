@@ -1,6 +1,5 @@
 //! Internal type definitions for coordination.
 
-use crate::coordination::v1::CoordinatedLeaseStrategy;
 use k8s_apimachinery::apis::meta::v1::{MicroTime, ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 

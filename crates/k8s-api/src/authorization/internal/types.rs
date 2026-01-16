@@ -1,10 +1,10 @@
 //! Internal type definitions for authorization.
 
-use crate::authorization::v1::{FieldSelectorAttributes, LabelSelectorAttributes};
-use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{
+    FieldSelectorRequirement, LabelSelectorRequirement, ObjectMeta, TypeMeta,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
-use k8s_apimachinery::apis::meta::v1::{
 
 pub type ExtraValue = Vec<String>;
 

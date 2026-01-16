@@ -1,9 +1,7 @@
 //! Internal type definitions for batch.
 
-use k8s_apimachinery::apis::meta::v1::{ListMeta, ObjectMeta, Time, TypeMeta};
+use k8s_apimachinery::apis::meta::v1::{ObjectMeta, Time, TypeMeta, LabelSelector};
 use serde::{Deserialize, Serialize};
-use crate::batch::v1::JobSpec;
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, Time, TypeMeta};
 use crate::core::v1::PodTemplateSpec;
 
 pub type CompletionMode = String;

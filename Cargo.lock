@@ -289,6 +289,7 @@ dependencies = [
  "k8s-apimachinery",
  "once_cell",
  "regex",
+ "serde",
  "serde_json",
  "thiserror",
 ]

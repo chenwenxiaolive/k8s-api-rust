@@ -96,6 +96,15 @@ pub fn validate_endpoint_slice(es: &EndpointSlice) -> ValidationResult {
     errors
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::discovery::internal as api;
+
+    pub fn validate_endpoint_slice(es: &api::EndpointSlice) -> ValidationResult {
+        crate::internal::validate_with(es, "endpointSlice", super::validate_endpoint_slice)
+    }
+}
+
 /// Validates an Endpoint.
 fn validate_endpoint(endpoint: &Endpoint, field: &str, address_type: &str) -> ValidationResult {
     let mut errors = Vec::new();

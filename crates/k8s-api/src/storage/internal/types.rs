@@ -1,11 +1,10 @@
 //! Internal type definitions for storage.
 
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ObjectMeta, TypeMeta};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time, TypeMeta};
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+
+pub use crate::core::internal::{TopologySelectorLabelRequirement, TopologySelectorTerm};
 
 pub type FSGroupPolicy = String;
 pub type VolumeBindingMode = String;

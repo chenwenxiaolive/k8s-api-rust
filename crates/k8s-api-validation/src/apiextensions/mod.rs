@@ -80,6 +80,21 @@ pub mod v1 {
     }
 }
 
+pub mod internal {
+    use super::*;
+    use k8s_api::apiextensions::internal as api;
+
+    pub fn validate_custom_resource_definition(
+        crd: &api::CustomResourceDefinition,
+    ) -> ValidationResult {
+        crate::internal::validate_with(
+            crd,
+            "customResourceDefinition",
+            super::v1::validate_custom_resource_definition,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::v1 as validation_v1;

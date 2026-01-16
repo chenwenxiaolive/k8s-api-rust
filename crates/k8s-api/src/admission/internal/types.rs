@@ -1,9 +1,11 @@
 //! Internal type definitions for admission.
 
-use k8s_apimachinery::apis::meta::v1::TypeMeta;
+use k8s_apimachinery::apis::meta::v1::{TypeMeta, Status};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use k8s_apimachinery::apis::meta::v1::{Status, TypeMeta};
+
+pub use crate::authentication::internal::UserInfo;
+pub use k8s_api_core::{GroupVersionKind, GroupVersionResource};
 
 pub type Operation = String;
 pub type PatchType = String;
