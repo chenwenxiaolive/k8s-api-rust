@@ -8,6 +8,7 @@ Total Go test files in scope: 99
 
 Notes:
 - Protobuf reserved field checks for NetworkPolicy are covered in `crates/k8s-api-codec` tests.
+- Conversion list round-trip and missing-field coverage is in `crates/k8s-api-conversion/tests/list_roundtrip.rs`.
 
 ## Category Counts
 - types: 4

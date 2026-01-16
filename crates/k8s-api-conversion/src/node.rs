@@ -35,21 +35,37 @@ impl Convertible<k8s_api::node::v1::RuntimeClass> for k8s_api::node::v1beta1::Ru
 
 impl Convertible<k8s_api::node::v1::RuntimeClass> for k8s_api::node::v1alpha1::RuntimeClass {
     fn convert_to(&self) -> Result<k8s_api::node::v1::RuntimeClass, ConversionError> {
-        let mut converted: k8s_api::node::v1::RuntimeClass = convert_via_json(self)?;
-        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
-            "node.k8s.io/v1",
-            "RuntimeClass",
-        );
-        Ok(converted)
+        let overhead = convert_via_json(&self.spec.overhead)?;
+        let scheduling = convert_via_json(&self.spec.scheduling)?;
+
+        Ok(k8s_api::node::v1::RuntimeClass {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "node.k8s.io/v1",
+                "RuntimeClass",
+            ),
+            metadata: self.metadata.clone(),
+            handler: self.spec.runtime_handler.clone(),
+            overhead,
+            scheduling,
+        })
     }
 
     fn convert_from(other: &k8s_api::node::v1::RuntimeClass) -> Result<Self, ConversionError> {
-        let mut converted: k8s_api::node::v1alpha1::RuntimeClass = convert_via_json(other)?;
-        converted.type_meta = k8s_apimachinery::apis::meta::v1::TypeMeta::new(
-            "node.k8s.io/v1alpha1",
-            "RuntimeClass",
-        );
-        Ok(converted)
+        let overhead = convert_via_json(&other.overhead)?;
+        let scheduling = convert_via_json(&other.scheduling)?;
+
+        Ok(Self {
+            type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new(
+                "node.k8s.io/v1alpha1",
+                "RuntimeClass",
+            ),
+            metadata: other.metadata.clone(),
+            spec: k8s_api::node::v1alpha1::RuntimeClassSpec {
+                runtime_handler: other.handler.clone(),
+                overhead,
+                scheduling,
+            },
+        })
     }
 }
 
