@@ -793,6 +793,90 @@ pub mod internal {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::v1 as validation_v1;
+    use k8s_api::admissionregistration::v1 as api;
+    use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+
+    fn valid_webhook() -> api::ValidatingWebhook {
+        api::ValidatingWebhook {
+            name: "webhook.k8s.io".to_string(),
+            client_config: api::WebhookClientConfig {
+                url: Some("https://example.com".to_string()),
+                ..Default::default()
+            },
+            rules: vec![api::RuleWithOperations {
+                operations: vec!["CREATE".to_string()],
+                api_groups: vec!["apps".to_string()],
+                api_versions: vec!["v1".to_string()],
+                resources: vec!["deployments".to_string()],
+                ..Default::default()
+            }],
+            side_effects: "None".to_string(),
+            admission_review_versions: vec!["v1".to_string()],
+            ..Default::default()
+        }
+    }
+
+    fn valid_config() -> api::ValidatingWebhookConfiguration {
+        api::ValidatingWebhookConfiguration {
+            metadata: ObjectMeta::named("config"),
+            webhooks: vec![valid_webhook()],
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn test_validate_validating_webhook_requires_admission_review_versions() {
+        let mut config = valid_config();
+        config.webhooks[0].admission_review_versions.clear();
+
+        let errors = validation_v1::validate_validating_webhook_configuration(&config);
+        assert!(errors
+            .iter()
+            .any(|error| error.field.contains("admissionReviewVersions")));
+    }
+
+    #[test]
+    fn test_validate_validating_webhook_invalid_operation() {
+        let mut config = valid_config();
+        config.webhooks[0].rules[0].operations = vec!["PATCH".to_string()];
+
+        let errors = validation_v1::validate_validating_webhook_configuration(&config);
+        assert!(errors
+            .iter()
+            .any(|error| error.field.contains("operations")));
+    }
+
+    #[test]
+    fn test_validate_validating_webhook_client_config_missing() {
+        let mut config = valid_config();
+        config.webhooks[0].client_config.url = None;
+
+        let errors = validation_v1::validate_validating_webhook_configuration(&config);
+        assert!(errors
+            .iter()
+            .any(|error| error.field.contains("clientConfig")));
+    }
+
+    #[test]
+    fn test_validate_validating_webhook_url_requires_https() {
+        let mut config = valid_config();
+        config.webhooks[0].client_config.url = Some("http://example.com".to_string());
+
+        let errors = validation_v1::validate_validating_webhook_configuration(&config);
+        assert!(errors.iter().any(|error| error.field.contains("url")));
+    }
+
+    #[test]
+    fn test_validate_validating_webhook_valid() {
+        let config = valid_config();
+        let errors = validation_v1::validate_validating_webhook_configuration(&config);
+        assert!(errors.is_empty(), "expected no errors: {:?}", errors);
+    }
+}
+
 pub mod v1alpha1 {
     use super::*;
     use k8s_api::admissionregistration::v1alpha1 as api;

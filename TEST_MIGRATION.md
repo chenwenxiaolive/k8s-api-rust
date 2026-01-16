@@ -20,7 +20,7 @@ Notes:
 | Group | Go tests | types | conversion | defaults | validation | Rust tests |
 |-------|---------:|------:|-----------:|---------:|-----------:|------------|
 | abac | 2 | 0 | 2 | 0 | 0 | conversion, validation |
-| admissionregistration | 4 | 0 | 0 | 3 | 1 | conversion |
+| admissionregistration | 4 | 0 | 0 | 3 | 1 | conversion, validation |
 | apiserverinternal | 2 | 0 | 0 | 0 | 1 | validation |
 | apps | 6 | 0 | 2 | 3 | 1 | api, conversion, validation |
 | authorization | 1 | 0 | 0 | 0 | 1 | conversion, validation |
@@ -48,7 +48,7 @@ Notes:
 - pkg/apis/admissionregistration/v1/defaults_test.go [admissionregistration] (defaults) -> missing
 - pkg/apis/admissionregistration/v1alpha1/defaults_test.go [admissionregistration] (defaults) -> missing
 - pkg/apis/admissionregistration/v1beta1/defaults_test.go [admissionregistration] (defaults) -> missing
-- pkg/apis/admissionregistration/validation/validation_test.go [admissionregistration] (validation) -> missing
+- pkg/apis/admissionregistration/validation/validation_test.go [admissionregistration] (validation) -> rust_validation
 - pkg/apis/apiserverinternal/install/roundtrip_test.go [apiserverinternal] (other) -> unknown
 - pkg/apis/apiserverinternal/validation/validation_test.go [apiserverinternal] (validation) -> rust_validation
 - pkg/apis/apps/v1/conversion_test.go [apps] (conversion) -> rust_conversion
