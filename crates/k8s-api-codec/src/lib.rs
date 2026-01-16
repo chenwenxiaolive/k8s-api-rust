@@ -1,6 +1,6 @@
 use base64::{engine::general_purpose, Engine as _};
 use chrono::{DateTime, SecondsFormat, TimeZone, Utc};
-use k8s_api_core::schema::GroupVersionKind;
+use k8s_api_core::schema::{GroupVersion, GroupVersionKind};
 use once_cell::sync::Lazy;
 use prost_reflect::prost::Message;
 use prost_reflect::{
@@ -95,6 +95,78 @@ pub fn proto_message_name(gvk: &GroupVersionKind) -> Result<String, CodecError> 
     ))
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ExternalVersionCodec {
+    gvk: GroupVersionKind,
+    message_name: String,
+}
+
+impl ExternalVersionCodec {
+    pub fn new(
+        group: impl Into<String>,
+        version: impl Into<String>,
+        kind: impl Into<String>,
+    ) -> Result<Self, CodecError> {
+        Self::from_gvk(GroupVersionKind::new(group, version, kind))
+    }
+
+    pub fn from_group_version(
+        group_version: &GroupVersion,
+        kind: impl Into<String>,
+    ) -> Result<Self, CodecError> {
+        Self::from_gvk(group_version.with_kind(kind))
+    }
+
+    pub fn from_api_version(
+        api_version: &str,
+        kind: impl Into<String>,
+    ) -> Result<Self, CodecError> {
+        let (group, version) = parse_api_version(api_version)?;
+        Self::new(group, version, kind)
+    }
+
+    pub fn from_gvk(gvk: GroupVersionKind) -> Result<Self, CodecError> {
+        let message_name = proto_message_name(&gvk)?;
+        Ok(Self { gvk, message_name })
+    }
+
+    pub fn gvk(&self) -> &GroupVersionKind {
+        &self.gvk
+    }
+
+    pub fn message_name(&self) -> &str {
+        &self.message_name
+    }
+
+    pub fn encode_json<T: Serialize>(&self, value: &T) -> Result<Vec<u8>, CodecError> {
+        encode_json(value)
+    }
+
+    pub fn decode_json<T: DeserializeOwned>(&self, bytes: &[u8]) -> Result<T, CodecError> {
+        decode_json(bytes)
+    }
+
+    pub fn encode_protobuf<T: Serialize>(&self, value: &T) -> Result<Vec<u8>, CodecError> {
+        encode_protobuf(&self.message_name, value)
+    }
+
+    pub fn decode_protobuf<T: DeserializeOwned>(&self, bytes: &[u8]) -> Result<T, CodecError> {
+        decode_protobuf(&self.message_name, bytes)
+    }
+
+    pub fn patch_json(value: JsonValue) -> Patch {
+        Patch::json(value)
+    }
+
+    pub fn patch_merge(value: JsonValue) -> Patch {
+        Patch::merge(value)
+    }
+
+    pub fn patch_strategic(value: JsonValue) -> Patch {
+        Patch::strategic(value)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PatchType {
     Json,
@@ -155,6 +227,24 @@ fn lookup_message(name: &str) -> Result<MessageDescriptor, CodecError> {
     DESCRIPTORS
         .get_message_by_name(name)
         .ok_or_else(|| CodecError::UnknownMessage(name.to_string()))
+}
+
+fn parse_api_version(api_version: &str) -> Result<(String, String), CodecError> {
+    if api_version.is_empty() {
+        return Err(CodecError::InvalidApiVersion(api_version.to_string()));
+    }
+
+    let mut iter = api_version.split('/');
+    let first = iter.next().unwrap();
+    let second = iter.next();
+    if iter.next().is_some() {
+        return Err(CodecError::InvalidApiVersion(api_version.to_string()));
+    }
+
+    match second {
+        Some(version) => Ok((first.to_string(), version.to_string())),
+        None => Ok((String::new(), first.to_string())),
+    }
 }
 
 fn json_to_dynamic_message(

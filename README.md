@@ -133,8 +133,7 @@ Use `k8s-api-codec` for protobuf round-trips and patch content types:
 
 ```rust
 use k8s_api::core::v1::Namespace;
-use k8s_api_codec::{encode_protobuf, decode_protobuf, Patch};
-use k8s_api_core::schema::GroupVersionKind;
+use k8s_api_codec::ExternalVersionCodec;
 use k8s_apimachinery::apis::meta::v1::ObjectMeta;
 use serde_json::json;
 
@@ -143,12 +142,11 @@ let namespace = Namespace {
     ..Default::default()
 };
 
-let gvk = GroupVersionKind::new("", "v1", "Namespace");
-let message_name = k8s_api_codec::proto_message_name(&gvk)?;
-let bytes = encode_protobuf(&message_name, &namespace)?;
-let decoded: Namespace = decode_protobuf(&message_name, &bytes)?;
+let codec = ExternalVersionCodec::from_api_version("v1", "Namespace")?;
+let bytes = codec.encode_protobuf(&namespace)?;
+let decoded: Namespace = codec.decode_protobuf(&bytes)?;
 
-let patch = Patch::strategic(json!({ "metadata": { "labels": { "app": "demo" }}}));
+let patch = ExternalVersionCodec::patch_strategic(json!({ "metadata": { "labels": { "app": "demo" }}}));
 assert_eq!(patch.content_type(), "application/strategic-merge-patch+json");
 ```
 
@@ -180,8 +178,8 @@ k8s-api-rust/
 
 - External versions support JSON + Protobuf codecs: **Done** (`crates/k8s-api-codec/src/lib.rs`)
 - External versions support strategic-merge-patch: **Done** (`crates/k8s-api-codec/src/lib.rs`)
-- External logic considers JSON/Protobuf/strategic-merge-patch together: **Partial**
-  - Status: codecs + patch types exist; external API modules do not yet expose a single, version-scoped entry point that ties all three together.
+- External logic considers JSON/Protobuf/strategic-merge-patch together: **Done**
+  - Status: `ExternalVersionCodec` provides a version-scoped entry point for JSON/Protobuf encode/decode and patch types.
 
 ### Defaults
 
@@ -200,7 +198,7 @@ k8s-api-rust/
 
 ### Next Plan
 
-1. Add a version-scoped external API helper that explicitly handles JSON/Protobuf encoding/decoding plus strategic-merge-patch content types.
+1. Expand tests to cover external JSON/Protobuf/patch helpers across representative groups.
 
 ### API Types Coverage (k8s-api)
 
