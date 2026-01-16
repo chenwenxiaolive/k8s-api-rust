@@ -30,7 +30,7 @@ Notes:
 | certificates | 2 | 0 | 0 | 1 | 1 | conversion, validation |
 | coordination | 1 | 0 | 0 | 0 | 1 | api, conversion, validation |
 | core | 17 | 2 | 1 | 1 | 4 | api, validation |
-| discovery | 4 | 0 | 1 | 2 | 1 | conversion, validation |
+| discovery | 4 | 0 | 1 | 2 | 1 | conversion, defaults, validation |
 | extensions | 3 | 1 | 1 | 1 | 0 | validation |
 | flowcontrol | 9 | 0 | 3 | 5 | 1 | conversion, validation |
 | networking | 5 | 1 | 1 | 2 | 1 | conversion, validation |
@@ -92,8 +92,8 @@ Notes:
 - pkg/apis/core/validation/names_test.go [core] (validation) -> rust_validation
 - pkg/apis/core/validation/validation_test.go [core] (validation) -> rust_validation
 - pkg/apis/discovery/v1beta1/conversion_test.go [discovery] (conversion) -> rust_conversion
-- pkg/apis/discovery/v1/defaults_test.go [discovery] (defaults) -> missing
-- pkg/apis/discovery/v1beta1/defaults_test.go [discovery] (defaults) -> missing
+- pkg/apis/discovery/v1/defaults_test.go [discovery] (defaults) -> rust_defaults
+- pkg/apis/discovery/v1beta1/defaults_test.go [discovery] (defaults) -> rust_defaults
 - pkg/apis/discovery/validation/validation_test.go [discovery] (validation) -> rust_validation
 - pkg/apis/extensions/v1beta1/conversion_test.go [extensions] (conversion) -> missing
 - pkg/apis/extensions/v1beta1/defaults_test.go [extensions] (defaults) -> missing
