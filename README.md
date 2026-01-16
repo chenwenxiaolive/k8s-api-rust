@@ -200,6 +200,7 @@ k8s-api-rust/
 
 1. Expand tests to cover external JSON/Protobuf/patch helpers across representative groups. **Done**
 2. Decide on defaulting infrastructure and port defaults tests (apps, autoscaling, batch, core, etc.).
+   - Started with scheduling PriorityClass defaulting (v1/v1alpha1/v1beta1).
 3. Add remaining core/extensions conversion coverage (core/v1 conversion tests, extensions Ingress backend conversion).
 
 ### API Types Coverage (k8s-api)

@@ -39,7 +39,7 @@ Notes:
 | rbac | 3 | 0 | 1 | 0 | 1 | api, conversion, validation |
 | resource | 13 | 0 | 1 | 4 | 7 | conversion, validation |
 | roundtrip_test.go | 1 | 0 | 0 | 0 | 0 | none |
-| scheduling | 5 | 0 | 0 | 3 | 1 | api, conversion, validation |
+| scheduling | 5 | 0 | 0 | 3 | 1 | api, conversion, defaults, validation |
 | storage | 3 | 0 | 0 | 2 | 1 | conversion, validation |
 | storagemigration | 1 | 0 | 0 | 0 | 1 | validation |
 
@@ -134,9 +134,9 @@ Notes:
 - pkg/apis/resource/validation/validation_resourceclaimtemplate_test.go [resource] (validation) -> rust_validation
 - pkg/apis/resource/validation/validation_resourceslice_test.go [resource] (validation) -> rust_validation
 - staging/src/k8s.io/api/roundtrip_test.go [roundtrip_test.go] (other) -> unknown
-- pkg/apis/scheduling/v1/defaults_test.go [scheduling] (defaults) -> missing
-- pkg/apis/scheduling/v1alpha1/defaults_test.go [scheduling] (defaults) -> missing
-- pkg/apis/scheduling/v1beta1/defaults_test.go [scheduling] (defaults) -> missing
+- pkg/apis/scheduling/v1/defaults_test.go [scheduling] (defaults) -> rust_defaults
+- pkg/apis/scheduling/v1alpha1/defaults_test.go [scheduling] (defaults) -> rust_defaults
+- pkg/apis/scheduling/v1beta1/defaults_test.go [scheduling] (defaults) -> rust_defaults
 - pkg/apis/scheduling/v1/helpers_test.go [scheduling] (other) -> unknown
 - pkg/apis/scheduling/validation/validation_test.go [scheduling] (validation) -> rust_validation
 - pkg/apis/storage/v1/defaults_test.go [storage] (defaults) -> missing
