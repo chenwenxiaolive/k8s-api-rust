@@ -1,7 +1,6 @@
-//! API Registration v1 type definitions
+//! API Registration v1beta1 type definitions
 //!
-//! This module provides Rust type definitions for APIService, which is used
-//! for API aggregation in Kubernetes.
+//! This module provides Rust type definitions for APIService in v1beta1.
 
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
@@ -53,6 +52,7 @@ pub struct APIServiceSpec {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub group: String,
     /// Version is the API version this server hosts. For example, "v1"
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub version: String,
     /// InsecureSkipTLSVerify disables TLS certificate verification when communicating with this server.
     /// This is strongly discouraged. You should use the CABundle instead.
@@ -75,8 +75,10 @@ pub struct APIServiceSpec {
 #[serde(rename_all = "camelCase")]
 pub struct ServiceReference {
     /// Namespace is the namespace of the service
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub namespace: String,
     /// Name is the name of the service
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub name: String,
     /// Port is the port on the service that hosting the service.
     /// Default to 443 for backward compatibility.
@@ -122,16 +124,15 @@ pub struct APIServiceCondition {
 // Constants
 // =============================================================================
 
-/// Available indicates that the service exists and is reachable
-pub const CONDITION_AVAILABLE: &str = "Available";
-
 /// ConditionStatus indicates the status of a condition.
 pub type ConditionStatus = String;
 
-/// Condition statuses
 pub const CONDITION_TRUE: &str = "True";
 pub const CONDITION_FALSE: &str = "False";
 pub const CONDITION_UNKNOWN: &str = "Unknown";
 
 /// APIServiceConditionType is the type for APIServiceCondition.
 pub type APIServiceConditionType = String;
+
+/// Available indicates that the service exists and is reachable.
+pub const CONDITION_AVAILABLE: &str = "Available";

@@ -1,4 +1,4 @@
-//! CustomResourceDefinition v1 type definitions
+//! CustomResourceDefinition v1beta1 type definitions
 
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
@@ -37,45 +37,60 @@ pub struct CustomResourceDefinitionList {
     pub items: Vec<CustomResourceDefinition>,
 }
 
-/// CustomResourceDefinitionSpec describes how a user wants their resource to appear
+/// CustomResourceDefinitionSpec describes how a user wants their resource to appear.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomResourceDefinitionSpec {
-    /// Group is the group this resource belongs in
+    /// Group is the group this resource belongs in.
     pub group: String,
-    /// Names are the names used to describe this custom resource
+    /// Version is the API version of the defined custom resource (deprecated).
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub version: String,
+    /// Names are the names used to describe this custom resource.
     pub names: CustomResourceDefinitionNames,
-    /// Scope indicates whether this resource is cluster or namespace scoped. Default is namespaced
+    /// Scope indicates whether this resource is cluster or namespace scoped.
     pub scope: ResourceScope,
+    /// Validation describes the schema used for validation and pruning.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validation: Option<CustomResourceValidation>,
+    /// Subresources specify what subresources the defined custom resource has.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subresources: Option<CustomResourceSubresources>,
     /// Versions is the list of all supported versions for this resource.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub versions: Vec<CustomResourceDefinitionVersion>,
+    /// AdditionalPrinterColumns specifies additional columns returned in Table output.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub additional_printer_columns: Vec<CustomResourceColumnDefinition>,
+    /// SelectableFields specifies paths to fields that may be used as field selectors.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub selectable_fields: Vec<SelectableField>,
     /// Conversion defines conversion settings for the CRD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conversion: Option<CustomResourceConversion>,
-    /// PreserveUnknownFields disables pruning of object fields which are not
-    /// specified in the OpenAPI schema.
+    /// PreserveUnknownFields disables pruning of object fields not in the validation schema.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preserve_unknown_fields: Option<bool>,
 }
 
-/// CustomResourceDefinitionNames indicates the names to serve this CustomResourceDefinition
+/// CustomResourceDefinitionNames indicates the names to serve this CustomResourceDefinition.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomResourceDefinitionNames {
     /// Plural is the plural name of the resource to serve.
     pub plural: String,
-    /// Singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased <kind>
+    /// Singular is the singular name of the resource.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub singular: String,
-    /// ShortNames are short names for the resource. It must be all lowercase.
+    /// ShortNames are short names for the resource.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub short_names: Vec<String>,
-    /// Kind is the serialized kind of the resource. It is normally CamelCase and singular.
+    /// Kind is the serialized kind of the resource.
     pub kind: String,
-    /// ListKind is the serialized kind of the list for this resource. Defaults to <kind>List.
+    /// ListKind is the serialized kind of the list for this resource.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub list_kind: String,
-    /// Categories is a list of grouped resources custom resources belong to (e.g. 'all')
+    /// Categories is a list of grouped resources custom resources belong to.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub categories: Vec<String>,
 }
@@ -92,9 +107,9 @@ pub const RESOURCE_SCOPE_NAMESPACE: &str = "Namespaced";
 pub struct CustomResourceDefinitionVersion {
     /// Name is the version name, e.g. "v1", "v2beta1", etc.
     pub name: String,
-    /// Served is a flag enabling/disabling this version from being served via REST APIs
+    /// Served is a flag enabling/disabling this version from being served via REST APIs.
     pub served: bool,
-    /// Storage flags the version as storage version. There must be exactly one flagged as storage version.
+    /// Storage indicates this version should be used when persisting resources.
     pub storage: bool,
     /// Deprecated indicates this version of the custom resource API is deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -102,13 +117,13 @@ pub struct CustomResourceDefinitionVersion {
     /// DeprecationWarning overrides the default warning returned to API clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecation_warning: Option<String>,
-    /// Schema describes the schema for CustomResource used in validation, pruning, and defaulting.
+    /// Schema describes the schema used for validation and pruning of this version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<CustomResourceValidation>,
-    /// Subresources describes the subresources for CustomResource
+    /// Subresources specify what subresources this version has.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subresources: Option<CustomResourceSubresources>,
-    /// AdditionalPrinterColumns are additional columns shown e.g. in kubectl next to the name.
+    /// AdditionalPrinterColumns specifies additional columns returned in Table output.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub additional_printer_columns: Vec<CustomResourceColumnDefinition>,
     /// SelectableFields specifies paths to fields that may be used as field selectors.
@@ -116,43 +131,12 @@ pub struct CustomResourceDefinitionVersion {
     pub selectable_fields: Vec<SelectableField>,
 }
 
-/// CustomResourceValidation is a list of validation methods for CustomResources.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CustomResourceValidation {
-    /// OpenAPIV3Schema is the OpenAPI v3 schema to be validated against.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub open_apiv3_schema: Option<JSONSchemaProps>,
-}
-
-/// CustomResourceSubresources defines the status and scale subresources for CustomResources.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CustomResourceSubresources {
-    /// Status denotes the status subresource for CustomResources
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<CustomResourceSubresourceStatus>,
-    /// Scale denotes the scale subresource for CustomResources
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scale: Option<CustomResourceSubresourceScale>,
-}
-
-/// CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources.
+/// SelectableField specifies the JSON path of a field that may be used with field selectors.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CustomResourceSubresourceStatus {}
-
-/// CustomResourceSubresourceScale defines how to serve the scale subresource for CustomResources.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CustomResourceSubresourceScale {
-    /// SpecReplicasPath defines the JSON path inside of a CustomResource that corresponds to Scale.Spec.Replicas.
-    pub spec_replicas_path: String,
-    /// StatusReplicasPath defines the JSON path inside of a CustomResource that corresponds to Scale.Status.Replicas.
-    pub status_replicas_path: String,
-    /// LabelSelectorPath defines the JSON path inside of a CustomResource that corresponds to Scale.Status.Selector.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub label_selector_path: Option<String>,
+pub struct SelectableField {
+    /// JSONPath is a simple JSON path which is evaluated against each custom resource to produce a field selector value.
+    pub json_path: String,
 }
 
 /// CustomResourceColumnDefinition specifies a column for server side printing.
@@ -173,15 +157,8 @@ pub struct CustomResourceColumnDefinition {
     /// Priority is an integer defining the relative importance of this column compared to others.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    /// JSONPath is a simple JSON path, i.e. without array notation.
-    pub json_path: String,
-}
-
-/// SelectableField specifies the JSON path of a field that may be used with field selectors.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SelectableField {
-    /// JSONPath is a simple JSON path which is evaluated against each custom resource to produce a field selector value.
+    /// JSONPath is a simple JSON path, i.e. with array notation.
+    #[serde(rename = "JSONPath")]
     pub json_path: String,
 }
 
@@ -189,31 +166,21 @@ pub struct SelectableField {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomResourceConversion {
-    /// Strategy specifies the conversion strategy. Allowed values are:
-    /// - "None": The converter only change the apiVersion and would not touch any other field in the CR.
-    /// - "Webhook": API Server will call to an external webhook to do the conversion.
+    /// Strategy specifies how custom resources are converted between versions.
     pub strategy: ConversionStrategyType,
-    /// Webhook describes how to call the conversion webhook. Required when strategy is "Webhook".
+    /// WebhookClientConfig is the instructions for how to call the webhook if strategy is Webhook.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub webhook: Option<WebhookConversion>,
+    pub webhook_client_config: Option<WebhookClientConfig>,
+    /// ConversionReviewVersions is an ordered list of preferred ConversionReview versions.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub conversion_review_versions: Vec<String>,
 }
 
-/// ConversionStrategyType describes conversion strategy for a custom resource.
+/// ConversionStrategyType describes different conversion types.
 pub type ConversionStrategyType = String;
 
 pub const CONVERSION_STRATEGY_NONE: &str = "None";
 pub const CONVERSION_STRATEGY_WEBHOOK: &str = "Webhook";
-
-/// WebhookConversion describes how to call a conversion webhook.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct WebhookConversion {
-    /// ClientConfig is the instructions for how to call the webhook.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_config: Option<WebhookClientConfig>,
-    /// ConversionReviewVersions is an ordered list of preferred `ConversionReview` versions the Webhook expects.
-    pub conversion_review_versions: Vec<String>,
-}
 
 /// WebhookClientConfig contains the information to make a TLS connection with the webhook.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -230,7 +197,7 @@ pub struct WebhookClientConfig {
     pub ca_bundle: Option<Vec<u8>>,
 }
 
-/// ServiceReference holds a reference to Service.legacy.k8s.io
+/// ServiceReference holds a reference to Service.legacy.k8s.io.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServiceReference {
@@ -241,7 +208,7 @@ pub struct ServiceReference {
     /// Path is an optional URL path which will be sent in any request to this service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Port is the port on the service that hosting webhook.
+    /// Port is the port on the service that hosts the API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }
@@ -250,14 +217,14 @@ pub struct ServiceReference {
 // CustomResourceDefinitionStatus
 // =============================================================================
 
-/// CustomResourceDefinitionStatus indicates the state of the CustomResourceDefinition
+/// CustomResourceDefinitionStatus indicates the state of the CustomResourceDefinition.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomResourceDefinitionStatus {
-    /// Conditions indicate state for particular aspects of a CustomResourceDefinition
+    /// Conditions indicate state for particular aspects of a CustomResourceDefinition.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub conditions: Vec<CustomResourceDefinitionCondition>,
-    /// AcceptedNames are the names that are actually being used to serve discovery
+    /// AcceptedNames are the names that are actually being used to serve discovery.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub accepted_names: Option<CustomResourceDefinitionNames>,
     /// StoredVersions are all versions of CustomResources that were ever persisted.
@@ -265,7 +232,7 @@ pub struct CustomResourceDefinitionStatus {
     pub stored_versions: Vec<String>,
 }
 
-/// CustomResourceDefinitionCondition contains details for the current condition of this pod.
+/// CustomResourceDefinitionCondition contains details for the current condition of this CRD.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomResourceDefinitionCondition {
@@ -300,6 +267,49 @@ pub const CONDITION_NAMES_ACCEPTED: &str = "NamesAccepted";
 pub const CONDITION_NON_STRUCTURAL_SCHEMA: &str = "NonStructuralSchema";
 pub const CONDITION_TERMINATING: &str = "Terminating";
 pub const CONDITION_K8S_API_APPROVAL_CONFORMANT: &str = "KubernetesAPIApprovalPolicyConformant";
+
+// =============================================================================
+// Validation and subresources
+// =============================================================================
+
+/// CustomResourceValidation is a list of validation methods for CustomResources.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CustomResourceValidation {
+    /// OpenAPIV3Schema is the OpenAPI v3 schema to use for validation and pruning.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub open_apiv3_schema: Option<JSONSchemaProps>,
+}
+
+/// CustomResourceSubresources defines the status and scale subresources for CustomResources.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CustomResourceSubresources {
+    /// Status indicates the custom resource should serve a `/status` subresource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<CustomResourceSubresourceStatus>,
+    /// Scale indicates the custom resource should serve a `/scale` subresource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scale: Option<CustomResourceSubresourceScale>,
+}
+
+/// CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CustomResourceSubresourceStatus {}
+
+/// CustomResourceSubresourceScale defines how to serve the scale subresource for CustomResources.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CustomResourceSubresourceScale {
+    /// SpecReplicasPath defines the JSON path inside of a custom resource that corresponds to Scale spec.replicas.
+    pub spec_replicas_path: String,
+    /// StatusReplicasPath defines the JSON path inside of a custom resource that corresponds to Scale status.replicas.
+    pub status_replicas_path: String,
+    /// LabelSelectorPath defines the JSON path inside of a custom resource that corresponds to Scale status.selector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label_selector_path: Option<String>,
+}
 
 // =============================================================================
 // ConversionReview
