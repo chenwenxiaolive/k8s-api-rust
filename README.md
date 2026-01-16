@@ -127,6 +127,31 @@ Available features:
 - `batch` - Batch API (Job, CronJob)
 - `all` - Enable all API groups
 
+### External Codecs (JSON/Protobuf + Strategic Merge Patch)
+
+Use `k8s-api-codec` for protobuf round-trips and patch content types:
+
+```rust
+use k8s_api::core::v1::Namespace;
+use k8s_api_codec::{encode_protobuf, decode_protobuf, Patch};
+use k8s_api_core::schema::GroupVersionKind;
+use k8s_apimachinery::apis::meta::v1::ObjectMeta;
+use serde_json::json;
+
+let namespace = Namespace {
+    metadata: ObjectMeta::named("codec-demo"),
+    ..Default::default()
+};
+
+let gvk = GroupVersionKind::new("", "v1", "Namespace");
+let message_name = k8s_api_codec::proto_message_name(&gvk)?;
+let bytes = encode_protobuf(&message_name, &namespace)?;
+let decoded: Namespace = decode_protobuf(&message_name, &bytes)?;
+
+let patch = Patch::strategic(json!({ "metadata": { "labels": { "app": "demo" }}}));
+assert_eq!(patch.content_type(), "application/strategic-merge-patch+json");
+```
+
 ## Project Structure
 
 ```
