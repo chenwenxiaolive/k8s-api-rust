@@ -841,8 +841,12 @@ fn find_field(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use k8s_api::batch::v1::Job;
     use k8s_api::apps::v1::Deployment;
     use k8s_api::core::v1::Namespace;
+    use k8s_api::networking::v1::Ingress;
+    use k8s_api::rbac::v1::Role;
+    use k8s_api::storage::v1::StorageClass;
     use k8s_apimachinery::apis::meta::v1::ObjectMeta;
 
     #[test]
@@ -892,12 +896,79 @@ mod tests {
     }
 
     #[test]
+    fn test_external_codec_json_roundtrip_batch_job() {
+        let job = Job {
+            metadata: ObjectMeta::named("codec-job"),
+            ..Default::default()
+        };
+        let codec = ExternalVersionCodec::from_api_version("batch/v1", "Job").unwrap();
+        let bytes = codec.encode_json(&job).unwrap();
+        let decoded: Job = codec.decode_json(&bytes).unwrap();
+        assert_eq!(decoded.metadata.name, "codec-job");
+    }
+
+    #[test]
+    fn test_external_codec_protobuf_roundtrip_networking_ingress() {
+        let ingress = Ingress {
+            metadata: ObjectMeta::named("codec-ingress"),
+            ..Default::default()
+        };
+        let codec =
+            ExternalVersionCodec::from_api_version("networking.k8s.io/v1", "Ingress").unwrap();
+        let bytes = codec.encode_protobuf(&ingress).unwrap();
+        let decoded: Ingress = codec.decode_protobuf(&bytes).unwrap();
+        assert_eq!(decoded.metadata.name, "codec-ingress");
+    }
+
+    #[test]
+    fn test_external_codec_json_roundtrip_rbac_role() {
+        let role = Role {
+            metadata: ObjectMeta::named("codec-role"),
+            ..Default::default()
+        };
+        let codec =
+            ExternalVersionCodec::from_api_version("rbac.authorization.k8s.io/v1", "Role")
+                .unwrap();
+        let bytes = codec.encode_json(&role).unwrap();
+        let decoded: Role = codec.decode_json(&bytes).unwrap();
+        assert_eq!(decoded.metadata.name, "codec-role");
+    }
+
+    #[test]
+    fn test_external_codec_protobuf_roundtrip_storage_class() {
+        let storage_class = StorageClass {
+            metadata: ObjectMeta::named("codec-storage"),
+            provisioner: "example.com/provisioner".to_string(),
+            ..Default::default()
+        };
+        let codec =
+            ExternalVersionCodec::from_api_version("storage.k8s.io/v1", "StorageClass").unwrap();
+        let bytes = codec.encode_protobuf(&storage_class).unwrap();
+        let decoded: StorageClass = codec.decode_protobuf(&bytes).unwrap();
+        assert_eq!(decoded.metadata.name, "codec-storage");
+    }
+
+    #[test]
     fn test_external_codec_patch_helpers() {
         let patch = ExternalVersionCodec::patch_strategic(JsonValue::Object(JsonMap::new()));
         assert_eq!(
             patch.content_type(),
             "application/strategic-merge-patch+json"
         );
+    }
+
+    #[test]
+    fn test_patch_helpers_json_and_merge() {
+        let mut patch_body = JsonMap::new();
+        patch_body.insert("metadata".to_string(), JsonValue::Object(JsonMap::new()));
+
+        let json_patch = ExternalVersionCodec::patch_json(JsonValue::Object(patch_body.clone()));
+        assert_eq!(json_patch.content_type(), "application/json-patch+json");
+        assert!(!json_patch.to_bytes().unwrap().is_empty());
+
+        let merge_patch = ExternalVersionCodec::patch_merge(JsonValue::Object(patch_body));
+        assert_eq!(merge_patch.content_type(), "application/merge-patch+json");
+        assert!(!merge_patch.to_bytes().unwrap().is_empty());
     }
 
     fn assert_reserved_protobuf_field(message_name: &str, reserved_number: u32) {

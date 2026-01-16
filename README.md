@@ -198,7 +198,9 @@ k8s-api-rust/
 
 ### Next Plan
 
-1. Expand tests to cover external JSON/Protobuf/patch helpers across representative groups.
+1. Expand tests to cover external JSON/Protobuf/patch helpers across representative groups. **Done**
+2. Decide on defaulting infrastructure and port defaults tests (apps, autoscaling, batch, core, etc.).
+3. Add remaining core/extensions conversion coverage (core/v1 conversion tests, extensions Ingress backend conversion).
 
 ### API Types Coverage (k8s-api)
 
