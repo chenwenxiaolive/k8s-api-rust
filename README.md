@@ -14,6 +14,7 @@ This project provides a complete Rust implementation of Kubernetes API types, of
 - **Feature flags**: Optional compilation of API groups to minimize binary size
 - **Validation**: Built-in validation logic for API types
 - **Version conversion**: Support for converting between API versions
+- **External codecs**: JSON/Protobuf codecs and strategic-merge-patch content types
 
 ## Architecture
 
@@ -50,6 +51,7 @@ The project is organized as a Cargo workspace with the following crates:
 - **k8s-api-conversion** - Version conversion between API versions
   - Version upgrade/downgrade logic
   - Conversion schemes
+- **k8s-api-codec** - External codecs for JSON/Protobuf and patch content types
 
 ## Usage
 
@@ -138,7 +140,8 @@ k8s-api-rust/
 │   │   ├── apps/v1/           # Apps API v1
 │   │   └── batch/v1/          # Batch API v1
 │   ├── k8s-api-validation/    # Validation logic
-│   └── k8s-api-conversion/    # Version conversion
+│   ├── k8s-api-conversion/    # Version conversion
+│   └── k8s-api-codec/         # JSON/Protobuf codecs and patch types
 └── README.md
 ```
 

@@ -8,6 +8,7 @@ members = [
     "crates/k8s-api-conversion",
     "crates/k8s-apiextensions-apiserver",
     "crates/k8s-kube-aggregator",
+    "crates/k8s-api-codec",
 ]
 
 [workspace.package]
@@ -24,6 +25,8 @@ serde_yaml = "0.9"
 
 # Protobuf (optional)
 prost = "0.13"
+prost-build = "0.13"
+prost-reflect = "0.13"
 prost-types = "0.13"
 
 # Time handling

@@ -4,6 +4,8 @@ use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+pub use crate::core::v1::{TopologySelectorLabelRequirement, TopologySelectorTerm};
+
 pub type VolumeBindingMode = String;
 pub type FSGroupPolicy = String;
 pub type VolumeLifecycleMode = String;
@@ -51,22 +53,6 @@ pub struct StorageClassList {
     #[serde(default)]
     pub metadata: k8s_apimachinery::apis::meta::v1::ListMeta,
     pub items: Vec<StorageClass>,
-}
-
-/// TopologySelectorTerm defines a term that can be used to match topology labels.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TopologySelectorTerm {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub match_label_expressions: Vec<TopologySelectorLabelRequirement>,
-}
-
-/// TopologySelectorLabelRequirement is a selector that matches given label.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TopologySelectorLabelRequirement {
-    pub key: String,
-    pub values: Vec<String>,
 }
 
 // =============================================================================

@@ -94,31 +94,5 @@ pub struct Eviction {
     pub metadata: ObjectMeta,
     /// DeleteOptions may be provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delete_options: Option<DeleteOptions>,
-}
-
-/// DeleteOptions may be provided when deleting an API object.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct DeleteOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grace_period_seconds: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub preconditions: Option<Preconditions>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub orphan_dependents: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub propagation_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub dry_run: Vec<String>,
-}
-
-/// Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Preconditions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource_version: Option<String>,
+    pub delete_options: Option<serde_json::Value>,
 }

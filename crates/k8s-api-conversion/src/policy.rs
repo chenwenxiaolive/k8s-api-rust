@@ -188,9 +188,7 @@ impl Convertible<k8s_api::policy::v1::Eviction> for k8s_api::policy::v1beta1::Ev
         Ok(k8s_api::policy::v1::Eviction {
             type_meta: k8s_apimachinery::apis::meta::v1::TypeMeta::new("policy/v1", "Eviction"),
             metadata: self.metadata.clone(),
-            delete_options: self.delete_options.as_ref().map(|opts| {
-                serde_json::to_value(opts).unwrap_or(serde_json::Value::Null)
-            }),
+            delete_options: self.delete_options.clone(),
         })
     }
 
@@ -201,9 +199,7 @@ impl Convertible<k8s_api::policy::v1::Eviction> for k8s_api::policy::v1beta1::Ev
                 "Eviction",
             ),
             metadata: other.metadata.clone(),
-            delete_options: other.delete_options.as_ref().and_then(|v| {
-                serde_json::from_value(v.clone()).ok()
-            }),
+            delete_options: other.delete_options.clone(),
         })
     }
 }
@@ -281,10 +277,7 @@ mod tests {
     fn test_eviction_conversion_roundtrip() {
         let v1beta1_eviction = k8s_api::policy::v1beta1::Eviction {
             metadata: ObjectMeta::named("test-pod"),
-            delete_options: Some(k8s_api::policy::v1beta1::DeleteOptions {
-                grace_period_seconds: Some(30),
-                ..Default::default()
-            }),
+            delete_options: Some(serde_json::json!({ "gracePeriodSeconds": 30 })),
             ..Default::default()
         };
 

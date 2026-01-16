@@ -42,7 +42,6 @@ pub type LoadBalancerIPMode = String;
 pub type IPFamily = String;
 pub type IPFamilyPolicy = String;
 pub type IPFamilyPolicyType = IPFamilyPolicy;
-pub type ServiceTrafficDistribution = String;
 pub type PersistentVolumeReclaimPolicy = String;
 pub type PersistentVolumeAccessMode = String;
 pub type PersistentVolumePhase = String;
@@ -2055,7 +2054,7 @@ pub struct ServiceSpec {
 
     /// TrafficDistribution offers a way to express preferences for how traffic is distributed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub traffic_distribution: Option<ServiceTrafficDistribution>,
+    pub traffic_distribution: Option<String>,
 }
 
 /// ServicePort contains information on service's port.

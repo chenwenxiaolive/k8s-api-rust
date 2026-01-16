@@ -3,6 +3,8 @@
 use k8s_apimachinery::apis::meta::v1::{ObjectMeta, TypeMeta};
 use serde::{Deserialize, Serialize};
 
+pub use crate::authentication::v1::UserInfo;
+
 // =============================================================================
 // SelfSubjectReview
 // =============================================================================
@@ -24,17 +26,4 @@ pub struct SelfSubjectReview {
 pub struct SelfSubjectReviewStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_info: Option<UserInfo>,
-}
-
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UserInfo {
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub username: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub uid: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub groups: Vec<String>,
-    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
-    pub extra: std::collections::BTreeMap<String, Vec<String>>,
 }

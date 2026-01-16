@@ -9,6 +9,8 @@ use k8s_apimachinery::apis::meta::v1::{LabelSelector, ListMeta, ObjectMeta, Time
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+pub use crate::core::v1::{TopologySelectorLabelRequirement, TopologySelectorTerm};
+
 pub type VolumeBindingMode = String;
 pub type FSGroupPolicy = String;
 pub type VolumeLifecycleMode = String;
@@ -128,25 +130,6 @@ pub struct StorageClassList {
     pub metadata: ListMeta,
     /// items is the list of StorageClasses.
     pub items: Vec<StorageClass>,
-}
-
-/// TopologySelectorTerm defines a term for matching topology.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TopologySelectorTerm {
-    /// A list of topology selector requirements by labels.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub match_label_expressions: Vec<TopologySelectorLabelRequirement>,
-}
-
-/// TopologySelectorLabelRequirement is a selector that matches given label.
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TopologySelectorLabelRequirement {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// An array of string values. One value must match the label to be selected.
-    pub values: Vec<String>,
 }
 
 // Volume binding mode constants
