@@ -170,7 +170,7 @@ k8s-api-rust/
 
 ## Current Status
 
-**Total Tests: 323 (all passing)**
+**Total Tests: 628 (all passing)**
 
 ## Refactor Goals (v1.34.1)
 
@@ -203,7 +203,20 @@ k8s-api-rust/
    - Started with scheduling PriorityClass defaulting (v1/v1alpha1/v1beta1).
    - Added discovery EndpointSlice port defaults (v1/v1beta1).
    - Added networking NetworkPolicy and Ingress path defaults (v1/v1beta1).
-3. Add remaining core/extensions conversion coverage (core/v1 conversion tests, extensions Ingress backend conversion).
+   - Added admissionregistration defaults (v1/v1alpha1/v1beta1).
+   - Added apps defaults (v1/v1beta1/v1beta2).
+   - Added autoscaling defaults (v1/v2/v2beta1/v2beta2).
+   - Added storage defaults (v1/v1beta1).
+   - Added batch defaults (v1/v1beta1).
+   - Added flowcontrol defaults (v1/v1beta1/v1beta2/v1beta3).
+   - Added extensions defaults (v1beta1).
+   - Added resource defaults (v1/v1alpha3/v1beta1/v1beta2).
+   - Added certificates defaults (v1beta1).
+   - Extended core/v1 defaults (pod/container/probe/volume/secret/pv/pvc/endpoints/node/service/limitrange/namespace/replicationcontroller basics + pod requests from limits + pod-level resources (cpu/memory/hugepages, init container aggregation + feature gate off) + volume source iscsi/rbd/azure/scaleio + ephemeral claim template + pod log options + image volume pull policy feature gates + lifecycle/GRPC defaults + ephemeral container defaults + pod hostNetwork pod-vs-spec behavior + service session affinity config defaults + node allocatable cases + resource list rounding (decimal + binary + exponent) + service load balancer IP mode).
+   - Added flowcontrol v1 bootstrap defaulting no-op coverage (mandatory + suggested configs).
+3. Add remaining core/extensions conversion coverage (core/v1 conversion tests).
+   - Added extensions Ingress backend conversion coverage (v1beta1).
+   - Added core Pod/PodSpec/PodStatus/NodeSpec conversion coverage (service account/PodIP/PodCIDR aliasing + init-container annotation pruning + pod terminationGracePeriod clamp + Secret stringData merge).
 
 ### API Types Coverage (k8s-api)
 
@@ -367,7 +380,7 @@ k8s-api-rust/
 This project refactors types from the official Kubernetes codebase:
 - Source: `kubernetes/staging/src/k8s.io/api/`
 - Version: Kubernetes v1.34.1 only (no other versions targeted)
-- Total API groups: 27
+- Total API groups: 28
 - Total code volume: ~18,000+ lines of Go code
 
 ## Development
